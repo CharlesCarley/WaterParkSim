@@ -1,7 +1,174 @@
 import 'package:flutter/material.dart';
+import 'package:waterpark_frontend/metrics.dart';
+import 'package:waterpark_frontend/palette.dart';
 
 void main() {
   runApp(const MyApp());
+}
+
+class Constants {
+  static const TankWidth = 75.0;
+  static const TankHeight = 150.0;
+}
+
+class LabelWidget extends StatelessWidget {
+  final Color color;
+  final String text;
+  final double x;
+  final double y;
+  final double size = 14;
+
+  const LabelWidget(this.x, this.y, this.color, this.text, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final Size textSize = Metrics.measureSizedText(text, size);
+
+    return Positioned.fromRect(
+      rect: Rect.fromLTRB(x, y, x+textSize.width, y+textSize.height),
+      child: Text(
+        text,
+        style: Common.editTextStyle,
+      ),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////
+class TankWidget extends StatelessWidget {
+  final double x, y;
+  final double Padding = 4;
+  final double TankHeight;
+  final double WaterHeight;
+
+  const TankWidget(this.x, this.y, this.TankHeight, this.WaterHeight,
+      {Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final Rect base =
+        Rect.fromLTRB(x, y, x + Constants.TankWidth, y + Constants.TankHeight);
+    final Rect inner = Rect.fromLTRB(base.left + Padding, base.top + Padding,
+        base.right - Padding, base.bottom - Padding);
+
+    final double tr = inner.bottom - inner.top;
+    final double ar = WaterHeight / TankHeight;
+
+    final Rect vrect = Rect.fromLTRB(
+      inner.left,
+      inner.bottom - ((ar * tr)),
+      inner.right,
+      inner.bottom,
+    );
+
+    return Stack(children: [
+      RectWidget(
+        base,
+        Color.fromARGB(255, 62, 62, 62),
+      ),
+      RectWidget(
+        inner,
+        Color.fromARGB(255, 19, 19, 19),
+      ),
+      RectWidget(
+        vrect,
+        Color.fromARGB(255, 85, 79, 194),
+      ),
+      LabelWidget(inner.left, inner.top, Palette.action, ar.toString()),
+      
+    ]);
+  }
+}
+
+////////////////////////////////////////////////////////////////
+class RectWidget extends StatelessWidget {
+  final Rect rect;
+  final Color color;
+
+  const RectWidget(this.rect, this.color, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fromRect(
+      rect: rect,
+      child: ColoredBox(color: color),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////
+class StackedCanvas extends StatefulWidget {
+  const StackedCanvas({Key? key}) : super(key: key);
+
+  @override
+  State<StackedCanvas> createState() => _StackedCanvasState();
+}
+
+class _StackedCanvasState extends State<StackedCanvas> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(0xFF, 0x1B, 0x1B, 0x1B),
+      body: Stack(children: getChildren()),
+    );
+  }
+
+  List<Widget> getChildren() {
+    List<double> statList = [
+      20,
+      19,
+      18,
+      17,
+      16,
+      15,
+      14,
+      13,
+      12,
+      11,
+      10,
+      9,
+      8,
+      7,
+      6,
+      5,
+      4,
+      3,
+      2,
+      1,
+      0
+    ];
+
+    List<Widget> wlist = [];
+    double x = 20;
+    double y = 20;
+
+    const int maxPerLline = 5;
+    int perLine = 0;
+
+    for (var d in statList) {
+      wlist.add(new TankWidget(x, y, 20, d));
+      x += Constants.TankWidth + 10;
+      ++perLine;
+
+      if (perLine > maxPerLline) {
+        y += Constants.TankHeight + 10;
+        perLine = 0;
+        x = 20;
+      }
+    }
+    return wlist;
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -22,9 +189,9 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.grey,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'WaterPark Simulator'),
     );
   }
 }
@@ -48,68 +215,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    return const MaterialApp(
+      title: "ABC",
+      home: StackedCanvas(),
     );
   }
 }
