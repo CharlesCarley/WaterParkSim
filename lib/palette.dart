@@ -22,12 +22,16 @@
 import 'package:flutter/material.dart';
 
 class Palette {
-  static const background = Color(0xFF323030);
-  static const inactiveMemory = Color(0xFF3F3F4F);
+  static const background = Color(0xFF131313);
+  static const tankBorder = Color(0xFF2E2E2E);
+  static const tankBackground = Color(0xFF282828);
+  static const water = Color(0xFF3D3483);
+
   static const darkGrey = Color(0xFF181818);
   static const darkGrey1 = Color(0xFF2A2A2F);
   static const darkGrey2 = Color(0xFF222222);
   static const highlight = Color(0xFF9F9FAF);
+
   static const highlightTransparent = Color(0xFF9F9FAF);
   static const wireLight = Color(0xFF6A6A9F);
   static const wireTitle = Color(0xFF5A5A7F);

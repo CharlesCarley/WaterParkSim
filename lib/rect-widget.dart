@@ -20,47 +20,18 @@
 -------------------------------------------------------------------------------
 */
 import 'package:flutter/material.dart';
-import 'stacked_canvas.dart';
-import 'workspace.dart';
 
+class RectWidget extends StatelessWidget {
+  final Rect rect;
+  final Color color;
 
-void main() {
-
-  runApp(const WaterPark());
-}
-
-
-
-class WaterPark extends StatelessWidget {
-  const WaterPark({Key? key}) : super(key: key);
+  const RectWidget(this.rect, this.color, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'WaterPark Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.grey,
-      ),
-      home: const WaterParkPage(title: 'WaterPark Demo'),
-    );
-  }
-}
-
-class WaterParkPage extends StatefulWidget {
-  const WaterParkPage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<WaterParkPage> createState() => _WaterParkPageState();
-}
-
-class _WaterParkPageState extends State<WaterParkPage> {
-  @override
-  Widget build(BuildContext context) {
-    return  MaterialApp(
-      title: widget.title,
-      home: const WorkSpaceWidget(),
+    return Positioned.fromRect(
+      rect: rect,
+      child: ColoredBox(color: color),
     );
   }
 }

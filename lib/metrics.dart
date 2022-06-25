@@ -112,6 +112,10 @@ class Metrics {
       size.height - Metrics.padding + Metrics.paddingEighth,
     );
   }
+
+  static clamp(double value, double minValue, double maxValue) {
+    return value < minValue ? minValue : (value > maxValue ? maxValue : value);
+  }
 }
 
 class Common {
@@ -129,5 +133,10 @@ class Common {
     fontSize: 12,
     fontFamily: "Mono",
     color: Palette.editTextForeground,
+  );
+
+  static const TextStyle labelTextStyle = TextStyle(
+    fontSize: 14,
+    color: Palette.highlight,
   );
 }
