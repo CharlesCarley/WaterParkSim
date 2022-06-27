@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:waterpark_frontend/state/node.dart';
+import 'package:waterpark_frontend/state/tank.dart';
 
 enum TokenId {
   none,
@@ -24,9 +26,10 @@ class Token {
 
 class Tokenizer {
   List<Token> _tokens = [];
-  List<String> _keywords = ["tank"];
+  final List<String> _keywords = ["tank"];
   Uint8List _bytes = Uint8List(0);
-  List<String> identifiers = [];
+  final List<String> _identifiers = [];
+  final List<double> _values = [];
 
   int _position = 0;
 
@@ -45,6 +48,7 @@ class Tokenizer {
         break;
       }
     }
+
     _tokens.add(Token.fromId(TokenId.eos));
     return _tokens;
   }
@@ -53,10 +57,10 @@ class Tokenizer {
     return _position >= _bytes.length;
   }
 
-  int current(int offset) {
+  int current({int offset = 0}) {
     int loc = _position + offset;
 
-    if (loc < 0 || loc >= _tokens.length) {
+    if (loc < 0 || loc >= _bytes.length) {
       return -1;
     }
 
@@ -71,7 +75,7 @@ class Tokenizer {
     Token tok = Token.fromId(TokenId.error);
 
     while (!endOfStream()) {
-      int ch = current(0);
+      int ch = current();
 
       if (isAlpha(ch)) {
         // ascii
@@ -101,7 +105,7 @@ class Tokenizer {
   }
 
   bool isNumeric(int ch) {
-    return isDigit(ch) || (ch == 0x2E) || (ch == 0x2D);
+    return (ch == 0x2E) || (ch == 0x2D) || isDigit(ch);
   }
 
   bool isAlpha(int ch) {
@@ -113,26 +117,27 @@ class Tokenizer {
   }
 
   void scanIdentifier(Token tok) {
-    int offs = 0;
-
     StringBuffer buffer = StringBuffer();
-    int ch = current(0);
+    var ch = current();
     while (!endOfStream() && isAlphaNumeric(ch)) {
-      ch = current(offs++);
+      ch = current();
       if (isNewLineOrWhiteSpace(ch)) {
         break;
       }
-      buffer.writeCharCode(ch);
+      if (isAlphaNumeric(ch)) {
+        advance(1);
+        buffer.writeCharCode(ch);
+      } else {
+        break;
+      }
     }
 
     if (buffer.isEmpty) {
       tok.id = TokenId.error;
     } else {
       String result = buffer.toString();
-      advance(offs);
 
       int index = -1;
-
       for (int i = 0; i < _keywords.length && index == -1; ++i) {
         var str = _keywords[i];
         if (str == result) {
@@ -145,42 +150,76 @@ class Tokenizer {
         tok.index = index;
       } else {
         tok.id = TokenId.identifier;
-        tok.index = identifiers.length;
-        identifiers.add(result);
+
+        tok.index = _identifiers.indexOf(result);
+        if (tok.index == -1) {
+          tok.index = _identifiers.length;
+          _identifiers.add(result);
+        }
       }
     }
   }
 
-  void scanNumber(Token tok) {}
+  void scanNumber(Token tok) {
+    StringBuffer buffer = StringBuffer();
+    var ch = current();
+    while (!endOfStream() && isNumeric(ch)) {
+      ch = current();
+      if (isNewLineOrWhiteSpace(ch)) {
+        break;
+      } else if (isNumeric(ch)) {
+        advance(1);
+        buffer.writeCharCode(ch);
+      } else {
+        break;
+      }
+    }
+
+    if (buffer.isEmpty) {
+      tok.id = TokenId.error;
+    } else {
+      String result = buffer.toString();
+      double? v = double.tryParse(result);
+
+      tok.id = TokenId.error;
+      if (v != null) {
+        tok.id = TokenId.number;
+        tok.index = _values.indexOf(v);
+        if (tok.index == -1) {
+          tok.index = _values.length;
+          _values.add(v);
+        }
+      }
+    }
+  }
 
   String getKeyword(int index) {
-    if (index >= 0 && index < _keywords.length) return _keywords[index];
+    if (index >= 0 && index < _keywords.length) {
+      return _keywords[index];
+    }
     return "";
   }
 
-  String getIdentifier(int index) {
-    if (index >= 0 && index < identifiers.length) return identifiers[index];
-    return "";
+  String getIdentifier(int index, {String def = ""}) {
+    if (index >= 0 && index < _identifiers.length) {
+      return _identifiers[index];
+    }
+    return def;
   }
 
   double getNumber(int index, {double def = 0.0}) {
-    if (index >= 0 && index < identifiers.length) {
-      var str = identifiers[index];
-
-      double? v = double.tryParse(str);
-      if (v != null) {
-        return v;
-      }
+    if (index >= 0 && index < _values.length) {
+      return _values[index];
     }
-    return 0.0;
+    return def;
   }
 }
 
 class CommandParser {
-  Tokenizer _tokenizer = Tokenizer();
+  final Tokenizer _tokenizer = Tokenizer();
   List<Token> _tokens = [];
-
   int _position = 0;
+  List<Node> _stateObjects = [];
 
   bool endOfStream() {
     return _position >= _tokens.length;
@@ -189,7 +228,7 @@ class CommandParser {
   Token token(int offset) {
     int loc = _position + offset;
     if (loc < 0 || loc >= _tokens.length) {
-      return Token.fromId(TokenId.none);
+      return Token.fromId(TokenId.eos);
     }
     return _tokens[loc];
   }
@@ -199,16 +238,18 @@ class CommandParser {
   }
 
   void readEnd() {
-    _position = _tokens.length;
+    _position = _tokens.length+1;
   }
 
-  void parse(String buffer) {
+  List<Node> parse(String buffer) {
     _position = 0;
     _tokens = _tokenizer.tokenize(buffer);
+    _stateObjects = [];
 
     Token current = token(0);
 
     while (!current.isEos()) {
+      current = token(0);
       if (current.isKeyword()) {
         advance(1);
         readKeyword(current);
@@ -216,6 +257,7 @@ class CommandParser {
         break;
       }
     }
+    return _stateObjects;
   }
 
   void readKeyword(Token current) {
@@ -238,6 +280,13 @@ class CommandParser {
 
       if (result) {
         advance(5);
+        _stateObjects.add(Tank(
+          x: _tokenizer.getNumber(a1.index),
+          y: _tokenizer.getNumber(a2.index),
+          height: _tokenizer.getNumber(a3.index),
+          capacity: _tokenizer.getNumber(a4.index),
+          level: _tokenizer.getNumber(a5.index),
+        ));
       } else {
         readEnd();
       }

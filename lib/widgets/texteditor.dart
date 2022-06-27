@@ -24,19 +24,18 @@ import 'package:waterpark_frontend/tokenizer/tokenizer.dart';
 
 import '../metrics.dart';
 import '../palette.dart';
+import '../state/node.dart';
 
 typedef StringCallback = void Function(String text);
 
 class EditProgram extends StatefulWidget {
-  final StringCallback onOkClicked;
-  final VoidCallback onCancelClicked;
   final String program;
+  final NodeManager manager;
 
   const EditProgram({
     Key? key,
     required this.program,
-    required this.onOkClicked,
-    required this.onCancelClicked,
+    required this.manager,
   }) : super(key: key);
 
   @override
@@ -115,7 +114,10 @@ class _EditProgramState extends State<EditProgram> {
 
   void exitTextChanged(String newValue) async {
     CommandParser parser = CommandParser();
-    parser.parse(newValue);
+    setState(() {
+      widget.manager.apply(parser.parse(newValue));
+      
+    });
     // build a new type/sym tree and convert to the sUI
   }
 }

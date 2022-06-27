@@ -20,6 +20,7 @@
 -------------------------------------------------------------------------------
 */
 import 'package:flutter/material.dart';
+import 'package:waterpark_frontend/state/node.dart';
 import 'package:waterpark_frontend/widgets/texteditor.dart';
 import 'dashboard/stacked_canvas.dart';
 import 'palette.dart';
@@ -27,11 +28,13 @@ import 'widgets/icon.dart';
 import 'widgets/workspace.dart';
 
 void main() {
-  runApp(const WaterPark());
+  runApp( WaterPark());
 }
 
 class WaterPark extends StatelessWidget {
-  const WaterPark({Key? key}) : super(key: key);
+  WaterPark({Key? key}) : super(key: key);
+
+  final NodeManager manager = NodeManager();
 
   @override
   Widget build(BuildContext context) {
@@ -86,11 +89,12 @@ class WaterPark extends StatelessWidget {
           initialSplit: 0.25,
           direction: SplitWidgetDirection.vertical,
           childA: EditProgram(
+            manager: manager,
             program: "tank 20 20 20 15",
-            onCancelClicked: () {},
-            onOkClicked: (str) {},
           ),
-          childB: StreamedCanvas(),
+          childB: StreamedCanvas(
+              manager: manager,
+          ),
         ),
       ),
     );

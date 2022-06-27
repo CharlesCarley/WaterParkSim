@@ -21,28 +21,28 @@
 */
 
 import 'package:flutter/material.dart';
+import '../state/tank.dart';
 import '../widgets/label.dart';
 import '../metrics.dart';
 import '../palette.dart';
 import '../widgets/pcolorbox.dart';
 
 class TankWidget extends StatelessWidget {
-  final double x, y;
   final double border = 4;
-  final double tankHeight;
-  final double waterHeight;
+  final Tank  state;
 
-  const TankWidget(this.x, this.y, this.tankHeight, this.waterHeight,
-      {Key? key})
-      : super(key: key);
+  const TankWidget({
+    Key? key,
+    required this.state,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final Rect base = Rect.fromLTRB(
-      x,
-      y,
-      x + Metrics.tankWidth,
-      y + Metrics.tankHeight,
+      state.x,
+      state.y,
+      state.x + Metrics.tankWidth,
+      state.y + Metrics.tankHeight,
     );
 
     final Rect inner = Rect.fromLTRB(
@@ -57,21 +57,20 @@ class TankWidget extends StatelessWidget {
     final Rect levelTop = Rect.fromLTRB(
       inner.left,
       inner.bottom -
-          ((Metrics.clamp(waterHeight, 0, tankHeight) / tankHeight) *
+          ((Metrics.clamp(state.level, 0, state.height) / state.height) *
               innerRectHeight),
       inner.right,
       inner.bottom,
     );
 
-    var text = Metrics.measureText(waterHeight.toString());
+    var text = Metrics.measureText(state.height.toString());
 
     final Rect textRect = Rect.fromLTRB(
-      levelTop.left + (levelTop.right - levelTop.left)/2 - text.width / 2,
+      levelTop.left + (levelTop.right - levelTop.left) / 2 - text.width / 2,
       levelTop.top - text.height / 2,
       levelTop.right,
       levelTop.bottom,
     );
-
 
     return Stack(children: [
       PositionedColoredBox(
@@ -92,7 +91,7 @@ class TankWidget extends StatelessWidget {
           x: textRect.left,
           y: textRect.top,
           color: Palette.wireChange,
-          text: waterHeight.toString(),
+          text: state.height.toString(),
         ),
       ),
     ]);
