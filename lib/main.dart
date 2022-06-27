@@ -20,9 +20,11 @@
 -------------------------------------------------------------------------------
 */
 import 'package:flutter/material.dart';
-import 'package:waterpark_frontend/icon.dart';
-import 'package:waterpark_frontend/palette.dart';
-import 'workspace.dart';
+import 'package:waterpark_frontend/widgets/texteditor.dart';
+import 'dashboard/stacked_canvas.dart';
+import 'palette.dart';
+import 'widgets/icon.dart';
+import 'widgets/workspace.dart';
 
 void main() {
   runApp(const WaterPark());
@@ -68,19 +70,28 @@ class WaterPark extends StatelessWidget {
         appBar: AppBar(
           foregroundColor: Palette.titleForeground,
           backgroundColor: Palette.titleBackground,
-          title: Text("WaterPark"),
+          title: const Text("WaterPark"),
           actions: [
-            // IconWidget(
-            //   icon: IconMappings.play,
-            //   x: 0,
-            //   y: 0,
-            //   color: Palette.titleForeground,
-            //   onClick: (){},
-            //   tooltip: "",
-            // )
+            IconWidget(
+              icon: IconMappings.play,
+              x: 0,
+              y: 0,
+              color: Palette.titleForeground,
+              onClick: (){},
+              tooltip: "Execute the simulation",
+            )
           ],
         ),
-        body: WorkSpaceWidget(),
+        body: SplitWidget(
+          initialSplit: 0.25,
+          direction: SplitWidgetDirection.vertical,
+          childA: EditProgram(
+            program: "tank 20 20 20 15",
+            onCancelClicked: () {},
+            onOkClicked: (str) {},
+          ),
+          childB: StreamedCanvas(),
+        ),
       ),
     );
   }

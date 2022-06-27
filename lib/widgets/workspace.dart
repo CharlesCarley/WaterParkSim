@@ -22,9 +22,8 @@
 import 'package:flutter/material.dart';
 import 'package:waterpark_frontend/metrics.dart';
 import 'package:waterpark_frontend/palette.dart';
-import 'package:waterpark_frontend/stacked_canvas.dart';
 
-import 'texteditor.dart';
+import '../dashboard/stacked_canvas.dart';
 
 class BoxWidget extends StatelessWidget {
   const BoxWidget({
@@ -238,23 +237,5 @@ class _SplitWidgetState extends State<SplitWidget> {
         ),
       );
     }
-  }
-}
-
-class WorkSpaceWidget extends StatelessWidget {
-  const WorkSpaceWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SplitWidget(
-      initialSplit: 0.25,
-      direction: SplitWidgetDirection.vertical,
-      childA: EditProgram(
-        program: "<hello>",
-        onCancelClicked: () {},
-        onOkClicked: (str) {},
-      ),
-      childB: StreamedCanvas(),
-    );
   }
 }

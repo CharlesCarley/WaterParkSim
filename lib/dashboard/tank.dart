@@ -20,14 +20,11 @@
 -------------------------------------------------------------------------------
 */
 
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-
-import 'label.dart';
-import 'metrics.dart';
-import 'palette.dart';
-import 'pcolorbox.dart';
+import '../widgets/label.dart';
+import '../metrics.dart';
+import '../palette.dart';
+import '../widgets/pcolorbox.dart';
 
 class TankWidget extends StatelessWidget {
   final double x, y;

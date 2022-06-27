@@ -22,8 +22,8 @@
 
 import 'package:flutter/material.dart';
 
-import 'metrics.dart';
-import 'palette.dart';
+import '../metrics.dart';
+import '../palette.dart';
 
 class IconMappings {
   static const String play = '#';
