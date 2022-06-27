@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'metrics.dart';
@@ -10,7 +9,13 @@ class LabelWidget extends StatelessWidget {
   final double y;
   final double size = 14;
 
-  const LabelWidget(this.x, this.y, this.color, this.text, {super.key});
+  const LabelWidget({
+    super.key,
+    required this.x,
+    required this.y,
+    required this.color,
+    required this.text,
+  });
 
   @override
   Widget build(BuildContext context) {

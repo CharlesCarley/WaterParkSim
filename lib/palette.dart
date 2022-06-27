@@ -23,6 +23,12 @@ import 'package:flutter/material.dart';
 
 class Palette {
   static const background = Color(0xFF131313);
+
+  static const titleBackground = Color(0xFF131313);
+  static const titleForeground = Color.fromARGB(255, 94, 94, 97);
+
+  static const controlBackground = Color.fromARGB(255, 37, 37, 37);
+
   static const tankBorder = Color(0xFF2E2E2E);
   static const tankBackground = Color(0xFF282828);
   static const water = Color(0xFF3D3483);
@@ -72,4 +78,33 @@ class Palette {
   static const memorySelection = Color(0xFF323234);
   static const memorySelectionHighlight = Color(0x26646465);
   static const memorySelectionBorder = Color(0x80505058);
+
+  static const empty = Color.fromARGB(255, 255, 0, 255);
+
+  static const Color colorSchemeSeed = Color.fromARGB(0, 255, 0, 144);
+  static const Brightness brightness = Brightness.dark;
+  static const MaterialColor primarySwatch = Colors.amber;
+  static const Color primaryColor = Palette.empty;
+  static const Color primaryColorLight = Palette.empty;
+  static const Color primaryColorDark = Palette.empty;
+  static const Color focusColor = Palette.empty;
+  static const Color hoverColor = Palette.empty;
+  static const Color shadowColor = Palette.empty;
+  static const Color canvasColor = controlBackground;
+  static const Color scaffoldBackgroundColor = Palette.empty;
+  static const Color bottomAppBarColor = Palette.empty;
+  static const Color cardColor = Palette.empty;
+  static const Color dividerColor = Palette.empty;
+  static const Color highlightColor = Palette.empty;
+  static const Color splashColor = Palette.empty;
+  static const Color selectedRowColor = Palette.empty;
+  static const Color unselectedWidgetColor = Palette.empty;
+  static const Color disabledColor = Palette.empty;
+  static const Color secondaryHeaderColor = Palette.empty;
+  static const Color backgroundColor = Palette.empty;
+  static const Color dialogBackgroundColor = Palette.empty;
+  static const Color indicatorColor = Palette.empty;
+  static const Color hintColor = Palette.empty;
+  static const Color errorColor = Palette.empty;
+  static const Color toggleableActiveColor = Palette.empty;
 }

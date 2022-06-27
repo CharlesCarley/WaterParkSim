@@ -20,16 +20,13 @@
 -------------------------------------------------------------------------------
 */
 import 'package:flutter/material.dart';
-import 'stacked_canvas.dart';
+import 'package:waterpark_frontend/icon.dart';
+import 'package:waterpark_frontend/palette.dart';
 import 'workspace.dart';
 
-
 void main() {
-
   runApp(const WaterPark());
 }
-
-
 
 class WaterPark extends StatelessWidget {
   const WaterPark({Key? key}) : super(key: key);
@@ -39,28 +36,52 @@ class WaterPark extends StatelessWidget {
     return MaterialApp(
       title: 'WaterPark Demo',
       theme: ThemeData(
-        primarySwatch: Colors.grey,
+        colorScheme: ColorScheme.fromSeed(seedColor: Palette.background),
+
+        canvasColor: Palette.canvasColor,
+        // colorSchemeSeed: Palette.colorSchemeSeed,
+        // primaryColor: Palette.primaryColor,
+        // primaryColorLight: Palette.primaryColorLight,
+        // primaryColorDark: Palette.primaryColorDark,
+        // focusColor: Palette.focusColor,
+        // hoverColor: Palette.hoverColor,
+        // shadowColor: Palette.shadowColor,
+        // canvasColor: Palette.canvasColor,
+        // scaffoldBackgroundColor: Palette.scaffoldBackgroundColor,
+        // bottomAppBarColor: Palette.bottomAppBarColor,
+        // cardColor: Palette.cardColor,
+        // dividerColor: Palette.dividerColor,
+        // highlightColor: Palette.highlightColor,
+        // splashColor: Palette.splashColor,
+        // selectedRowColor: Palette.selectedRowColor,
+        // unselectedWidgetColor: Palette.unselectedWidgetColor,
+        // disabledColor: Palette.disabledColor,
+        // secondaryHeaderColor: Palette.secondaryHeaderColor,
+        // backgroundColor: Palette.backgroundColor,
+        // dialogBackgroundColor: Palette.dialogBackgroundColor,
+        // indicatorColor: Palette.indicatorColor,
+        // hintColor: Palette.hintColor,
+        // errorColor: Palette.errorColor,
+        // toggleableActiveColor: Palette.toggleableActiveColor,
       ),
-      home: const WaterParkPage(title: 'WaterPark Demo'),
-    );
-  }
-}
-
-class WaterParkPage extends StatefulWidget {
-  const WaterParkPage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<WaterParkPage> createState() => _WaterParkPageState();
-}
-
-class _WaterParkPageState extends State<WaterParkPage> {
-  @override
-  Widget build(BuildContext context) {
-    return  MaterialApp(
-      title: widget.title,
-      home: const WorkSpaceWidget(),
+      home: Scaffold(
+        appBar: AppBar(
+          foregroundColor: Palette.titleForeground,
+          backgroundColor: Palette.titleBackground,
+          title: Text("WaterPark"),
+          actions: [
+            // IconWidget(
+            //   icon: IconMappings.play,
+            //   x: 0,
+            //   y: 0,
+            //   color: Palette.titleForeground,
+            //   onClick: (){},
+            //   tooltip: "",
+            // )
+          ],
+        ),
+        body: WorkSpaceWidget(),
+      ),
     );
   }
 }

@@ -21,17 +21,23 @@
 */
 import 'package:flutter/material.dart';
 
-class RectWidget extends StatelessWidget {
+class PositionedColoredBox extends StatelessWidget {
   final Rect rect;
   final Color color;
 
-  const RectWidget(this.rect, this.color, {Key? key}) : super(key: key);
+  const PositionedColoredBox({
+    Key? key,
+    required this.rect,
+    required this.color,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Positioned.fromRect(
       rect: rect,
-      child: ColoredBox(color: color),
+      child: ColoredBox(
+        color: color,
+      ),
     );
   }
 }
