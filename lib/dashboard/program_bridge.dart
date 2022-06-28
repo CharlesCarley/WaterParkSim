@@ -24,38 +24,80 @@ import 'package:waterpark_frontend/state/node.dart';
 import '../state/tank.dart';
 import 'tank.dart';
 
-class StreamedCanvas extends StatelessWidget {
+class ProgramStreamBridge extends StatefulWidget {
   final NodeManager manager;
 
-  const StreamedCanvas({
+  const ProgramStreamBridge({
     Key? key,
     required this.manager,
   }) : super(key: key);
 
   @override
+  State<ProgramStreamBridge> createState() => _ProgramStreamBridgeState();
+}
+
+class _ProgramStreamBridgeState extends State<ProgramStreamBridge> {
+  List<Node> _nodes = [];
+  int _cur = 0;
+
+  @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: manager.fetch(),
-      builder: (context, stream) {
-        if (stream.hasData) {
-          var list = (stream.data as List<Node>);
-          return Stack(
-            children: _construct(list),
-          );
-        }
-        return const Center();
-      },
+    return ColoredBox(
+      color: widget.manager.clearColor,
+      child: Stack(
+        children: _construct(widget.manager.fetch()),
+      ),
     );
+  }
+
+  Node? _peekNode(int offset) {
+    int location = _cur + offset;
+    if (location < 0 || location >= _nodes.length) {
+      return null;
+    }
+    return _nodes[location];
   }
 
   List<Widget> _construct(List<Node> nodes) {
     List<Widget> widgetList = [];
 
-    for (var node in nodes) {
+    _nodes = nodes;
+
+    for (_cur = 0; _cur < _nodes.length; ++_cur) {
+      Node node = _nodes[_cur];
+
       if (node is Tank) {
         widgetList.add(TankWidget(state: node));
+      } else if (node is Sock) {
+        Rect rct = Rect.fromLTRB(0, 0, 5, 5);
+        Node? nd = _peekNode(-1);
+
+        if (nd != null) {
+          if (nd is Tank) {
+            Tank prev = nd;
+            rct = Rect.fromLTRB(
+              prev.x,
+              prev.y,
+              100,
+              100,
+            );
+            widgetList.add(SocketWidget(
+              state: node,
+              rect: rct,
+            ));
+          }
+        }
       }
     }
-    return widgetList;
+
+    if (widgetList.isEmpty) {
+      widgetList.add(Center());
+    }
+    List<Widget> ret = [];
+    for (var node in widgetList )
+    {
+      ret.add(node);
+    }
+    return ret;
   }
 }

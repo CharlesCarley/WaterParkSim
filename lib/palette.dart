@@ -101,8 +101,8 @@ class Palette {
   static const Color unselectedWidgetColor = Palette.empty;
   static const Color disabledColor = Palette.empty;
   static const Color secondaryHeaderColor = Palette.empty;
-  static const Color backgroundColor = Palette.empty;
-  static const Color dialogBackgroundColor = Palette.empty;
+  static const Color backgroundColor = Palette.background;
+  static const Color dialogBackgroundColor = Palette.background;
   static const Color indicatorColor = Palette.empty;
   static const Color hintColor = Palette.empty;
   static const Color errorColor = Palette.empty;

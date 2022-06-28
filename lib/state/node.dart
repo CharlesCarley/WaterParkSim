@@ -1,25 +1,33 @@
-
-
 import 'dart:async';
 
-class Node
-{
-  
-}
+import 'package:flutter/material.dart';
+import 'package:waterpark_frontend/palette.dart';
 
+class Node {}
 
-class NodeManager
-{
+class NodeManager extends Listenable {
   List<Node> _values = [];
-  StreamController<List<Node>> controller = StreamController<List<Node>>();
+  VoidCallback? onValueChanged;
 
-  void apply(List<Node> evt) async
-  {
+  get clearColor => Palette.backgroundColor;
+
+  void apply(List<Node> evt){
+    _values.clear();
     _values = evt;
-    
+    onValueChanged?.call();
   }
 
-  Stream<List<Node>> fetch()  {
-    return Stream.value(_values);
-  } 
+  List<Node> fetch() {
+    return _values;
+  }
+
+  @override
+  void addListener(VoidCallback listener) {
+    onValueChanged = listener;
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    onValueChanged = null;
+  }
 }

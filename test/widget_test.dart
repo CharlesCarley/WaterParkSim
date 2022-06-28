@@ -59,7 +59,7 @@ void main() {
 
    test('smoke_test3', () {
     var parser = CommandParser();
-    var ret = parser.parse("tank 20 20 25 625 15");
+    var ret = parser.parse("tank 20 20 25 625 15 ");
 
     expect(ret.length, 1);
 
@@ -69,5 +69,25 @@ void main() {
     expect(t.height, 25);
     expect(t.capacity, 625);
     expect(t.level, 15);
+  });
+
+
+   test('smoke_test3', () {
+    var parser = CommandParser();
+    var ret = parser.parse("tank 20 20 25 625 15 sock 0 0");
+
+    expect(ret.length, 1);
+
+    var t = ret[0] as Tank;
+    expect(t.x, 20);
+    expect(t.y, 20);
+    expect(t.height, 25);
+    expect(t.capacity, 625);
+    expect(t.level, 15);
+
+    var s = ret[1] as Sock;
+    expect(s.dir = 0, 0);
+    expect(s.offset = 0, 0);
+
   });
 }

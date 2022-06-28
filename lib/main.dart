@@ -22,52 +22,36 @@
 import 'package:flutter/material.dart';
 import 'package:waterpark_frontend/state/node.dart';
 import 'package:waterpark_frontend/widgets/texteditor.dart';
-import 'dashboard/stacked_canvas.dart';
+import 'dashboard/program_bridge.dart';
 import 'palette.dart';
 import 'widgets/icon.dart';
 import 'widgets/workspace.dart';
 
 void main() {
-  runApp( WaterPark());
+  runApp(WaterPark());
 }
 
-class WaterPark extends StatelessWidget {
-  WaterPark({Key? key}) : super(key: key);
+class WaterPark extends StatefulWidget {
+  const WaterPark({Key? key}) : super(key: key);
 
+  @override
+  State<WaterPark> createState() => _WaterParkState();
+}
+
+class _WaterParkState extends State<WaterPark> {
   final NodeManager manager = NodeManager();
 
   @override
   Widget build(BuildContext context) {
+    manager.addListener(() {
+      setState(() {});
+    });
+
     return MaterialApp(
       title: 'WaterPark Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Palette.background),
-
         canvasColor: Palette.canvasColor,
-        // colorSchemeSeed: Palette.colorSchemeSeed,
-        // primaryColor: Palette.primaryColor,
-        // primaryColorLight: Palette.primaryColorLight,
-        // primaryColorDark: Palette.primaryColorDark,
-        // focusColor: Palette.focusColor,
-        // hoverColor: Palette.hoverColor,
-        // shadowColor: Palette.shadowColor,
-        // canvasColor: Palette.canvasColor,
-        // scaffoldBackgroundColor: Palette.scaffoldBackgroundColor,
-        // bottomAppBarColor: Palette.bottomAppBarColor,
-        // cardColor: Palette.cardColor,
-        // dividerColor: Palette.dividerColor,
-        // highlightColor: Palette.highlightColor,
-        // splashColor: Palette.splashColor,
-        // selectedRowColor: Palette.selectedRowColor,
-        // unselectedWidgetColor: Palette.unselectedWidgetColor,
-        // disabledColor: Palette.disabledColor,
-        // secondaryHeaderColor: Palette.secondaryHeaderColor,
-        // backgroundColor: Palette.backgroundColor,
-        // dialogBackgroundColor: Palette.dialogBackgroundColor,
-        // indicatorColor: Palette.indicatorColor,
-        // hintColor: Palette.hintColor,
-        // errorColor: Palette.errorColor,
-        // toggleableActiveColor: Palette.toggleableActiveColor,
       ),
       home: Scaffold(
         appBar: AppBar(
@@ -80,8 +64,8 @@ class WaterPark extends StatelessWidget {
               x: 0,
               y: 0,
               color: Palette.titleForeground,
-              onClick: (){},
-              tooltip: "Execute the simulation",
+              onClick: () {},
+              tooltip: "Run the simulation.",
             )
           ],
         ),
@@ -90,10 +74,10 @@ class WaterPark extends StatelessWidget {
           direction: SplitWidgetDirection.vertical,
           childA: EditProgram(
             manager: manager,
-            program: "tank 20 20 20 15",
+            program: "tank 20 20 20 200 5",
           ),
-          childB: StreamedCanvas(
-              manager: manager,
+          childB: ProgramStreamBridge(
+            manager: manager,
           ),
         ),
       ),

@@ -29,7 +29,7 @@ import '../widgets/pcolorbox.dart';
 
 class TankWidget extends StatelessWidget {
   final double border = 4;
-  final Tank  state;
+  final Tank state;
 
   const TankWidget({
     Key? key,
@@ -72,28 +72,50 @@ class TankWidget extends StatelessWidget {
       levelTop.bottom,
     );
 
-    return Stack(children: [
-      PositionedColoredBox(
-        rect: base,
-        color: Palette.tankBorder,
-      ),
-      PositionedColoredBox(
-        rect: inner,
-        color: Palette.tankBackground,
-      ),
-      PositionedColoredBox(
-        rect: levelTop,
-        color: Palette.water,
-      ),
-      Positioned.fromRect(
-        rect: levelTop,
-        child: LabelWidget(
-          x: textRect.left,
-          y: textRect.top,
-          color: Palette.wireChange,
-          text: state.height.toString(),
+    return Expanded(
+      child: Stack(children: [
+        PositionedColoredBox(
+          rect: base,
+          color: Palette.tankBorder,
         ),
-      ),
-    ]);
+        PositionedColoredBox(
+          rect: inner,
+          color: Palette.tankBackground,
+        ),
+        PositionedColoredBox(
+          rect: levelTop,
+          color: state.level <= state.height ? Palette.water : Palette.action,
+        ),
+        Positioned.fromRect(
+          rect: inner,
+          child: LabelWidget(
+            x: textRect.left,
+            y: textRect.top,
+            color: Palette.wireChange,
+            text: state.level.toString(),
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+class SocketWidget extends StatelessWidget {
+  final double border = 4;
+  final Sock state;
+  final Rect rect;
+
+  const SocketWidget({
+    Key? key,
+    required this.state,
+    required this.rect,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PositionedColoredBox(
+      rect: rect,
+      color: Palette.actionSecondary,
+    );
   }
 }

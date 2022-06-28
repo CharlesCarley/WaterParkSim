@@ -43,14 +43,12 @@ class EditProgram extends StatefulWidget {
 }
 
 class _EditProgramState extends State<EditProgram> {
-  late String debug;
+
   late FocusNode _editFocus;
   late TextEditingController _controller;
 
   @override
   void initState() {
-    debug = "initialized...";
-
     _controller = TextEditingController();
     _controller.text = widget.program;
 
@@ -69,7 +67,7 @@ class _EditProgramState extends State<EditProgram> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+      padding: const EdgeInsets.all(0),
       decoration: BoxDecoration(
         border: Border.all(color: Palette.editTextWidgetBorder),
       ),
@@ -78,32 +76,16 @@ class _EditProgramState extends State<EditProgram> {
         child: Column(
           children: [
             Expanded(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      onChanged: (value) => exitTextChanged(value),
-                      autofocus: true,
-                      focusNode: _editFocus,
-                      controller: _controller,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      cursorColor: Palette.action,
-                      style: Common.editTextStyle,
-                      decoration: Common.defaultTextDecoration,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox.fromSize(
-              size: const Size.fromHeight(30),
-              child: ColoredBox(
-                color: Color.fromARGB(255, 52, 52, 52),
-                child: Text(
-                  debug,
-                  style: Common.editTextStyle,
-                ),
+              child: TextFormField(
+                onChanged: (value) => exitTextChanged(value),
+                autofocus: true,
+                focusNode: _editFocus,
+                controller: _controller,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                cursorColor: Palette.action,
+                style: Common.editTextStyle,
+                decoration: Common.defaultTextDecoration,
               ),
             ),
           ],
@@ -112,12 +94,14 @@ class _EditProgramState extends State<EditProgram> {
     );
   }
 
-  void exitTextChanged(String newValue) async {
-    CommandParser parser = CommandParser();
-    setState(() {
-      widget.manager.apply(parser.parse(newValue));
-      
+  Future<List<Node>> update(String newValue) {
+    return Future.microtask(() {
+      CommandParser parser = CommandParser();
+      return parser.parse(newValue);
     });
-    // build a new type/sym tree and convert to the sUI
+  }
+
+  void exitTextChanged(String newValue) async {
+    update(newValue).then((value) => widget.manager.apply(value));
   }
 }

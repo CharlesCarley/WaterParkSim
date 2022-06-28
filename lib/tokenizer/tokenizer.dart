@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:waterpark_frontend/palette.dart';
 import 'package:waterpark_frontend/state/node.dart';
 import 'package:waterpark_frontend/state/tank.dart';
 
@@ -18,7 +19,9 @@ class Token {
   Token();
   Token.fromId(this.id);
 
+  bool isNone() => id == TokenId.none;
   bool isEos() => id == TokenId.eos;
+  bool isNoneOrEos() => isNone() || isEos();
   bool isNumber() => id == TokenId.number;
   bool isKeyword() => id == TokenId.keyword;
   bool isIdentifier() => id == TokenId.identifier;
@@ -26,7 +29,7 @@ class Token {
 
 class Tokenizer {
   List<Token> _tokens = [];
-  final List<String> _keywords = ["tank"];
+  final List<String> _keywords = ["tank", "sock"];
   Uint8List _bytes = Uint8List(0);
   final List<String> _identifiers = [];
   final List<double> _values = [];
@@ -228,7 +231,7 @@ class CommandParser {
   Token token(int offset) {
     int loc = _position + offset;
     if (loc < 0 || loc >= _tokens.length) {
-      return Token.fromId(TokenId.eos);
+      return Token.fromId(TokenId.none);
     }
     return _tokens[loc];
   }
@@ -238,7 +241,7 @@ class CommandParser {
   }
 
   void readEnd() {
-    _position = _tokens.length+1;
+    _position = _tokens.length + 1;
   }
 
   List<Node> parse(String buffer) {
@@ -290,6 +293,20 @@ class CommandParser {
       } else {
         readEnd();
       }
+    } else if (kw == "sock") {
+      Token a1 = token(0);
+      Token a2 = token(1);
+
+      if (a1.isNoneOrEos() || a2.isNoneOrEos())
+      {
+        readEnd();
+        return;
+      }
+      advance(2);
+      _stateObjects.add(Sock(
+        offset: 0,
+        dir: 0,
+      ));
     }
   }
 }

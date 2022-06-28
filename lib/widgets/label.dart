@@ -41,14 +41,6 @@ class LabelWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Size textSize = Metrics.measureSizedText(text, size);
-
-    return Positioned.fromRect(
-      rect: Rect.fromLTRB(x, y, x + textSize.width, y + textSize.height),
-      child: Text(
-        text,
-        style: Common.labelTextStyle,
-      ),
-    );
+    return Center(child: Text(text, style: Common.labelTextStyle));
   }
 }

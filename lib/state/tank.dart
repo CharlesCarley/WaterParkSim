@@ -15,3 +15,14 @@ class Tank extends Node {
     required this.level,
   });
 }
+
+
+class Sock extends Node {
+  int dir;
+  double offset;
+
+  Sock({
+    required this.dir,
+    required this.offset,
+  });
+}
