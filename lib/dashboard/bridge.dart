@@ -20,6 +20,7 @@
 -------------------------------------------------------------------------------
 */
 import 'package:flutter/material.dart';
+import 'package:waterpark_frontend/metrics.dart';
 import 'package:waterpark_frontend/state/node.dart';
 import '../state/tank.dart';
 import 'tank.dart';
@@ -58,6 +59,29 @@ class _ProgramStreamBridgeState extends State<ProgramStreamBridge> {
     return _nodes[location];
   }
 
+  Location? lastPosition() {
+    for (int i = _cur; i >= 0; --i) {
+      if (_nodes[i] is Location) {
+        return _nodes[i] as Location;
+      }
+    }
+    return null;
+  }
+
+  void _addSocket(List<Widget> widgetList, Sock sock, double x, double y) {
+
+    if ((sock.dir & SocketBits.S)!=0) {
+      y = y + (Metrics.tankHeight - Metrics.border);
+    }
+    if ((sock.dir & SocketBits.E)!=0) {
+      x = x + (Metrics.tankWidth - Metrics.border);
+    }
+    widgetList.add(SocketWidget(
+      state: sock,
+      rect: Rect.fromLTWH(x + sock.dx, y + sock.dy, Metrics.border, Metrics.border),
+    ));
+  }
+
   List<Widget> _construct(List<Node> nodes) {
     List<Widget> widgetList = [];
 
@@ -69,23 +93,12 @@ class _ProgramStreamBridgeState extends State<ProgramStreamBridge> {
       if (node is Tank) {
         widgetList.add(TankWidget(state: node));
       } else if (node is Sock) {
-        Rect rct = Rect.fromLTRB(0, 0, 5, 5);
-        Node? nd = _peekNode(-1);
+        Location? loc = lastPosition();
 
-        if (nd != null) {
-          if (nd is Tank) {
-            Tank prev = nd;
-            rct = Rect.fromLTRB(
-              prev.x,
-              prev.y,
-              100,
-              100,
-            );
-            widgetList.add(SocketWidget(
-              state: node,
-              rect: rct,
-            ));
-          }
+        if (loc != null) {
+          _addSocket(widgetList, node, loc.x, loc.y);
+        } else {
+          _addSocket(widgetList, node, 0, 0);
         }
       }
     }
@@ -94,8 +107,7 @@ class _ProgramStreamBridgeState extends State<ProgramStreamBridge> {
       widgetList.add(Center());
     }
     List<Widget> ret = [];
-    for (var node in widgetList )
-    {
+    for (var node in widgetList) {
       ret.add(node);
     }
     return ret;

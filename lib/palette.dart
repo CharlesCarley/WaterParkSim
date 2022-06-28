@@ -32,6 +32,8 @@ class Palette {
   static const tankBorder = Color(0xFF2E2E2E);
   static const tankBackground = Color(0xFF282828);
   static const water = Color(0xFF3D3483);
+  static const socketColor = Color.fromARGB(255, 165, 146, 146);
+  
 
   static const darkGrey = Color(0xFF181818);
   static const darkGrey1 = Color(0xFF2A2A2F);
@@ -65,10 +67,7 @@ class Palette {
   static const pinBackground = Color(0xFF383439);
   static const pinBorder = Color(0xFF383439);
 
-  static const chipTitleForeground = Color(0xFF9F9B9B);
-  static const chipTitleBackground = Color(0xFF1E1E1E);
-
-  static const toolTipForeground = Color(0xFF9F9B9B);
+  static const toolTipForeground = Color.fromARGB(255, 255, 255, 255);
   static const toolTipBackground = Color(0x401E1E1E);
 
   static const memoryAction = Color(0xFFE94545);
@@ -91,7 +90,7 @@ class Palette {
   static const Color hoverColor = Palette.empty;
   static const Color shadowColor = Palette.empty;
   static const Color canvasColor = controlBackground;
-  static const Color scaffoldBackgroundColor = Palette.empty;
+  static const Color scaffoldBackgroundColor = Palette.controlBackground;
   static const Color bottomAppBarColor = Palette.empty;
   static const Color cardColor = Palette.empty;
   static const Color dividerColor = Palette.empty;

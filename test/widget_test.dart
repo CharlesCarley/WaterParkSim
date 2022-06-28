@@ -57,7 +57,7 @@ void main() {
     expect(tokenizer.getKeyword(ret[0].index), "tank");
   });
 
-   test('smoke_test3', () {
+  test('smoke_test3', () {
     var parser = CommandParser();
     var ret = parser.parse("tank 20 20 25 625 15 ");
 
@@ -71,12 +71,13 @@ void main() {
     expect(t.level, 15);
   });
 
-
-   test('smoke_test3', () {
+  test('smoke_test3', () {
     var parser = CommandParser();
-    var ret = parser.parse("tank 20 20 25 625 15 sock 0 0");
-
-    expect(ret.length, 1);
+    var ret = parser.parse("tank 20 20 25 625 15 "
+        "sock N 0 0 "
+        "sock E 0 0 "
+        "sock S 0 0 "
+        "sock W 0 0 ");
 
     var t = ret[0] as Tank;
     expect(t.x, 20);
@@ -85,9 +86,12 @@ void main() {
     expect(t.capacity, 625);
     expect(t.level, 15);
 
-    var s = ret[1] as Sock;
-    expect(s.dir = 0, 0);
-    expect(s.offset = 0, 0);
-
+    List<int> bits = [SocketBits.N, SocketBits.E, SocketBits.S, SocketBits.W];
+    for (int i = 0; i < bits.length; ++i) {
+      var s = ret[1 + i] as Sock;
+      expect(s.dir, bits[i]);
+      expect(s.dx, 0);
+      expect(s.dy, 0);
+    }
   });
 }

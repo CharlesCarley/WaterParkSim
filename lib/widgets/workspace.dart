@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:waterpark_frontend/metrics.dart';
 import 'package:waterpark_frontend/palette.dart';
 
-import '../dashboard/program_bridge.dart';
+import '../dashboard/bridge.dart';
 
 class BoxWidget extends StatelessWidget {
   const BoxWidget({

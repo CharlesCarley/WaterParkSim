@@ -28,7 +28,6 @@ import '../palette.dart';
 import '../widgets/pcolorbox.dart';
 
 class TankWidget extends StatelessWidget {
-  final double border = 4;
   final Tank state;
 
   const TankWidget({
@@ -38,18 +37,18 @@ class TankWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Rect base = Rect.fromLTRB(
+    final Rect base = Rect.fromLTWH(
       state.x,
       state.y,
-      state.x + Metrics.tankWidth,
-      state.y + Metrics.tankHeight,
+      Metrics.tankWidth,
+      Metrics.tankHeight,
     );
 
     final Rect inner = Rect.fromLTRB(
-      base.left + border,
-      base.top + border,
-      base.right - border,
-      base.bottom - border,
+      base.left + Metrics.border,
+      base.top + Metrics.border,
+      base.right - Metrics.border,
+      base.bottom - Metrics.border,
     );
 
     final double innerRectHeight = inner.bottom - inner.top;
@@ -72,36 +71,33 @@ class TankWidget extends StatelessWidget {
       levelTop.bottom,
     );
 
-    return Expanded(
-      child: Stack(children: [
-        PositionedColoredBox(
-          rect: base,
-          color: Palette.tankBorder,
+    return Stack(children: [
+      PositionedColoredBox(
+        rect: base,
+        color: Palette.tankBorder,
+      ),
+      PositionedColoredBox(
+        rect: inner,
+        color: Palette.tankBackground,
+      ),
+      PositionedColoredBox(
+        rect: levelTop,
+        color: state.level <= state.height ? Palette.water : Palette.action,
+      ),
+      Positioned.fromRect(
+        rect: inner,
+        child: LabelWidget(
+          x: textRect.left,
+          y: textRect.top,
+          color: Palette.wireChange,
+          text: state.level.toString(),
         ),
-        PositionedColoredBox(
-          rect: inner,
-          color: Palette.tankBackground,
-        ),
-        PositionedColoredBox(
-          rect: levelTop,
-          color: state.level <= state.height ? Palette.water : Palette.action,
-        ),
-        Positioned.fromRect(
-          rect: inner,
-          child: LabelWidget(
-            x: textRect.left,
-            y: textRect.top,
-            color: Palette.wireChange,
-            text: state.level.toString(),
-          ),
-        ),
-      ]),
-    );
+      ),
+    ]);
   }
 }
 
 class SocketWidget extends StatelessWidget {
-  final double border = 4;
   final Sock state;
   final Rect rect;
 
@@ -115,7 +111,7 @@ class SocketWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return PositionedColoredBox(
       rect: rect,
-      color: Palette.actionSecondary,
+      color: Palette.socketColor,
     );
   }
 }

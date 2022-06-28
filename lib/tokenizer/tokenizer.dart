@@ -269,44 +269,93 @@ class CommandParser {
     if (kw.isEmpty) return;
 
     if (kw == "tank") {
-      Token a1 = token(0);
-      Token a2 = token(1);
-      Token a3 = token(2);
-      Token a4 = token(3);
-      Token a5 = token(4);
-
-      bool result = a1.isNumber();
-      result = a2.isNumber() && result;
-      result = a3.isNumber() && result;
-      result = a4.isNumber() && result;
-      result = a5.isNumber() && result;
-
-      if (result) {
-        advance(5);
-        _stateObjects.add(Tank(
-          x: _tokenizer.getNumber(a1.index),
-          y: _tokenizer.getNumber(a2.index),
-          height: _tokenizer.getNumber(a3.index),
-          capacity: _tokenizer.getNumber(a4.index),
-          level: _tokenizer.getNumber(a5.index),
-        ));
-      } else {
-        readEnd();
-      }
+      parseTank();
     } else if (kw == "sock") {
-      Token a1 = token(0);
-      Token a2 = token(1);
+      parseSock();
+    }
+  }
 
-      if (a1.isNoneOrEos() || a2.isNoneOrEos())
-      {
-        readEnd();
-        return;
-      }
-      advance(2);
+  double number(int idx, {double def = 0.0}) {
+    return _tokenizer.getNumber(idx, def: def);
+  }
+
+  int integer(int idx, {int def = 0}) {
+    return _tokenizer.getNumber(idx, def: def.toDouble()).toInt();
+  }
+
+  String string(int idx, {String def = ""}) {
+    return _tokenizer.getIdentifier(idx, def: def);
+  }
+
+  void parseSock() {
+    Token a1 = token(0);
+    Token a2 = token(1);
+    Token a3 = token(2);
+
+    bool result = a1.isIdentifier();
+    result = a2.isNumber() && result;
+    result = a3.isNumber() && result;
+
+    if (result) {
+      int dir = parseDirection(string(a1.index));
+
+      advance(3);
       _stateObjects.add(Sock(
-        offset: 0,
-        dir: 0,
+        dir: dir,
+        dx: number(a2.index, def: 0),
+        dy: number(a3.index, def: 0),
       ));
     }
+  }
+
+  void parseTank() {
+    Token a1 = token(0);
+    Token a2 = token(1);
+    Token a3 = token(2);
+    Token a4 = token(3);
+    Token a5 = token(4);
+
+    bool result = a1.isNumber();
+    result = a2.isNumber() && result;
+    result = a3.isNumber() && result;
+    result = a4.isNumber() && result;
+    result = a5.isNumber() && result;
+
+    if (result) {
+      advance(5);
+      _stateObjects.add(Tank(
+        x: number(a1.index),
+        y: number(a2.index),
+        height: number(a3.index),
+        capacity: number(a4.index),
+        level: number(a5.index),
+      ));
+    }
+  }
+
+  int parseDirection(String string) {
+    int dir = 0;
+    for (int i = 0; i < string.length && i < 2; ++i) {
+      int unit = string.codeUnitAt(i);
+      switch (unit) {
+        case 0x4E: // N
+        case 0x6E: // n
+          dir |= SocketBits.N;
+          break;
+        case 0x45: // E
+        case 0x65: // e
+          dir |= SocketBits.E;
+          break;
+        case 0x53: // S
+        case 0x73: // s
+          dir |= SocketBits.S;
+          break;
+        case 0x57: // W
+        case 0x77: // w
+          dir |= SocketBits.W;
+          break;
+      }
+    }
+    return dir;
   }
 }

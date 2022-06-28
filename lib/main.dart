@@ -22,13 +22,13 @@
 import 'package:flutter/material.dart';
 import 'package:waterpark_frontend/state/node.dart';
 import 'package:waterpark_frontend/widgets/texteditor.dart';
-import 'dashboard/program_bridge.dart';
+import 'dashboard/bridge.dart';
 import 'palette.dart';
 import 'widgets/icon.dart';
 import 'widgets/workspace.dart';
 
 void main() {
-  runApp(WaterPark());
+  runApp(const WaterPark());
 }
 
 class WaterPark extends StatefulWidget {
@@ -59,7 +59,7 @@ class _WaterParkState extends State<WaterPark> {
           backgroundColor: Palette.titleBackground,
           title: const Text("WaterPark"),
           actions: [
-            IconWidget(
+            ActionIcon.tool(
               icon: IconMappings.play,
               x: 0,
               y: 0,
