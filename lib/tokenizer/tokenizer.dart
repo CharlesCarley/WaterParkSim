@@ -1,8 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:waterpark_frontend/palette.dart';
-import 'package:waterpark_frontend/state/node.dart';
-import 'package:waterpark_frontend/state/tank_object.dart';
 
 enum TokenId {
   none,
@@ -31,6 +28,8 @@ final List<String> keyWords = [
   "tank",
   "sock",
   "input",
+  "state",
+  "line",
 ];
 
 class Tokenizer {
@@ -205,11 +204,11 @@ class Tokenizer {
     }
   }
 
-  String getKeyword(int index) {
+  String getKeyword(int index, {String def = ""}) {
     if (index >= 0 && index < keyWords.length) {
       return keyWords[index];
     }
-    return "";
+    return def;
   }
 
   String getIdentifier(int index, {String def = ""}) {

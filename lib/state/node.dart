@@ -1,16 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:waterpark_frontend/palette.dart';
 
 class Node {}
-
-class Location extends Node{
-  double x;
-  double y;
-
-  Location({required this.x, required this.y});
-}
 
 class NodeManager extends Listenable {
   List<Node> _values = [];

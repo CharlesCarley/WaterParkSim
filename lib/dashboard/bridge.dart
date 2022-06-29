@@ -3,6 +3,7 @@ import 'package:waterpark_frontend/dashboard/input.dart';
 import 'package:waterpark_frontend/metrics.dart';
 import 'package:waterpark_frontend/state/node.dart';
 import '../state/input_object.dart';
+import '../state/location.dart';
 import '../state/socket_object.dart';
 import '../state/tank_object.dart';
 import 'socket.dart';
@@ -44,12 +45,18 @@ class _ProgramCanvasState extends State<ProgramCanvas> {
   }
 
   void _addSocket(
-      List<Widget> widgetList, SockObject sock, double x, double y) {
+    List<Widget> widgetList,
+    SockObject sock,
+    double x,
+    double y,
+    double w,
+    double h,
+  ) {
     if ((sock.dir & SocketBits.S) != 0) {
-      y = y + (Metrics.tankHeight - Metrics.border);
+      y = y + (h - Metrics.border);
     }
     if ((sock.dir & SocketBits.E) != 0) {
-      x = x + (Metrics.tankWidth - Metrics.border);
+      x = x + (w - Metrics.border);
     }
     widgetList.add(SocketWidget(
       state: sock,
@@ -89,35 +96,21 @@ class _ProgramCanvasState extends State<ProgramCanvas> {
     Location? loc = lastPosition();
 
     if (loc != null) {
-      _addSocket(widgetList, node, loc.x, loc.y);
+      _addSocket(widgetList, node, loc.x, loc.y, loc.w, loc.h);
     } else {
-      _addSocket(widgetList, node, 0, 0);
+      _addSocket(widgetList, node, 0, 0, 1, 1);
     }
   }
 
   void constructInput(List<Widget> widgetList, InputObject node) {
-    Location? loc = lastPosition();
-
-    if (loc != null) {
-      widgetList.add(InputWidget(
-        state: node,
-        rect: Rect.fromLTWH(
-          node.x + loc.x,
-          node.y + loc.y,
-          30,
-          10,
-        ),
-      ));
-    } else {
-      widgetList.add(InputWidget(
-        state: node,
-        rect: Rect.fromLTWH(
-          node.x,
-          node.y,
-          30,
-          10,
-        ),
-      ));
-    }
+    widgetList.add(InputWidget(
+      state: node,
+      rect: Rect.fromLTWH(
+        node.x,
+        node.y,
+        node.w,
+        node.h,
+      ),
+    ));
   }
 }

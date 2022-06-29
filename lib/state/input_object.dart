@@ -1,11 +1,22 @@
-import 'package:waterpark_frontend/state/node.dart';
+import 'toggle_object.dart';
+const double inputObjectWidth = 50;
+const double inputObjectHeight = 50;
 
-class InputObject extends Location {
+
+
+class InputObject extends ToggleObject {
   double flowRate;
 
   InputObject({
     required double x,
     required double y,
     required this.flowRate,
-  }):super(x: x, y: y);
+    required bool state,
+  }) : super(
+          x: x,
+          y: y,
+          w: inputObjectWidth,
+          h: inputObjectHeight,
+          toggle: state,
+        );
 }

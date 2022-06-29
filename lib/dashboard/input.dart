@@ -19,8 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-
 import 'package:flutter/material.dart';
+import 'package:waterpark_frontend/metrics.dart';
 import '../state/input_object.dart';
 import '../palette.dart';
 import '../widgets/pcolorbox.dart';
@@ -37,13 +37,31 @@ class InputWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var inner = Rect.fromLTRB(
-      rect.left + 3,
-      rect.top + 3,
-      rect.right - 3,
-      rect.bottom - 3,
+    return Stack(
+      children: [
+        PositionedColoredBox(
+          rect: rect,
+          color: Palette.controlBackground,
+        ),
+        PositionedColoredBox(
+          rect: Rect.fromLTRB(
+            rect.left + Metrics.border,
+            rect.top + Metrics.border,
+            rect.right - Metrics.border,
+            rect.bottom - Metrics.border,
+          ),
+          color: state.toggle ? Palette.water : Palette.action,
+        ),
+        Positioned.fromRect(
+          rect: rect,
+          child: Center(
+            child: Text(
+              state.flowRate.toString(),
+              style: Common.labelTextStyle,
+            ),
+          ),
+        )
+      ],
     );
-
-    return PositionedColoredBox(rect: rect, color: Palette.action);
   }
 }

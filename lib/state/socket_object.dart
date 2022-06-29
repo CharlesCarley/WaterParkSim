@@ -1,4 +1,4 @@
-import 'package:waterpark_frontend/state/node.dart';
+import 'node.dart';
 
 class SocketBits {
   static const int N = 0x01;

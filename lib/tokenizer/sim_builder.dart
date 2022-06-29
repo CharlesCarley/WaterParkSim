@@ -1,6 +1,7 @@
 import 'package:waterpark_frontend/state/input_object.dart';
 import 'package:waterpark_frontend/state/node.dart';
 import 'package:waterpark_frontend/state/tank_object.dart';
+import 'package:waterpark_frontend/state/toggle_object.dart';
 
 import '../state/socket_object.dart';
 import 'tokenizer.dart';
@@ -70,6 +71,10 @@ class SimBuilder {
       parseSock();
     } else if (kw == "input") {
       parseInput();
+    } else if (kw == "state") {
+      parseState();
+    } else if (kw == "line") {
+      parseLine();
     }
   }
 
@@ -85,68 +90,60 @@ class SimBuilder {
     return _tokenizer.getIdentifier(idx, def: def);
   }
 
-  void parseSock() {
+  String keyword(int idx, {String def = ""}) {
+    return _tokenizer.getKeyword(idx, def: def);
+  }
+
+  double nextDouble({double def = 0}) {
     Token a1 = nextToken();
-    Token a2 = nextToken();
-    Token a3 = nextToken();
+    if (a1.isNumber()) return number(a1.index, def: def);
+    return def;
+  }
 
-    bool result = a1.isIdentifier();
-    result = a2.isNumber() && result;
-    result = a3.isNumber() && result;
+  int nextInteger({int def = 0}) {
+    return nextDouble(def: def.toDouble()).toInt();
+  }
 
-    if (result) {
-      int dir = parseDirection(string(a1.index));
-      int signx = (dir & SocketBits.E) != 0 ? -1 : 1;
-      int signy = (dir & SocketBits.S) != 0 ? -1 : 1;
+  String nextString({String def = ""}) {
+    Token a1 = nextToken();
+    if (a1.isIdentifier()) return string(a1.index, def: def);
+    if (a1.isKeyword()) return keyword(a1.index, def: def);
+    return def;
+  }
 
-      _stateObjects.add(SockObject(
-        dir: dir,
-        dx: signx * number(a2.index, def: 0),
-        dy: signy * number(a3.index, def: 0),
-      ));
-    }
+  void parseSock() {
+    String a1 = nextString();
+    double a2 = nextDouble();
+    double a3 = nextDouble();
+
+    int dir = parseDirection(a1);
+
+    int signX = (dir & SocketBits.E) != 0 ? -1 : 1;
+    int signY = (dir & SocketBits.S) != 0 ? -1 : 1;
+
+    _stateObjects.add(SockObject(
+      dir: dir,
+      dx: signX * a2,
+      dy: signY * a3,
+    ));
   }
 
   void parseTank() {
-    Token a1 = nextToken();
-    Token a2 = nextToken();
-    Token a3 = nextToken();
-    Token a4 = nextToken();
-    Token a5 = nextToken();
-
-    bool result = a1.isNumber();
-    result = a2.isNumber() && result;
-    result = a3.isNumber() && result;
-    result = a4.isNumber() && result;
-    result = a5.isNumber() && result;
-
-    if (result) {
-      _stateObjects.add(TankObject(
-        x: number(a1.index),
-        y: number(a2.index),
-        height: number(a3.index),
-        capacity: number(a4.index),
-        level: number(a5.index),
-      ));
-    }
+    double x = nextDouble();
+    double y = nextDouble();
+    double h = nextDouble();
+    double c = nextDouble();
+    double d = nextDouble();
+    _stateObjects.add(
+      TankObject(x: x, y: y, height: h, capacity: c, level: d),
+    );
   }
 
   void parseInput() {
-    Token a1 = nextToken();
-    Token a2 = nextToken();
-    Token a3 = nextToken();
-
-    bool result = a1.isNumber();
-    result = a2.isNumber() && result;
-    result = a3.isNumber() && result;
-
-    if (result) {
-      _stateObjects.add(InputObject(
-        x: number(a1.index),
-        y: number(a2.index),
-        flowRate: number(a3.index),
-      ));
-    }
+    double x = nextDouble();
+    double y = nextDouble();
+    double r = nextDouble();
+    _stateObjects.add(InputObject(x: x, y: y, flowRate: r, state: false));
   }
 
   int parseDirection(String string) {
@@ -173,5 +170,34 @@ class SimBuilder {
       }
     }
     return dir;
+  }
+
+  ToggleObject? findToggle() {
+    for (int i = _stateObjects.length - 1; i >= 0; --i) {
+      if (_stateObjects[i] is ToggleObject) {
+        return _stateObjects[i] as ToggleObject;
+      }
+    }
+    return null;
+  }
+
+  void parseState() {
+    Token a1 = nextToken();
+
+    if (a1.isNumber()) {
+      ToggleObject? obj = findToggle();
+      if (obj != null) {
+        obj.toggle = number(a1.index) != 0;
+      }
+    } else if (a1.isIdentifier()) {
+      ToggleObject? obj = findToggle();
+      if (obj != null) {
+        var val = string(a1.index);
+        obj.toggle = val == "yes" || val == "open";
+      }
+    }
+  }
+
+  void parseLine() {
   }
 }
