@@ -20,29 +20,27 @@
 -------------------------------------------------------------------------------
 */
 import 'package:flutter/material.dart';
-import 'package:waterpark_frontend/tokenizer/tokenizer.dart';
 
 import '../metrics.dart';
 import '../palette.dart';
 import '../state/node.dart';
+import '../tokenizer/sim_builder.dart';
 
-typedef StringCallback = void Function(String text);
-
-class EditProgram extends StatefulWidget {
+class ProgramEditor extends StatefulWidget {
   final String program;
   final NodeManager manager;
 
-  const EditProgram({
+  const ProgramEditor({
     Key? key,
     required this.program,
     required this.manager,
   }) : super(key: key);
 
   @override
-  State<EditProgram> createState() => _EditProgramState();
+  State<ProgramEditor> createState() => _ProgramEditorState();
 }
 
-class _EditProgramState extends State<EditProgram> {
+class _ProgramEditorState extends State<ProgramEditor> {
 
   late FocusNode _editFocus;
   late TextEditingController _controller;
@@ -96,7 +94,7 @@ class _EditProgramState extends State<EditProgram> {
 
   Future<List<Node>> update(String newValue) {
     return Future.microtask(() {
-      CommandParser parser = CommandParser();
+      SimBuilder parser = SimBuilder();
       return parser.parse(newValue);
     });
   }

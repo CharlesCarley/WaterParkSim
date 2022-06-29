@@ -12,8 +12,6 @@ class Location extends Node{
   Location({required this.x, required this.y});
 }
 
-
-
 class NodeManager extends Listenable {
   List<Node> _values = [];
   VoidCallback? onValueChanged;

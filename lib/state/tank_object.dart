@@ -19,49 +19,18 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-import 'package:flutter/material.dart';
+import 'package:waterpark_frontend/state/node.dart';
 
-class PositionedColoredBox extends StatelessWidget {
-  final Rect rect;
-  final Color color;
+class TankObject extends Location {
+  double height;
+  double capacity;
+  double level;
 
-  const PositionedColoredBox({
-    Key? key,
-    required this.rect,
-    required this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fromRect(
-      rect: rect,
-      child: ColoredBox(
-        color: color,
-      ),
-    );
-  }
-}
-
-class PositionedColoredBoxEx extends StatelessWidget {
-  final Rect rect;
-  final Color color;
-  final Widget child;
-
-  const PositionedColoredBoxEx ({
-    Key? key,
-    required this.child,
-    required this.rect,
-    required this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fromRect(
-      rect: rect,
-      child: ColoredBox(
-        color: color,
-        child: child,
-      ),
-    );
-  }
+  TankObject({
+    required double x,
+    required double y,
+    required this.height,
+    required this.capacity,
+    required this.level,
+  }) : super(x: x, y: y);
 }

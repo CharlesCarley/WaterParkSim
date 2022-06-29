@@ -19,49 +19,27 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+
 import 'package:flutter/material.dart';
+import '../state/socket_object.dart';
+import '../palette.dart';
+import '../widgets/pcolorbox.dart';
 
-class PositionedColoredBox extends StatelessWidget {
+class SocketWidget extends StatelessWidget {
+  final SockObject state;
   final Rect rect;
-  final Color color;
 
-  const PositionedColoredBox({
+  const SocketWidget({
     Key? key,
+    required this.state,
     required this.rect,
-    required this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Positioned.fromRect(
+    return PositionedColoredBox(
       rect: rect,
-      child: ColoredBox(
-        color: color,
-      ),
-    );
-  }
-}
-
-class PositionedColoredBoxEx extends StatelessWidget {
-  final Rect rect;
-  final Color color;
-  final Widget child;
-
-  const PositionedColoredBoxEx ({
-    Key? key,
-    required this.child,
-    required this.rect,
-    required this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fromRect(
-      rect: rect,
-      child: ColoredBox(
-        color: color,
-        child: child,
-      ),
+      color: Palette.socketColor,
     );
   }
 }

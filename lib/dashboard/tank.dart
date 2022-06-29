@@ -21,14 +21,14 @@
 */
 
 import 'package:flutter/material.dart';
-import '../state/tank.dart';
+import '../state/tank_object.dart';
 import '../widgets/label.dart';
 import '../metrics.dart';
 import '../palette.dart';
 import '../widgets/pcolorbox.dart';
 
 class TankWidget extends StatelessWidget {
-  final Tank state;
+  final TankObject state;
 
   const TankWidget({
     Key? key,
@@ -94,24 +94,5 @@ class TankWidget extends StatelessWidget {
         ),
       ),
     ]);
-  }
-}
-
-class SocketWidget extends StatelessWidget {
-  final Sock state;
-  final Rect rect;
-
-  const SocketWidget({
-    Key? key,
-    required this.state,
-    required this.rect,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return PositionedColoredBox(
-      rect: rect,
-      color: Palette.socketColor,
-    );
   }
 }

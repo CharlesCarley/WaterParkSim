@@ -25,20 +25,20 @@ import 'package:waterpark_frontend/widgets/texteditor.dart';
 import 'dashboard/bridge.dart';
 import 'palette.dart';
 import 'widgets/icon.dart';
-import 'widgets/workspace.dart';
+import 'widgets/split_widget.dart';
 
 void main() {
-  runApp(const WaterPark());
+  runApp(const WaterParkSimulator());
 }
 
-class WaterPark extends StatefulWidget {
-  const WaterPark({Key? key}) : super(key: key);
+class WaterParkSimulator extends StatefulWidget {
+  const WaterParkSimulator({Key? key}) : super(key: key);
 
   @override
-  State<WaterPark> createState() => _WaterParkState();
+  State<WaterParkSimulator> createState() => _WaterParkSimulatorState();
 }
 
-class _WaterParkState extends State<WaterPark> {
+class _WaterParkSimulatorState extends State<WaterParkSimulator> {
   final NodeManager manager = NodeManager();
 
   @override
@@ -72,11 +72,11 @@ class _WaterParkState extends State<WaterPark> {
         body: SplitWidget(
           initialSplit: 0.25,
           direction: SplitWidgetDirection.vertical,
-          childA: EditProgram(
+          childA: ProgramEditor(
             manager: manager,
             program: "tank 20 20 20 200 5",
           ),
-          childB: ProgramStreamBridge(
+          childB: ProgramCanvas(
             manager: manager,
           ),
         ),

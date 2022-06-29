@@ -19,49 +19,31 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+
 import 'package:flutter/material.dart';
+import '../state/input_object.dart';
+import '../palette.dart';
+import '../widgets/pcolorbox.dart';
 
-class PositionedColoredBox extends StatelessWidget {
+class InputWidget extends StatelessWidget {
+  final InputObject state;
   final Rect rect;
-  final Color color;
 
-  const PositionedColoredBox({
+  const InputWidget({
     Key? key,
+    required this.state,
     required this.rect,
-    required this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Positioned.fromRect(
-      rect: rect,
-      child: ColoredBox(
-        color: color,
-      ),
+    var inner = Rect.fromLTRB(
+      rect.left + 3,
+      rect.top + 3,
+      rect.right - 3,
+      rect.bottom - 3,
     );
-  }
-}
 
-class PositionedColoredBoxEx extends StatelessWidget {
-  final Rect rect;
-  final Color color;
-  final Widget child;
-
-  const PositionedColoredBoxEx ({
-    Key? key,
-    required this.child,
-    required this.rect,
-    required this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fromRect(
-      rect: rect,
-      child: ColoredBox(
-        color: color,
-        child: child,
-      ),
-    );
+    return PositionedColoredBox(rect: rect, color: Palette.action);
   }
 }

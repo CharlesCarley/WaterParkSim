@@ -5,7 +5,9 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waterpark_frontend/state/tank.dart';
+import 'package:waterpark_frontend/state/socket_object.dart';
+import 'package:waterpark_frontend/state/tank_object.dart';
+import 'package:waterpark_frontend/tokenizer/sim_builder.dart';
 import 'package:waterpark_frontend/tokenizer/tokenizer.dart';
 
 void main() {
@@ -58,12 +60,12 @@ void main() {
   });
 
   test('smoke_test3', () {
-    var parser = CommandParser();
+    var parser = SimBuilder();
     var ret = parser.parse("tank 20 20 25 625 15 ");
 
     expect(ret.length, 1);
 
-    var t = ret[0] as Tank;
+    var t = ret[0] as TankObject;
     expect(t.x, 20);
     expect(t.y, 20);
     expect(t.height, 25);
@@ -72,14 +74,14 @@ void main() {
   });
 
   test('smoke_test3', () {
-    var parser = CommandParser();
+    var parser = SimBuilder();
     var ret = parser.parse("tank 20 20 25 625 15 "
         "sock N 0 0 "
         "sock E 0 0 "
         "sock S 0 0 "
         "sock W 0 0 ");
 
-    var t = ret[0] as Tank;
+    var t = ret[0] as TankObject;
     expect(t.x, 20);
     expect(t.y, 20);
     expect(t.height, 25);
@@ -88,7 +90,7 @@ void main() {
 
     List<int> bits = [SocketBits.N, SocketBits.E, SocketBits.S, SocketBits.W];
     for (int i = 0; i < bits.length; ++i) {
-      var s = ret[1 + i] as Sock;
+      var s = ret[1 + i] as SockObject;
       expect(s.dir, bits[i]);
       expect(s.dx, 0);
       expect(s.dy, 0);
