@@ -29,7 +29,7 @@ final List<String> keyWords = [
   "sock",
   "input",
   "state",
-  "line",
+  "link",
 ];
 
 class Tokenizer {
@@ -40,32 +40,32 @@ class Tokenizer {
 
   int _position = 0;
 
-  bool endOfStream() {
+  bool _endOfStream() {
     return _position >= _bytes.length;
   }
 
-  void advance(int offset) {
+  void _advance(int offset) {
     _position += offset;
   }
 
-  bool isNewLineOrWhiteSpace(int ch) {
+  bool _isNewLineOrWhiteSpace(int ch) {
     return ch == 0x20 || ch == 0x09 || ch == 0x0D || ch == 0x0A;
   }
 
-  bool isDigit(int ch) {
+  bool _isDigit(int ch) {
     return ch >= 0x30 && ch <= 0x39;
   }
 
-  bool isNumeric(int ch) {
-    return ch == 0x2E || ch == 0x2D || isDigit(ch);
+  bool _isNumeric(int ch) {
+    return ch == 0x2E || ch == 0x2D || _isDigit(ch);
   }
 
-  bool isAlpha(int ch) {
+  bool _isAlpha(int ch) {
     return (ch >= 0x61 && ch <= 0x7A) || (ch >= 0x41 && ch <= 0x5A);
   }
 
-  bool isAlphaNumeric(int ch) {
-    return isAlpha(ch) || isDigit(ch);
+  bool _isAlphaNumeric(int ch) {
+    return _isAlpha(ch) || _isDigit(ch);
   }
 
   List<Token> tokenize(String buffer) {
@@ -73,8 +73,8 @@ class Tokenizer {
     _tokens = [];
     _position = 0;
 
-    while (!endOfStream()) {
-      var tok = nextToken();
+    while (!_endOfStream()) {
+      var tok = _nextToken();
       if (tok.id == TokenId.keyword ||
           tok.id == TokenId.number ||
           tok.id == TokenId.identifier) {
@@ -87,7 +87,7 @@ class Tokenizer {
     return _tokens;
   }
 
-  int currentByte({int offset = 0}) {
+  int _currentByte({int offset = 0}) {
     int loc = _position + offset;
     if (loc < 0 || loc >= _bytes.length) {
       return -1;
@@ -95,25 +95,25 @@ class Tokenizer {
     return _bytes[loc];
   }
 
-  Token nextToken() {
+  Token _nextToken() {
     Token tok = Token.fromId(TokenId.error);
 
-    while (!endOfStream()) {
-      int ch = currentByte();
+    while (!_endOfStream()) {
+      int ch = _currentByte();
 
-      if (isAlpha(ch)) {
+      if (_isAlpha(ch)) {
         // ascii
         _scanId(tok);
         break;
-      } else if (isNumeric(ch)) {
+      } else if (_isNumeric(ch)) {
         // digit
         _scanNumber(tok);
         break;
-      } else if (!isNewLineOrWhiteSpace(ch)) {
+      } else if (!_isNewLineOrWhiteSpace(ch)) {
         tok.id = TokenId.error;
         break;
       } else {
-        advance(1);
+        _advance(1);
       }
     }
     return tok;
@@ -121,16 +121,16 @@ class Tokenizer {
 
   void _scanId(Token tok) {
     StringBuffer buffer = StringBuffer();
-    var ch = currentByte();
-    while (!endOfStream() && isAlphaNumeric(ch)) {
-      ch = currentByte();
+    var ch = _currentByte();
+    while (!_endOfStream() && _isAlphaNumeric(ch)) {
+      ch = _currentByte();
 
-      if (isNewLineOrWhiteSpace(ch)) {
+      if (_isNewLineOrWhiteSpace(ch)) {
         break;
       }
 
-      if (isAlphaNumeric(ch)) {
-        advance(1);
+      if (_isAlphaNumeric(ch)) {
+        _advance(1);
         buffer.writeCharCode(ch);
       } else {
         break;
@@ -169,13 +169,13 @@ class Tokenizer {
 
   void _scanNumber(Token tok) {
     StringBuffer buffer = StringBuffer();
-    var ch = currentByte();
-    while (!endOfStream() && isNumeric(ch)) {
-      ch = currentByte();
-      if (isNewLineOrWhiteSpace(ch)) {
+    var ch = _currentByte();
+    while (!_endOfStream() && _isNumeric(ch)) {
+      ch = _currentByte();
+      if (_isNewLineOrWhiteSpace(ch)) {
         break;
-      } else if (isNumeric(ch)) {
-        advance(1);
+      } else if (_isNumeric(ch)) {
+        _advance(1);
         buffer.writeCharCode(ch);
       } else {
         break;

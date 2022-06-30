@@ -27,6 +27,41 @@ import 'palette.dart';
 import 'widgets/icon.dart';
 import 'widgets/split_widget.dart';
 
+String debugProg = """
+input 10 10 15
+state open
+sock E 0 20
+input 75 10 0
+state open
+sock W 0 20
+sock E 0 20
+tank 150 10 20 500 0
+sock NW 0 20
+sock SE 0 20
+tank 250 10 20 500 0
+sock SW 0 20
+sock SE 0 20
+tank 350 10 20 500 0
+sock SW 0 20
+sock SE 0 20
+tank 10 200 25 500 0
+sock N 35.5 0
+tank 105 200 25 500 0
+sock N 35.5 0
+sock SE 0 20
+input 205 300 0 
+sock SW 0 20
+sock SE 0 20
+""";
+
+String debugProg1 = """
+input 0 0 1
+sock E 0 0 
+input 100 0 1
+sock SW 0 0 
+link -1 -3
+""";
+
 void main() {
   runApp(const WaterParkSimulator());
 }
@@ -74,7 +109,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator> {
           direction: SplitWidgetDirection.vertical,
           childA: ProgramEditor(
             manager: manager,
-            program: "tank 20 20 20 200 5",
+            program: debugProg1,
           ),
           childB: ProgramCanvas(
             manager: manager,

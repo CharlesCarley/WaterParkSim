@@ -20,6 +20,7 @@
 -------------------------------------------------------------------------------
 */
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 import '../metrics.dart';
 import '../palette.dart';
@@ -41,7 +42,6 @@ class ProgramEditor extends StatefulWidget {
 }
 
 class _ProgramEditorState extends State<ProgramEditor> {
-
   late FocusNode _editFocus;
   late TextEditingController _controller;
 
@@ -49,9 +49,7 @@ class _ProgramEditorState extends State<ProgramEditor> {
   void initState() {
     _controller = TextEditingController();
     _controller.text = widget.program;
-
     _editFocus = FocusNode();
-    _editFocus.requestFocus();
 
     super.initState();
   }
@@ -101,5 +99,24 @@ class _ProgramEditorState extends State<ProgramEditor> {
 
   void exitTextChanged(String newValue) async {
     update(newValue).then((value) => widget.manager.apply(value));
+  }
+}
+
+class QullProgramEditor extends StatelessWidget {
+  final QuillController _controller = QuillController.basic();
+
+  QullProgramEditor({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      QuillToolbar.basic(controller: _controller),
+      Expanded(
+        child: QuillEditor.basic(
+          controller: _controller,
+          readOnly: false, // true for view only mode
+        ),
+      )
+    ]);
   }
 }

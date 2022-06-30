@@ -11,55 +11,178 @@ import 'package:waterpark_frontend/tokenizer/sim_builder.dart';
 import 'package:waterpark_frontend/tokenizer/tokenizer.dart';
 
 void main() {
-  test('smoke_test1', () {
+  /////////////////////////////////////////////////////////////////
+  /// Token Tests
+  /////////////////////////////////////////////////////////////////
+  test(makeName("Tokenizer"), () {
     var tokenizer = Tokenizer();
     var ret = tokenizer.tokenize("-1  a  b  c");
-    expect(ret.length, 5);
-    expect(ret[0].id, TokenId.number);
-    expect(ret[1].id, TokenId.identifier);
-    expect(ret[2].id, TokenId.identifier);
-    expect(ret[3].id, TokenId.identifier);
-    expect(ret[4].id, TokenId.eos);
-
-    expect(ret[0].index, 0);
-    expect(ret[1].index, 0);
-    expect(ret[2].index, 1);
-    expect(ret[3].index, 2);
-    expect(ret[4].index, -1);
-
+    genericTokenTest(
+      ret,
+      5,
+      [
+        TokenId.number,
+        TokenId.identifier,
+        TokenId.identifier,
+        TokenId.identifier,
+        TokenId.eos,
+      ],
+      [0, 0, 1, 2, -1],
+    );
     expect(tokenizer.getNumber(ret[0].index), -1.0);
     expect(tokenizer.getIdentifier(ret[1].index), "a");
     expect(tokenizer.getIdentifier(ret[2].index), "b");
     expect(tokenizer.getIdentifier(ret[3].index), "c");
   });
-  test('smoke_test2', () {
+
+  test(makeName("Tokenizer"), () {
+    var tokenizer = Tokenizer();
+    var ret = tokenizer.tokenize("sock 4 5 6");
+    genericTokenTest(
+      ret,
+      5,
+      [
+        TokenId.keyword,
+        TokenId.number,
+        TokenId.number,
+        TokenId.number,
+        TokenId.eos,
+      ],
+      [1, 0, 1, 2, -1],
+    );
+
+    expect(tokenizer.getKeyword(ret[0].index), "sock");
+    expect(tokenizer.getNumber(ret[1].index), 4);
+    expect(tokenizer.getNumber(ret[2].index), 5);
+    expect(tokenizer.getNumber(ret[3].index), 6);
+  });
+
+  test(makeName("Tokenizer"), () {
+    var tokenizer = Tokenizer();
+
+    var ret = tokenizer.tokenize("sock SE 0 20");
+    genericTokenTest(
+      ret,
+      5,
+      [
+        TokenId.keyword,
+        TokenId.identifier,
+        TokenId.number,
+        TokenId.number,
+        TokenId.eos,
+      ],
+      [1, 0, 0, 1, -1],
+    );
+    expect(tokenizer.getKeyword(ret[0].index), "sock");
+    expect(tokenizer.getIdentifier(ret[1].index), "SE");
+    expect(tokenizer.getNumber(ret[2].index), 0);
+    expect(tokenizer.getNumber(ret[3].index), 20);
+  });
+
+  test(makeName("Tokenizer"), () {
     var tokenizer = Tokenizer();
     var ret = tokenizer.tokenize("tank 20 20 20 15 20.1");
-    expect(ret.length, 7);
-    expect(ret[0].id, TokenId.keyword);
-    expect(ret[1].id, TokenId.number);
-    expect(ret[2].id, TokenId.number);
-    expect(ret[3].id, TokenId.number);
-    expect(ret[4].id, TokenId.number);
-    expect(ret[5].id, TokenId.number);
-    expect(ret[6].id, TokenId.eos);
-
-    expect(ret[0].index, 0);
-    expect(ret[1].index, 0);
-    expect(ret[2].index, 0);
-    expect(ret[3].index, 0);
-    expect(ret[4].index, 1);
-    expect(ret[5].index, 2);
-
+    genericTokenTest(
+      ret,
+      7,
+      [
+        TokenId.keyword,
+        TokenId.number,
+        TokenId.number,
+        TokenId.number,
+        TokenId.number,
+        TokenId.number,
+        TokenId.eos,
+      ],
+      [0, 0, 0, 0, 1, 2, -1],
+    );
+    expect(tokenizer.getKeyword(ret[0].index), "tank");
     expect(tokenizer.getNumber(ret[1].index), 20);
     expect(tokenizer.getNumber(ret[2].index), 20);
     expect(tokenizer.getNumber(ret[3].index), 20);
     expect(tokenizer.getNumber(ret[4].index), 15);
     expect(tokenizer.getNumber(ret[5].index), 20.1);
-    expect(tokenizer.getKeyword(ret[0].index), "tank");
   });
 
-  test('smoke_test3', () {
+  
+  test(makeName("Tokenizer"), () {
+    var tokenizer = Tokenizer();
+    var ret = tokenizer.tokenize("input 0 1");
+    genericTokenTest(
+      ret,
+      4,
+      [
+        TokenId.keyword,
+        TokenId.number,
+        TokenId.number,
+        TokenId.eos,
+      ],
+      [2, 0, 1, -1],
+    );
+    expect(tokenizer.getKeyword(ret[0].index), "input");
+    expect(tokenizer.getNumber(ret[1].index), 0);
+    expect(tokenizer.getNumber(ret[2].index), 1);
+  });
+
+  test(makeName("Tokenizer"), () {
+    var tokenizer = Tokenizer();
+    var ret = tokenizer.tokenize("state 0");
+    genericTokenTest(
+      ret,
+      3,
+      [
+        TokenId.keyword,
+        TokenId.number,
+        TokenId.eos,
+      ],
+      [3, 0, -1],
+    );
+    expect(tokenizer.getKeyword(ret[0].index), "state");
+    expect(tokenizer.getNumber(ret[1].index), 0);
+  });
+
+  test(makeName("Tokenizer"), () {
+    var tokenizer = Tokenizer();
+    var ret = tokenizer.tokenize("state open");
+    genericTokenTest(
+      ret,
+      3,
+      [
+        TokenId.keyword,
+        TokenId.identifier,
+        TokenId.eos,
+      ],
+      [3, 0, -1],
+    );
+    expect(tokenizer.getKeyword(ret[0].index), "state");
+    expect(tokenizer.getIdentifier(ret[1].index), "open");
+  });
+
+  test(makeName("Tokenizer"), () {
+    var tokenizer = Tokenizer();
+    var ret = tokenizer.tokenize("link -1 -2");
+    genericTokenTest(
+      ret,
+      4,
+      [
+        TokenId.keyword,
+        TokenId.number,
+        TokenId.number,
+        TokenId.eos,
+      ],
+      [4, 0, 1, -1],
+    );
+    expect(tokenizer.getKeyword(ret[0].index), "link");
+    expect(tokenizer.getNumber(ret[1].index), -1);
+    expect(tokenizer.getNumber(ret[2].index), -2);
+  });
+
+  /////////////////////////////////////////////////////////////////
+  ///
+  /// SimBuilder Tests
+  /////////////////////////////////////////////////////////////////
+
+  test(makeName("SimBuilder"), () {
     var parser = SimBuilder();
     var ret = parser.parse("tank 20 20 25 625 15 ");
 
@@ -73,7 +196,7 @@ void main() {
     expect(t.level, 15);
   });
 
-  test('smoke_test3', () {
+  test(makeName("SimBuilder"), () {
     var parser = SimBuilder();
     var ret = parser.parse("tank 20 20 25 625 15 "
         "sock N 0 0 "
@@ -96,4 +219,30 @@ void main() {
       expect(s.dy, 0);
     }
   });
+
+  /////////////////////////////////////////////////////////////////
+  /// Widget Tests
+  /////////////////////////////////////////////////////////////////
+}
+
+int testId = 0;
+String makeName(String baseName) {
+  ++testId;
+  return "${baseName}Smoke_Test_$testId";
+}
+
+void genericTokenTest(
+  List<Token> ret,
+  int expLen,
+  List<TokenId> tokenIds,
+  List<int> indices,
+) {
+  expect(ret.length, expLen);
+  for (var i = 0; i < ret.length; ++i) {
+    expect(ret[i].id, tokenIds[i]);
+  }
+
+  for (var i = 0; i < ret.length; ++i) {
+    expect(ret[i].index, indices[i]);
+  }
 }

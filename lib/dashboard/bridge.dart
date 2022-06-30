@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:waterpark_frontend/dashboard/input.dart';
 import 'package:waterpark_frontend/metrics.dart';
+import 'package:waterpark_frontend/palette.dart';
 import 'package:waterpark_frontend/state/node.dart';
+import 'package:waterpark_frontend/widgets/pcolorbox.dart';
 import '../state/input_object.dart';
 import '../state/location.dart';
 import '../state/socket_object.dart';
 import '../state/tank_object.dart';
+import 'link.dart';
 import 'socket.dart';
 import 'tank.dart';
+
+class MathUtil {
+  static double min(double a, double b) {
+    return a < b ? a : b;
+  }
+
+  static double max(double a, double b) {
+    return a > b ? a : b;
+  }
+}
 
 class ProgramCanvas extends StatefulWidget {
   final NodeManager manager;
@@ -58,11 +72,31 @@ class _ProgramCanvasState extends State<ProgramCanvas> {
     if ((sock.dir & SocketBits.E) != 0) {
       x = x + (w - Metrics.border);
     }
+    sock.ax = x + sock.dx + Metrics.border / 2;
+    sock.ay = y + sock.dy + Metrics.border / 2;
+
     widgetList.add(SocketWidget(
       state: sock,
       rect: Rect.fromLTWH(
           x + sock.dx, y + sock.dy, Metrics.border, Metrics.border),
     ));
+
+    if (sock.hasOutputs) {
+      List<SockObject> osock = sock.getOutputs();
+
+      for (var link in osock) {
+        widgetList.add(LinkWidget(
+          rect: Rect.fromLTRB(
+            MathUtil.min(sock.ax, link.ax),
+            MathUtil.min(sock.ay, link.ay),
+            MathUtil.max(sock.ax, link.ax),
+            MathUtil.max(sock.ay, link.ay),
+          ),
+          state: sock,
+          link: link,
+        ));
+      }
+    }
   }
 
   List<Widget> _construct(List<Node> nodes) {
@@ -85,11 +119,7 @@ class _ProgramCanvasState extends State<ProgramCanvas> {
     if (widgetList.isEmpty) {
       widgetList.add(const Center());
     }
-    List<Widget> ret = [];
-    for (var node in widgetList) {
-      ret.add(node);
-    }
-    return ret;
+    return widgetList;
   }
 
   void constructSocket(List<Widget> widgetList, SockObject node) {

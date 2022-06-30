@@ -73,8 +73,8 @@ class SimBuilder {
       parseInput();
     } else if (kw == "state") {
       parseState();
-    } else if (kw == "line") {
-      parseLine();
+    } else if (kw == "link") {
+      parseLink();
     }
   }
 
@@ -181,6 +181,18 @@ class SimBuilder {
     return null;
   }
 
+  SockObject? findSocket(int idx) {
+    int loc = (_stateObjects.length) + idx;
+
+    if (loc >= 0 && loc < _stateObjects.length) {
+      if (_stateObjects[loc] is SockObject) {
+        return _stateObjects[loc] as SockObject;
+      }
+    }
+
+    return null;
+  }
+
   void parseState() {
     Token a1 = nextToken();
 
@@ -198,6 +210,15 @@ class SimBuilder {
     }
   }
 
-  void parseLine() {
+  void parseLink() {
+    int offsA = nextInteger(def: _stateObjects.length + 1);
+    int offsB = nextInteger(def: _stateObjects.length + 1);
+
+    SockObject? a = findSocket(offsA);
+    SockObject? b = findSocket(offsB);
+
+    if (b != null && a != null) {
+      a.addInput(b);
+    }
   }
 }
