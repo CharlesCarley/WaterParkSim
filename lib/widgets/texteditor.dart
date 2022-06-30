@@ -20,7 +20,6 @@
 -------------------------------------------------------------------------------
 */
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 
 import '../metrics.dart';
 import '../palette.dart';
@@ -99,24 +98,5 @@ class _ProgramEditorState extends State<ProgramEditor> {
 
   void exitTextChanged(String newValue) async {
     update(newValue).then((value) => widget.manager.apply(value));
-  }
-}
-
-class QullProgramEditor extends StatelessWidget {
-  final QuillController _controller = QuillController.basic();
-
-  QullProgramEditor({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: [
-      QuillToolbar.basic(controller: _controller),
-      Expanded(
-        child: QuillEditor.basic(
-          controller: _controller,
-          readOnly: false, // true for view only mode
-        ),
-      )
-    ]);
   }
 }

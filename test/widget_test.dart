@@ -5,6 +5,8 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 import 'package:flutter_test/flutter_test.dart';
+import 'package:waterpark_frontend/state/input_object.dart';
+import 'package:waterpark_frontend/state/node.dart';
 import 'package:waterpark_frontend/state/socket_object.dart';
 import 'package:waterpark_frontend/state/tank_object.dart';
 import 'package:waterpark_frontend/tokenizer/sim_builder.dart';
@@ -104,7 +106,6 @@ void main() {
     expect(tokenizer.getNumber(ret[5].index), 20.1);
   });
 
-  
   test(makeName("Tokenizer"), () {
     var tokenizer = Tokenizer();
     var ret = tokenizer.tokenize("input 0 1");
@@ -197,7 +198,10 @@ void main() {
   });
 
   test(makeName("SimBuilder"), () {
+
     var parser = SimBuilder();
+    var manager = NodeManager();
+
     var ret = parser.parse("tank 20 20 25 625 15 "
         "sock N 0 0 "
         "sock E 0 0 "
@@ -219,10 +223,33 @@ void main() {
       expect(s.dy, 0);
     }
   });
+  test(makeName("SimBuilder"), () {
+    var parser = SimBuilder();
+    
+    var ret = parser.parse(
+      """
+      input 0 0 20 
+        sock S 0 0
+      input 0 0 0 
+        sock S 0 0
+      link -1 -3
+      """);
 
-  /////////////////////////////////////////////////////////////////
-  /// Widget Tests
-  /////////////////////////////////////////////////////////////////
+    var i0 = ret[1] as SockObject;
+    var i1 = ret[3] as SockObject;
+
+    expect(i0.hasOutputs, true);
+    expect(i0.hasInputs, false);
+    expect(i1.hasOutputs, false);
+    expect(i1.hasInputs, true);
+
+
+  });
+/////////////////////////////////////////////////////////////////
+/// Widget Tests
+/////////////////////////////////////////////////////////////////
+
+
 }
 
 int testId = 0;

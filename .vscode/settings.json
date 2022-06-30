@@ -1,5 +1,31 @@
 {
     "cSpell.words": [
         "microtask"
-    ]
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        ".dart_tool": true,
+        ".idea": true,
+        ".vscode": true,
+        "android": true,
+        "build": true,
+        "ios": true,
+        "linux": true,
+        "macos": true,
+        "web": true,
+        ".gitignore": true,
+        ".metadata": true,
+        "analysis_options.yaml": true,
+        "*.lock": true,
+        "*.iml": true,
+        ".packages": true,
+        "windows": true,
+        "**/README.md": true
+    },
+    "explorerExclude.backup": null
 }

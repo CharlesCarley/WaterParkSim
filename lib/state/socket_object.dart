@@ -14,8 +14,7 @@ class SockObject extends Node {
   double ax = 0;
   double ay = 0;
 
-  List<SockObject> _inputs = [];
-  List<SockObject> _outputs = [];
+  List<double> _cache = [];
 
   SockObject({
     required this.dir,
@@ -23,17 +22,29 @@ class SockObject extends Node {
     required this.dy,
   });
 
-  bool get hasOutputs => _outputs.isNotEmpty;
-
   void addInput(SockObject? a) {
-    if (a != null)
-    {
-      print("Added Input$a");
+    if (a != null) {
       // !should be unique
-      _inputs.add(a);
-      _inputs.last._outputs.add(this);
+      inputs.add(a);
+      a.outputs.add(this);
     }
   }
 
-  List<SockObject> getOutputs() {return _outputs;}
+  List<SockObject> getOutputs() {
+    return outputs;
+  }
+
+  double getCache() {
+    double v = 0;
+    if (_cache.isNotEmpty)
+    {
+      v = _cache.last;
+      _cache.removeLast();
+    }
+    return v;
+  }
+
+  void cacheValue(double v) {
+    _cache.add(v);
+  }
 }

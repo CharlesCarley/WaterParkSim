@@ -78,12 +78,16 @@ class WaterParkSimulator extends StatefulWidget {
 
 class _WaterParkSimulatorState extends State<WaterParkSimulator> {
   final NodeManager manager = NodeManager();
+  final GlobalKey _globalKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     manager.addListener(() {
       setState(() {});
     });
+    manager.onSimChanged = () {
+      setState(() {});
+    };
 
     return MaterialApp(
       title: 'WaterPark Demo',
@@ -102,7 +106,9 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator> {
               x: 0,
               y: 0,
               color: Palette.titleForeground,
-              onClick: () {},
+              onClick: () {
+                manager.launchSim();
+              },
               tooltip: "Run the simulation.",
             )
           ],
@@ -115,6 +121,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator> {
             program: debugProg,
           ),
           childB: ProgramCanvas(
+            key: _globalKey,
             manager: manager,
           ),
         ),
