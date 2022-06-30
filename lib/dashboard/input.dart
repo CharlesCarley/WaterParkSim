@@ -21,9 +21,9 @@
 */
 import 'package:flutter/material.dart';
 import 'package:waterpark_frontend/metrics.dart';
-import '../state/input_object.dart';
+import '../state/input_state.dart';
 import '../palette.dart';
-import '../widgets/pcolorbox.dart';
+import '../widgets/positioned_widgets.dart';
 
 class InputWidget extends StatelessWidget {
   final InputObject state;

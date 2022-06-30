@@ -1,6 +1,6 @@
-import 'location.dart';
+import 'rect_state.dart';
 
-class ToggleObject extends Location {
+class ToggleObject extends RectState {
   bool toggle;
 
   ToggleObject({

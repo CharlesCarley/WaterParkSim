@@ -3,12 +3,13 @@ import 'package:flutter/widgets.dart';
 import 'package:waterpark_frontend/dashboard/input.dart';
 import 'package:waterpark_frontend/metrics.dart';
 import 'package:waterpark_frontend/palette.dart';
-import 'package:waterpark_frontend/state/node.dart';
-import 'package:waterpark_frontend/widgets/pcolorbox.dart';
-import '../state/input_object.dart';
-import '../state/location.dart';
-import '../state/socket_object.dart';
-import '../state/tank_object.dart';
+import 'package:waterpark_frontend/state/common_state.dart';
+import 'package:waterpark_frontend/widgets/positioned_widgets.dart';
+import '../state/input_state.dart';
+import '../state/rect_state.dart';
+import '../state/socket_state.dart';
+import '../state/state_manager.dart';
+import '../state/tank_state.dart';
 import 'link.dart';
 import 'socket.dart';
 import 'tank.dart';
@@ -33,10 +34,7 @@ class ProgramCanvas extends StatefulWidget {
 
   @override
   State<ProgramCanvas> createState() => _ProgramCanvasState();
-
 }
-
-
 
 class _ProgramCanvasState extends State<ProgramCanvas> {
   List<Node> _nodes = [];
@@ -52,10 +50,10 @@ class _ProgramCanvasState extends State<ProgramCanvas> {
     );
   }
 
-  Location? lastPosition() {
+  RectState? lastPosition() {
     for (int i = _cur; i >= 0; --i) {
-      if (_nodes[i] is Location) {
-        return _nodes[i] as Location;
+      if (_nodes[i] is RectState) {
+        return _nodes[i] as RectState;
       }
     }
     return null;
@@ -89,12 +87,6 @@ class _ProgramCanvasState extends State<ProgramCanvas> {
 
       for (var link in osock) {
         widgetList.add(LinkWidget(
-          rect: Rect.fromLTRB(
-            MathUtil.min(sock.ax, link.ax),
-            MathUtil.min(sock.ay, link.ay),
-            MathUtil.max(sock.ax, link.ax),
-            MathUtil.max(sock.ay, link.ay),
-          ),
           state: sock,
           link: link,
         ));
@@ -126,7 +118,7 @@ class _ProgramCanvasState extends State<ProgramCanvas> {
   }
 
   void constructSocket(List<Widget> widgetList, SockObject node) {
-    Location? loc = lastPosition();
+    RectState? loc = lastPosition();
 
     if (loc != null) {
       _addSocket(widgetList, node, loc.x, loc.y, loc.w, loc.h);

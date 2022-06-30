@@ -23,7 +23,8 @@ import 'package:flutter/material.dart';
 
 import '../metrics.dart';
 import '../palette.dart';
-import '../state/node.dart';
+import '../state/common_state.dart';
+import '../state/state_manager.dart';
 import '../tokenizer/sim_builder.dart';
 
 class ProgramEditor extends StatefulWidget {

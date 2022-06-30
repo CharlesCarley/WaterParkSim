@@ -21,9 +21,9 @@
 */
 
 import 'package:flutter/material.dart';
-import '../state/socket_object.dart';
+import '../state/socket_state.dart';
 import '../palette.dart';
-import '../widgets/pcolorbox.dart';
+import '../widgets/positioned_widgets.dart';
 
 class SocketWidget extends StatelessWidget {
   final SockObject state;

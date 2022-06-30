@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark_frontend/palette.dart';
-import 'package:waterpark_frontend/state/input_object.dart';
-import 'package:waterpark_frontend/state/socket_object.dart';
 
-import 'tank_object.dart';
-
-class Node {
-  List<SockObject> inputs = [];
-  List<SockObject> outputs = [];
-
-  get hasOutputs => outputs.isNotEmpty;
-  get hasInputs => inputs.isNotEmpty;
-}
+import '../palette.dart';
+import 'common_state.dart';
+import 'input_state.dart';
+import 'socket_state.dart';
+import 'tank_state.dart';
 
 class NodeManager extends Listenable {
   List<Node> _values = [];

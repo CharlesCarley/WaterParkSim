@@ -21,11 +21,11 @@
 */
 
 import 'package:flutter/material.dart';
-import '../state/tank_object.dart';
-import '../widgets/label.dart';
+import '../state/tank_state.dart';
+import '../widgets/label_widget.dart';
 import '../metrics.dart';
 import '../palette.dart';
-import '../widgets/pcolorbox.dart';
+import '../widgets/positioned_widgets.dart';
 
 class TankWidget extends StatelessWidget {
   final TankObject state;

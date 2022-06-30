@@ -1,7 +1,7 @@
 import '../metrics.dart';
-import 'location.dart';
+import 'rect_state.dart';
 
-class TankObject extends Location {
+class TankObject extends RectState {
   double height;
   double capacity;
   double level;

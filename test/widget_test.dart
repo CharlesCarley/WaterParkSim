@@ -5,10 +5,10 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waterpark_frontend/state/input_object.dart';
-import 'package:waterpark_frontend/state/node.dart';
-import 'package:waterpark_frontend/state/socket_object.dart';
-import 'package:waterpark_frontend/state/tank_object.dart';
+import 'package:waterpark_frontend/state/input_state.dart';
+import 'package:waterpark_frontend/state/common_state.dart';
+import 'package:waterpark_frontend/state/socket_state.dart';
+import 'package:waterpark_frontend/state/tank_state.dart';
 import 'package:waterpark_frontend/tokenizer/sim_builder.dart';
 import 'package:waterpark_frontend/tokenizer/tokenizer.dart';
 

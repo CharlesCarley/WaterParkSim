@@ -1,6 +1,6 @@
-import 'toggle_object.dart';
-const double inputObjectWidth = 50;
-const double inputObjectHeight = 50;
+import 'settings_state.dart';
+import 'toggle_state.dart';
+
 
 
 
@@ -15,8 +15,8 @@ class InputObject extends ToggleObject {
   }) : super(
           x: x,
           y: y,
-          w: inputObjectWidth,
-          h: inputObjectHeight,
+          w: SettingsState.inputObjectWidth,
+          h: SettingsState.inputObjectHeight,
           toggle: state,
         );
 }

@@ -1,9 +1,9 @@
-import 'package:waterpark_frontend/state/input_object.dart';
-import 'package:waterpark_frontend/state/node.dart';
-import 'package:waterpark_frontend/state/tank_object.dart';
-import 'package:waterpark_frontend/state/toggle_object.dart';
+import 'package:waterpark_frontend/state/input_state.dart';
+import 'package:waterpark_frontend/state/common_state.dart';
+import 'package:waterpark_frontend/state/tank_state.dart';
+import 'package:waterpark_frontend/state/toggle_state.dart';
 
-import '../state/socket_object.dart';
+import '../state/socket_state.dart';
 import 'tokenizer.dart';
 
 class SimBuilder {

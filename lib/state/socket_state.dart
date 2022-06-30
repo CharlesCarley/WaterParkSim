@@ -1,4 +1,4 @@
-import 'node.dart';
+import 'common_state.dart';
 
 class SocketBits {
   static const int N = 0x01;
