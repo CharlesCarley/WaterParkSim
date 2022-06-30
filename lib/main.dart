@@ -28,38 +28,41 @@ import 'widgets/icon.dart';
 import 'widgets/split_widget.dart';
 
 String debugProg = """
-input 10 10 15
-state open
-sock E 0 20
-input 75 10 0
-state open
-sock W 0 20
-sock E 0 20
-tank 150 10 20 500 0
-sock NW 0 20
-sock SE 0 20
-tank 250 10 20 500 0
-sock SW 0 20
-sock SE 0 20
-tank 350 10 20 500 0
-sock SW 0 20
-sock SE 0 20
-tank 10 200 25 500 0
-sock N 35.5 0
-tank 105 200 25 500 0
-sock N 35.5 0
-sock SE 0 20
-input 205 300 0 
-sock SW 0 20
-sock SE 0 20
-""";
-
-String debugProg1 = """
-input 0 0 1
-sock E 0 0 
-input 100 0 1
-sock SW 0 0 
-link -1 -3
+input 0 10 4
+ state 1
+ sock SE 0 25
+tank 100 10 20 500 0
+ sock NW 0 45
+ link -1 -3
+ sock SE 0 25
+tank 250 10 20 500 5
+ sock SW 0 25
+ link -1 -3
+ sock SE 0 34
+input 350 110 0
+ state 0
+ sock NW 0 20
+ link -1 -3
+ sock NE 0 20
+ sock NE -100 20
+ link -1 -2
+ sock NE -100 100
+ link -1 -2
+ sock SW -300 -55
+ link -1 -2
+ sock SW -300 -200
+ link -1 -2
+tank 100 300 20 500 15
+ sock N 0 56
+ link -1 -3
+ sock NE 0 35
+input 350 400 0
+ state off
+ sock NW 0 25
+ link -1 -3
+ sock NE 0 25
+ sock NE -100 25
+ link -1 -2
 """;
 
 void main() {
@@ -109,7 +112,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator> {
           direction: SplitWidgetDirection.vertical,
           childA: ProgramEditor(
             manager: manager,
-            program: debugProg1,
+            program: debugProg,
           ),
           childB: ProgramCanvas(
             manager: manager,
