@@ -5,8 +5,6 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waterpark_frontend/state/input_state.dart';
-import 'package:waterpark_frontend/state/common_state.dart';
 import 'package:waterpark_frontend/state/socket_state.dart';
 import 'package:waterpark_frontend/state/tank_state.dart';
 import 'package:waterpark_frontend/tokenizer/sim_builder.dart';
@@ -184,8 +182,8 @@ void main() {
   /////////////////////////////////////////////////////////////////
 
   test(makeName("SimBuilder"), () {
-    var parser = SimBuilder();
-    var ret = parser.parse("tank 20 20 25 625 15 ");
+    var parser = StateTreeCompiler();
+    var ret = parser.compile("tank 20 20 25 625 15 ");
 
     expect(ret.length, 1);
 
@@ -199,10 +197,9 @@ void main() {
 
   test(makeName("SimBuilder"), () {
 
-    var parser = SimBuilder();
-    var manager = NodeManager();
+    var parser = StateTreeCompiler();
 
-    var ret = parser.parse("tank 20 20 25 625 15 "
+    var ret = parser.compile("tank 20 20 25 625 15 "
         "sock N 0 0 "
         "sock E 0 0 "
         "sock S 0 0 "
@@ -224,9 +221,9 @@ void main() {
     }
   });
   test(makeName("SimBuilder"), () {
-    var parser = SimBuilder();
+    var parser = StateTreeCompiler();
     
-    var ret = parser.parse(
+    var ret = parser.compile(
       """
       input 0 0 20 
         sock S 0 0

@@ -6,8 +6,44 @@ import 'package:waterpark_frontend/state/toggle_state.dart';
 import '../state/socket_state.dart';
 import 'tokenizer.dart';
 
-class SimBuilder {
+class StateTreeCompiler {
   final Tokenizer _tokenizer = Tokenizer();
+
+  List<Node> compile(String buffer) {
+    _position = 0;
+    _tokens = _tokenizer.tokenize(buffer);
+    _stateObjects = [];
+
+    bool running = true;
+    do {
+      Token it = nextToken();
+      if (it.isKeyword()) {
+        readKeyword(it);
+      } else {
+        running = false;
+      }
+    } while (running);
+
+    return _stateObjects;
+  }
+
+  void readKeyword(Token current) {
+    String kw = _tokenizer.getKeyword(current.index);
+    if (kw.isEmpty) return;
+
+    if (kw == "tank") {
+      parseTank();
+    } else if (kw == "sock") {
+      parseSock();
+    } else if (kw == "input") {
+      parseInput();
+    } else if (kw == "state") {
+      parseState();
+    } else if (kw == "link") {
+      parseLink();
+    }
+  }
+
   List<Token> _tokens = [];
   int _position = 0;
   List<Node> _stateObjects = [];
@@ -16,7 +52,7 @@ class SimBuilder {
     return _position >= _tokens.length;
   }
 
-  Token token(int offset) {
+  Token peekToken(int offset) {
     int loc = _position + offset;
     if (loc < 0 || loc >= _tokens.length) {
       return Token.fromId(TokenId.none);
@@ -39,43 +75,6 @@ class SimBuilder {
 
   void readEnd() {
     _position = _tokens.length + 1;
-  }
-
-  List<Node> parse(String buffer) {
-    _position = 0;
-    _tokens = _tokenizer.tokenize(buffer);
-    _stateObjects = [];
-
-    Token current = token(0);
-
-    while (!current.isEos()) {
-      current = token(0);
-      if (current.isKeyword()) {
-        advance(1);
-        readKeyword(current);
-      } else {
-        break;
-      }
-    }
-    return _stateObjects;
-  }
-
-  void readKeyword(Token current) {
-    String kw = _tokenizer.getKeyword(current.index);
-
-    if (kw.isEmpty) return;
-
-    if (kw == "tank") {
-      parseTank();
-    } else if (kw == "sock") {
-      parseSock();
-    } else if (kw == "input") {
-      parseInput();
-    } else if (kw == "state") {
-      parseState();
-    } else if (kw == "link") {
-      parseLink();
-    }
   }
 
   double number(int idx, {double def = 0.0}) {

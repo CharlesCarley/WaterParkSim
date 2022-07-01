@@ -20,6 +20,7 @@
 -------------------------------------------------------------------------------
 */
 import 'package:flutter/material.dart';
+import 'package:waterpark_frontend/widgets/event_router.dart';
 
 import '../metrics.dart';
 import '../palette.dart';
@@ -29,7 +30,7 @@ import '../tokenizer/sim_builder.dart';
 
 class ProgramEditor extends StatefulWidget {
   final String program;
-  final NodeManager manager;
+  final WorkspaceEventDispatcher manager;
 
   const ProgramEditor({
     Key? key,
@@ -41,7 +42,8 @@ class ProgramEditor extends StatefulWidget {
   State<ProgramEditor> createState() => _ProgramEditorState();
 }
 
-class _ProgramEditorState extends State<ProgramEditor> {
+class _ProgramEditorState extends State<ProgramEditor>
+    with WorkSpaceEventReceiver {
   late FocusNode _editFocus;
   late TextEditingController _controller;
 
@@ -50,7 +52,6 @@ class _ProgramEditorState extends State<ProgramEditor> {
     _controller = TextEditingController();
     _controller.text = widget.program;
     _editFocus = FocusNode();
-
     super.initState();
   }
 
@@ -90,14 +91,41 @@ class _ProgramEditorState extends State<ProgramEditor> {
     );
   }
 
-  Future<List<Node>> update(String newValue) {
+  Future<List<Node>> _compile(String newValue) {
     return Future.microtask(() {
-      SimBuilder parser = SimBuilder();
-      return parser.parse(newValue);
+      StateTreeCompiler obj = StateTreeCompiler();
+      return obj.compile(newValue);
     });
   }
 
   void exitTextChanged(String newValue) async {
-    update(newValue).then((value) => widget.manager.apply(value));
+    await _compile(newValue).then((value) {
+      widget.manager
+          .notifyStateTreeCompiled(
+        StateTree(code: value),
+      )
+          .then((value) {
+        setState(() {
+          if (_editFocus.canRequestFocus) {
+            _editFocus.requestFocus();
+          }
+        });
+      });
+    });
+  }
+
+  @override
+  void onDisplaySettings() {
+    // TODO: implement onDisplaySettings
+  }
+
+  @override
+  void onRun() {
+    // TODO: implement onRun
+  }
+
+  @override
+  void onStateTreeCompiled(StateTree stateTree) {
+    setState(() {});
   }
 }

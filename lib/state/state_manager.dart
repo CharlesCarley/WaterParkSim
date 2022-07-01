@@ -6,29 +6,59 @@ import 'input_state.dart';
 import 'socket_state.dart';
 import 'tank_state.dart';
 
-class NodeManager extends Listenable {
-  List<Node> _values = [];
+abstract class StateTreeEventReceiver {
+  void onRun();
+  void onDisplaySettings();
+}
+
+class StateTreeEventDispatcher {
+  List<StateTreeEventReceiver> receivers = <StateTreeEventReceiver>[];
+
+  void subscribe(StateTreeEventReceiver receiver) {
+    if (!receivers.contains(receiver)) {
+      receivers.remove(receiver);
+    }
+  }
+
+  void unsubscribe(StateTreeEventReceiver receiver) {
+    if (receivers.contains(receiver)) {
+      receivers.remove(receiver);
+    }
+  }
+
+  Future notifyRun() {
+    return Future.microtask(() {
+      for (var receiver in receivers) {
+        receiver.onRun();
+      }
+    });
+  }
+
+  Future notifyDisplaySettings() {
+    return Future.microtask(() {
+      for (var receiver in receivers) {
+        receiver.onDisplaySettings();
+      }
+    });
+  }
+}
+
+class StateTree extends Listenable {
+  final List<Node> code;
   VoidCallback? onValueChanged;
   VoidCallback? onSimChanged;
 
-  List<Node> nodes = [];
+  List<Node> _nodes = [];
+
+  get  nodes =>_nodes;
+
+  StateTree({required this.code});
+  StateTree.zero() : code = [];
 
   get clearColor => Palette.background;
   bool _stopped = true;
 
   get stopped => _stopped;
-
-  void apply(List<Node> evt) {
-    _values.clear();
-    _values = evt;
-
-    Future.microtask(() => {updateValues()})
-        .whenComplete(() => onValueChanged?.call());
-  }
-
-  List<Node> fetch() {
-    return _values;
-  }
 
   @override
   void addListener(VoidCallback listener) {
@@ -58,10 +88,10 @@ class NodeManager extends Listenable {
   }
 
   void updateValues() {
-    nodes = [];
+    _nodes = [];
     Node? prev;
 
-    for (Node nd in _values) {
+    for (Node nd in code) {
       if (prev != null && nd is SockObject) {
         for (var iSock in nd.inputs) {
           prev.inputs.add(iSock);

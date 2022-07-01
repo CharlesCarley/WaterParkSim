@@ -14,7 +14,7 @@ class SockObject extends Node {
   double ax = 0;
   double ay = 0;
 
-  List<double> _cache = [];
+  final List<double> _cache = [];
 
   SockObject({
     required this.dir,

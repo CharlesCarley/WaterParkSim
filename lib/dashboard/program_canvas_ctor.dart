@@ -1,59 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:waterpark_frontend/dashboard/input.dart';
+import 'package:waterpark_frontend/dashboard/socket.dart';
+import 'package:waterpark_frontend/dashboard/tank.dart';
 import 'package:waterpark_frontend/metrics.dart';
-import 'package:waterpark_frontend/palette.dart';
-import 'package:waterpark_frontend/state/common_state.dart';
-import 'package:waterpark_frontend/widgets/positioned_widgets.dart';
+
+import '../state/common_state.dart';
 import '../state/input_state.dart';
 import '../state/rect_state.dart';
 import '../state/socket_state.dart';
 import '../state/state_manager.dart';
 import '../state/tank_state.dart';
 import 'link.dart';
-import 'socket.dart';
-import 'tank.dart';
 
-class MathUtil {
-  static double min(double a, double b) {
-    return a < b ? a : b;
-  }
-
-  static double max(double a, double b) {
-    return a > b ? a : b;
-  }
-}
-
-class ProgramCanvas extends StatefulWidget {
-  final NodeManager manager;
-
-  const ProgramCanvas({
-    Key? key,
-    required this.manager,
-  }) : super(key: key);
-
-  @override
-  State<ProgramCanvas> createState() => _ProgramCanvasState();
-}
-
-class _ProgramCanvasState extends State<ProgramCanvas> {
-  List<Node> _nodes = [];
+class ProgramCanvasConstructor {
+  final StateTree tree;
+  late List<Widget> widgets;
   int _cur = 0;
 
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: widget.manager.clearColor,
-      child: Stack(
-        children: _construct(widget.manager.fetch()),
-      ),
-    );
+  ProgramCanvasConstructor({required this.tree}) {
+    widgets = _construct();
   }
 
   RectState? lastPosition() {
     for (int i = _cur; i >= 0; --i) {
-      if (_nodes[i] is RectState) {
-        return _nodes[i] as RectState;
+      if (tree.code[i] is RectState) {
+        return tree.code[i] as RectState;
       }
     }
     return null;
@@ -83,9 +54,9 @@ class _ProgramCanvasState extends State<ProgramCanvas> {
     ));
 
     if (sock.hasOutputs) {
-      List<SockObject> osock = sock.getOutputs();
+      List<SockObject> oSock = sock.getOutputs();
 
-      for (var link in osock) {
+      for (var link in oSock) {
         widgetList.add(LinkWidget(
           state: sock,
           link: link,
@@ -94,14 +65,11 @@ class _ProgramCanvasState extends State<ProgramCanvas> {
     }
   }
 
-  List<Widget> _construct(List<Node> nodes) {
+  List<Widget> _construct() {
     List<Widget> widgetList = [];
 
-    _nodes = nodes;
-
-    for (_cur = 0; _cur < _nodes.length; ++_cur) {
-      Node node = _nodes[_cur];
-
+    for (_cur = 0; _cur < tree.code.length; ++_cur) {
+      Node node = tree.code[_cur];
       if (node is TankObject) {
         widgetList.add(TankWidget(state: node));
       } else if (node is SockObject) {
