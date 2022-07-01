@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:waterpark_frontend/theme.dart';
+import 'package:waterpark_frontend/util/double_utils.dart';
 import 'package:waterpark_frontend/workspace_settings.dart';
 import '../palette.dart';
 import '../state/settings_state.dart';
@@ -87,10 +88,14 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
       ));
 
     if (showSettings) {
+
+      double w = DoubleUtils.lim(_size.width, 300, double.maxFinite);
+      double h = DoubleUtils.lim(_size.height, 300, double.maxFinite);
+
       body.add(
         WorkspaceSettings(
           dispatcher: dispatcher,
-          rect: Rect.fromLTWH(_size.width/2, 0, _size.width/2, _size.height),
+          rect: Rect.fromLTWH(w/2, 0, w/2, h),
         ),
       );
     } else {

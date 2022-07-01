@@ -133,6 +133,7 @@ class Builder:
         sourceDir = thisDir.back()
         self.opts['dev'] = thisDir
         self.opts['source'] = sourceDir
+        self.opts['web'] = sourceDir
         self.opts['publish'] = sourceDir.create("docs")
 
         if (sys.platform == "win32"):
@@ -143,24 +144,8 @@ class Builder:
         self.opts['platform'] = platname
         buildDir = thisDir.create(platname)
 
-        self.opts['build_cpp'] = buildDir.create("cpp")
-        self.opts['build_em'] = buildDir.create("em")
-
-        buildOutput = self.opts['build_cpp'].create("build_files")
-        self.opts['build_files'] = buildOutput
-
-        if (sys.platform == "win32"):
-            self.opts['binding_file'] = buildOutput.file("bindings.dll")
-        else:
-            self.opts['binding_file'] = buildOutput.file("libbindings.so")
-
-        buildOutput = self.opts['build_em'].create("build_files")
-        self.opts['em_build_files'] = buildOutput
-
     def home(self): return self.opts['dev']
     def sourceDir(self): return self.opts['source']
-    def cppDir(self): return self.opts['build_cpp']
-    def emDir(self): return self.opts['build_em']
     def webDir(self): return self.opts['web']
     def webTestDir(self): return self.opts['web_test']
     def webAssetDir(self): return self.opts['web_asset']
@@ -200,131 +185,23 @@ class Builder:
         print("Calling =>", cmd)
         subprocess.run(cmd, shell=True, env=os.environ)
 
-    def copyBindings(self):
-        if (sys.platform == 'win32'):
-            buildDir = self.webDir().create("build/windows/runner/%s" %
-                                            self.configString())
-            shutil.copyfile(self.bindingFile(),
-                            buildDir.file("bindings.dll"))
-
-            shutil.copyfile(self.bindingFile(),
-                            self.webDir().file("bindings.dll"))
-        else:
-            buildDir = self.webAssetDir()
-            shutil.copyfile(self.bindingFile(),
-                            buildDir.file("libbindings.so"))
-
-    def copyEmBindings(self):
-
-        self.buildOutputEm().copyTo(
-            "bindings.js",
-            self.webAssetDir()
-        )
-        self.buildOutputEm().copyTo(
-            "bindings.wasm",
-            self.webAssetDir()
-        )
-
     def findOpt(self, opt):
         for i in range(self.argc):
             if (opt == self.argv[i]):
                 return True
         return False
 
-    def buildCpp(self):
-        print("Building C++", self.argv)
-
-        self.goto(self.cppDir())
-
-        defines = "-DHack_BUILD_TEST=ON -DHack_AUTO_RUN_TEST=ON "
-        defines += "-DHack_IMPLEMENT_BLACK_BOX=%s " % self.findOpt(
-            "--with-black-box")
-        defines += "-DHack_USE_SDL=%s" % self.findOpt("--with-sdl")
-
-        self.run("cmake %s %s" % (self.sourceDir(), defines))
-        self.run("cmake --build %s --config %s" %
-                 (self.cppDir(), self.configString()))
-
-        ext = ""
-        if sys.platform == 'win32':
-            ext = ".exe"
-
-        self.buildOutput().copyTo(
-            "Computer"+ext,
-            self.home()
-        )
-
-        self.buildOutput().copyTo(
-            "Asm2Mc"+ext,
-            self.home()
-        )
-
-    def buildEm(self):
-        print("Building Emscripten".ljust(20), self.argv)
-
-        self.goto(self.emDir())
-
-        if (sys.platform == 'win32'):
-            execStr = "emcmake.bat cmake "
-            execStr += '-G "NMake Makefiles" '
-        else:
-            execStr = "emcmake cmake "
-
-        execStr += self.sourceDir().path
-        execStr += " -DHack_IMPLEMENT_BLACK_BOX=%s" % self.findOpt(
-            "--with-black-box")
-
-        self.run(execStr)
-        self.run("cmake --build %s --config %s" %
-                 (self.emDir(), self.configString()))
-
     def buildClean(self, reCreate=False):
         print("Cleaning...".ljust(20), self.argv)
 
-        self.cppDir().remove()
-        self.emDir().remove()
-
-        self.webDir().removeFile("bindings.dll")
-        self.webAssetDir().removeFile("bindings.js")
-        self.webAssetDir().removeFile("bindings.wasm")
-        self.webTestDir().removeFile("bindings.dll")
-
         self.goto(self.webDir())
         self.run("flutter clean")
-
-        if reCreate:
-            self.cppDir().recreate()
-            self.emDir().recreate()
-
-    def buildFl(self):
-        print("Building Flutter Source".ljust(20), self.argv)
-
-        if (self.findOpt("web")):
-            self.buildEm()
-
-            self.copyEmBindings()
-
-            self.goto(self.webDir())
-            self.run("flutter run -d chrome %s" %
-                     self.flutterBuildMode())
-
-        else:
-            self.buildCpp()
-            self.copyBindings()
-
-            self.goto(self.webDir())
-            self.run("flutter test")
-
-            self.goto(self.webDir())
-            self.run("flutter run -d %s %s" %
-                     (self.flutterPlatform(),
-                      self.flutterBuildMode()))
 
     def buildBase(self, kind, args):
         self.release = True
         self.goto(self.webDir())
         self.run("flutter pub get")
-        self.run("flutter build %s %s", kind, args)
+        self.run("flutter build %s %s"%(kind, args))
 
         flBuild = self.webDir().subdir("build/%s"%kind)
         self.pubDir().remove()
