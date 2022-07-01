@@ -7,6 +7,7 @@ import 'event_dispatcher.dart';
 class WorkSpaceEventReceiver {
   void onRun(){}
   void onDisplaySettings(){}
+  void onDisplaySettingsClosed(){}
   void onStateTreeCompiled(StateTree stateTree){}
   void onKey(RawKeyEvent key){}
 }
@@ -34,7 +35,14 @@ class WorkspaceEventDispatcher extends EventDispatcher<WorkSpaceEventReceiver> {
       }
     });
   }
-
+  Future notifyDisplaySettingsClosed() {
+    return Future.microtask(() {
+      for (var receiver in receivers) {
+        print("${receiver} -> onDisplaySettingsClosed");
+        receiver.onDisplaySettingsClosed();
+      }
+    });
+  }
   Future notifyStateTreeCompiled(StateTree stateTree) {
     return Future.microtask(() {
       for (var receiver in receivers) {

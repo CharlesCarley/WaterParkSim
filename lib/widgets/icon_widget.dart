@@ -36,6 +36,7 @@ class IconMappings {
   static const String next = 'O';
   static const String edit = 'b';
   static const String brush = 'e';
+  static const String exit = 'g';
 }
 
 class IconWidget extends StatelessWidget {

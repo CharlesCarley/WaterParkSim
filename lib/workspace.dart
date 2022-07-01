@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:waterpark_frontend/widgets/workspace_settings.dart';
+import 'package:waterpark_frontend/theme.dart';
+import 'package:waterpark_frontend/workspace_settings.dart';
 import '../palette.dart';
 import '../state/settings_state.dart';
 import '../state/state_manager.dart';
@@ -49,6 +50,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Palette.background),
         canvasColor: Palette.canvasColor,
+        textButtonTheme: WorkspaceTheme.textButtonTheme,
       ),
       home: RawKeyboardListener(
         focusNode: keyFocus,
@@ -72,14 +74,6 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
 
   List<Widget> _buildBody() {
     List<Widget> body = [];
-    if (showSettings) {
-      body.add(
-        WorkspaceSettings(
-          dispatcher: dispatcher,
-          rect: Rect.fromLTWH(0, 0, _size.width, _size.height),
-        ),
-      );
-    } else {
       body.add(SplitWidget(
         initialSplit: 0.25,
         direction: SplitWidgetDirection.vertical,
@@ -91,6 +85,15 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
           dispatcher: dispatcher,
         ),
       ));
+
+    if (showSettings) {
+      body.add(
+        WorkspaceSettings(
+          dispatcher: dispatcher,
+          rect: Rect.fromLTWH(_size.width/2, 0, _size.width/2, _size.height),
+        ),
+      );
+    } else {
     }
     return body;
   }
@@ -123,7 +126,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   }
 
   @override
-  void onSettingsChanged() {
+  void onDisplaySettings() {
     setState(() {
       if (scaffolding.currentContext != null) {
         _size = MediaQuery.of(scaffolding.currentContext!).size;
@@ -134,12 +137,9 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   }
 
   @override
-  void onDisplaySettings() {
+  void onDisplaySettingsClosed() {
     setState(() {
-      if (scaffolding.currentContext != null) {
-        _size = MediaQuery.of(scaffolding.currentContext!).size;
-      }
-      showSettings = true;
+      showSettings = false;
       keyFocus.requestFocus();
     });
   }

@@ -1,9 +1,15 @@
 class SettingsState {
-  static double inputObjectWidth = 50;
-  static double inputObjectHeight = 50;
+  static double inputObjectWidth = 40;
+  static double inputObjectHeight = 40;
+
   // displayed as circle
   static double linSegmentEndPointSize = 3.0;
-  static double linSegmentLineSize = 5.0;
+  static double linSegmentLineSize = 1.0;
+
+  static double tankWidth = 75.0;
+  static double tankHeight = 150.0;
+
+
 
   static String title = "WaterPark Demo";
 

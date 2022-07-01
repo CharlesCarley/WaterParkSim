@@ -1,3 +1,5 @@
+import 'package:waterpark_frontend/state/settings_state.dart';
+
 import '../metrics.dart';
 import 'rect_state.dart';
 
@@ -12,5 +14,5 @@ class TankObject extends RectState {
     required this.height,
     required this.capacity,
     required this.level,
-  }) : super(x: x, y: y, w: Metrics.tankWidth, h: Metrics.tankHeight);
+  }) : super(x: x, y: y, w: SettingsState.tankWidth, h: SettingsState.tankHeight);
 }
