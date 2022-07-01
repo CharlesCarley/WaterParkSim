@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:waterpark_frontend/widgets/workspace_settings.dart';
 import '../palette.dart';
 import '../state/settings_state.dart';
 import '../state/state_manager.dart';
-import '../widgets/positioned_widgets.dart';
 import 'program_canvas.dart';
 import 'program_editor.dart';
 import 'widgets/action_widget.dart';
@@ -24,6 +25,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
 
   bool showSettings = false;
   Size _size = Size.zero;
+  late FocusNode keyFocus;
 
   @override
   void dispose() {
@@ -33,6 +35,9 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
 
   @override
   void initState() {
+    keyFocus = FocusNode();
+    keyFocus.requestFocus();
+
     dispatcher.subscribe(this);
     super.initState();
   }
@@ -45,48 +50,47 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         colorScheme: ColorScheme.fromSeed(seedColor: Palette.background),
         canvasColor: Palette.canvasColor,
       ),
-      home: Scaffold(
-        key: scaffolding,
-        appBar: AppBar(
-          foregroundColor: Palette.titleForeground,
-          backgroundColor: Palette.titleBackground,
-          title: Text(SettingsState.title),
-          actions: _buildActionList(),
-        ),
-        body: Stack(
-          children: _buildBody(),
+      home: RawKeyboardListener(
+        focusNode: keyFocus,
+        autofocus: false,
+        onKey: (key) => dispatcher.notifyKey(key),
+        child: Scaffold(
+          key: scaffolding,
+          appBar: AppBar(
+            foregroundColor: Palette.titleForeground,
+            backgroundColor: Palette.titleBackground,
+            title: Text(SettingsState.title),
+            actions: _buildActionList(),
+          ),
+          body: Stack(
+            children: _buildBody(),
+          ),
         ),
       ),
     );
   }
 
   List<Widget> _buildBody() {
-    List<Widget> body = [
-      SplitWidget(
+    List<Widget> body = [];
+    if (showSettings) {
+      body.add(
+        WorkspaceSettings(
+          dispatcher: dispatcher,
+          rect: Rect.fromLTWH(0, 0, _size.width, _size.height),
+        ),
+      );
+    } else {
+      body.add(SplitWidget(
         initialSplit: 0.25,
         direction: SplitWidgetDirection.vertical,
         childA: ProgramEditor(
-          manager: dispatcher,
+          dispatcher: dispatcher,
           program: SettingsState.debugProg,
         ),
         childB: ProgramCanvas(
           dispatcher: dispatcher,
         ),
-      )
-    ];
-
-    if (showSettings) {
-      body.add(
-        PositionedColoredBox(
-          rect: Rect.fromLTWH(
-            0,
-            0,
-            _size.width,
-            _size.height,
-          ),
-          color: Palette.action,
-        ),
-      );
+      ));
     }
     return body;
   }
@@ -119,22 +123,40 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   }
 
   @override
+  void onSettingsChanged() {
+    setState(() {
+      if (scaffolding.currentContext != null) {
+        _size = MediaQuery.of(scaffolding.currentContext!).size;
+      }
+      showSettings = true;
+      keyFocus.requestFocus();
+    });
+  }
+
+  @override
   void onDisplaySettings() {
     setState(() {
       if (scaffolding.currentContext != null) {
         _size = MediaQuery.of(scaffolding.currentContext!).size;
       }
       showSettings = true;
+      keyFocus.requestFocus();
     });
   }
 
   @override
-  void onRun() {
-    setState(() {});
+  void onStateTreeCompiled(StateTree stateTree) {
+    setState(() {
+      keyFocus.requestFocus();
+    });
   }
 
   @override
-  void onStateTreeCompiled(StateTree stateTree) {
-    setState(() {});
+  void onKey(RawKeyEvent key) {
+    if (key.physicalKey == (PhysicalKeyboardKey.escape)) {
+      setState(() {
+        showSettings = false;
+      });
+    }
   }
 }

@@ -30,17 +30,18 @@ import '../tokenizer/sim_builder.dart';
 
 class ProgramEditor extends StatefulWidget {
   final String program;
-  final WorkspaceEventDispatcher manager;
+  final WorkspaceEventDispatcher dispatcher;
 
   const ProgramEditor({
     Key? key,
     required this.program,
-    required this.manager,
+    required this.dispatcher,
   }) : super(key: key);
 
   @override
   State<ProgramEditor> createState() => _ProgramEditorState();
 }
+
 
 class _ProgramEditorState extends State<ProgramEditor>
     with WorkSpaceEventReceiver {
@@ -50,9 +51,10 @@ class _ProgramEditorState extends State<ProgramEditor>
   @override
   void initState() {
     _controller = TextEditingController();
-    _controller.text = widget.program;
+    _controller.text = widget.dispatcher.text;
     _editFocus = FocusNode();
     super.initState();
+    exitTextChanged(widget.dispatcher.text);
   }
 
   @override
@@ -74,6 +76,11 @@ class _ProgramEditorState extends State<ProgramEditor>
           children: [
             Expanded(
               child: TextFormField(
+                onSaved: (newValue) {
+                  if (newValue != null) {
+                    exitTextChanged(newValue);
+                  }
+                },
                 onChanged: (value) => exitTextChanged(value),
                 autofocus: true,
                 focusNode: _editFocus,
@@ -93,6 +100,7 @@ class _ProgramEditorState extends State<ProgramEditor>
 
   Future<List<Node>> _compile(String newValue) {
     return Future.microtask(() {
+      widget.dispatcher.text = newValue;
       StateTreeCompiler obj = StateTreeCompiler();
       return obj.compile(newValue);
     });
@@ -100,7 +108,7 @@ class _ProgramEditorState extends State<ProgramEditor>
 
   void exitTextChanged(String newValue) async {
     await _compile(newValue).then((value) {
-      widget.manager
+      widget.dispatcher
           .notifyStateTreeCompiled(
         StateTree(code: value),
       )
@@ -112,20 +120,5 @@ class _ProgramEditorState extends State<ProgramEditor>
         });
       });
     });
-  }
-
-  @override
-  void onDisplaySettings() {
-    // TODO: implement onDisplaySettings
-  }
-
-  @override
-  void onRun() {
-    // TODO: implement onRun
-  }
-
-  @override
-  void onStateTreeCompiled(StateTree stateTree) {
-    setState(() {});
   }
 }

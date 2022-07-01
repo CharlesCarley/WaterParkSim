@@ -63,6 +63,11 @@ class Palette {
   static const editTextButtonBackground = Color(0xFF1E1E1E);
   static const editTextButtonForeground = Color(0xFF9F9B9B);
 
+  static const settingsForeground = Color(0xFF918274);
+  static const settingsForeground1 = Color.fromARGB(255, 106, 100, 100);
+  static const settingsForeground2 = Color.fromARGB(255, 190, 182, 182);
+  static const settingsAccent = Color(0xFF201E1F);
+
   static const boxBackground = Color(0xFF1E1E1E);
   static const pinBackground = Color(0xFF383439);
   static const pinBorder = Color(0xFF383439);

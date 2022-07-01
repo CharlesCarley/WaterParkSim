@@ -45,15 +45,6 @@ class _ProgramCanvasState extends State<ProgramCanvas>
     );
   }
 
-  @override
-  void onDisplaySettings() {
-    // TODO: implement onDisplaySettings
-  }
-
-  @override
-  void onRun() {
-    // TODO: implement onRun
-  }
 
   @override
   void onStateTreeCompiled(StateTree stateTree) {
