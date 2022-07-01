@@ -208,7 +208,7 @@ class Builder:
         flBuild.copyTree(self.pubDir())
 
     def buildWeb(self):
-        self.buildBase("web", "--release --base-href /")
+        self.buildBase("web", "--release --base-href /docs/")
     def buildWin(self):
         self.buildBase("windows", "--release")
     def buildLinux(self):
