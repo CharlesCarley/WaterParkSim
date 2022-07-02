@@ -47,20 +47,33 @@ class _ProgramEditorState extends State<ProgramEditor>
     with WorkSpaceEventReceiver {
   late FocusNode _editFocus;
   late TextEditingController _controller;
+  late Timer _triggerBuild;
+  late String _lastState;
+  late bool _changed;
 
   @override
   void initState() {
     _controller = TextEditingController();
     _controller.text = widget.dispatcher.text;
+    _lastState = widget.dispatcher.text;
+    _changed = false;
+
     _editFocus = FocusNode();
+
+    _triggerBuild = Timer.periodic(
+      const Duration(seconds: 1),
+      _triggerCall,
+    );
+
     super.initState();
     exitTextChanged(widget.dispatcher.text);
   }
 
   @override
   void dispose() {
-    super.dispose();
+    _triggerBuild.cancel();
     _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -72,9 +85,10 @@ class _ProgramEditorState extends State<ProgramEditor>
         children: [
           Expanded(
             child: TextFormField(
-              onSaved: _triggerChange,
+              validator: null,
+              onSaved: null,
               onChanged: _triggerChange,
-              autofocus: true,
+              autofocus: false,
               focusNode: _editFocus,
               controller: _controller,
               keyboardType: TextInputType.multiline,
@@ -101,8 +115,13 @@ class _ProgramEditorState extends State<ProgramEditor>
     });
   }
 
-  void exitTextChanged(String newValue) async {
-    await _compile(newValue).then(_dispatchTree);
+  void exitTextChanged(String newValue) {
+    newValue = newValue.trim();
+    if (_lastState != newValue) {
+      _changed = true;
+      _lastState = newValue;
+    }
+    // await _compile(newValue).then(_dispatchTree);
   }
 
   FutureOr<void> _dispatchTree(value) {
@@ -117,5 +136,12 @@ class _ProgramEditorState extends State<ProgramEditor>
         }
       });
     });
+  }
+
+  void _triggerCall(Timer timer) {
+    if (_changed) {
+      _compile(_lastState).then(_dispatchTree);
+      _changed = false;
+    }
   }
 }

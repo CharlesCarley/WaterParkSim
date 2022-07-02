@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
-        "microtask"
+        "microtask",
+        "unfocus"
     ],
     "files.exclude": {
         "**/.git": true,

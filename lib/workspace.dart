@@ -121,7 +121,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         onClick: () {
           dispatcher.notifyDisplaySettings();
         },
-        tooltip: "Opens the settings panel.",
+        tooltip: "Opens the settings panel. (Ctrl + E)",
       ),
     ];
   }
