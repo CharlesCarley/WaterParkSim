@@ -1,6 +1,5 @@
 import 'package:waterpark_frontend/state/settings_state.dart';
 
-import '../metrics.dart';
 import 'rect_state.dart';
 
 class TankObject extends RectState {

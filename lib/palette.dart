@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 
 class Palette {
   static const background = Color(0xFF131313);
+  static const backgroundLight = Color(0xFF333333);
 
   static const titleBackground = Color(0xFF131313);
   static const titleForeground = Color.fromARGB(255, 94, 94, 97);
@@ -55,11 +56,11 @@ class Palette {
   static const wireNoChange = Color(0xFF585357);
   static const wireChange = Color(0xFF716B71);
 
-  static const editTextForeground = Color(0xFF918274);
+  static const editTextForeground = Color(0xFFB1A294);
   static const editTextBackground = Color(0xFF323030);
   static const editTextWidgetBackground = Color(0xFF252525);
   static const editTextWidgetInnerBorder = Color(0xFF201E1F);
-  static const editTextWidgetBorder = Color(0xFF343334);
+  static const editTextWidgetBorder = Color.fromARGB(255, 230, 230, 230);
   static const editTextButtonBackground = Color(0xFF1E1E1E);
   static const editTextButtonForeground = Color(0xFF9F9B9B);
 

@@ -19,6 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:waterpark_frontend/widgets/event_router.dart';
 
@@ -42,7 +43,6 @@ class ProgramEditor extends StatefulWidget {
   State<ProgramEditor> createState() => _ProgramEditorState();
 }
 
-
 class _ProgramEditorState extends State<ProgramEditor>
     with WorkSpaceEventReceiver {
   late FocusNode _editFocus;
@@ -65,37 +65,32 @@ class _ProgramEditorState extends State<ProgramEditor>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Palette.editTextWidgetBorder),
-      ),
-      child: ColoredBox(
-        color: Palette.editTextWidgetBackground,
-        child: Column(
-          children: [
-            Expanded(
-              child: TextFormField(
-                onSaved: (newValue) {
-                  if (newValue != null) {
-                    exitTextChanged(newValue);
-                  }
-                },
-                onChanged: (value) => exitTextChanged(value),
-                autofocus: true,
-                focusNode: _editFocus,
-                controller: _controller,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                cursorColor: Palette.action,
-                style: Common.editTextStyle,
-                decoration: Common.defaultTextDecoration,
-              ),
+    return ColoredBox(
+      color: Palette.editTextWidgetBackground,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Expanded(
+            child: TextFormField(
+              onSaved: _triggerChange,
+              onChanged: _triggerChange,
+              autofocus: true,
+              focusNode: _editFocus,
+              controller: _controller,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              cursorColor: Palette.action,
+              style: Common.editTextStyle,
+              decoration: Common.defaultTextDecoration,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
+
+  void _triggerChange(newValue) {
+    exitTextChanged(newValue);
   }
 
   Future<List<Node>> _compile(String newValue) {
@@ -107,17 +102,19 @@ class _ProgramEditorState extends State<ProgramEditor>
   }
 
   void exitTextChanged(String newValue) async {
-    await _compile(newValue).then((value) {
-      widget.dispatcher
-          .notifyStateTreeCompiled(
-        StateTree(code: value),
-      )
-          .then((value) {
-        setState(() {
-          if (_editFocus.canRequestFocus) {
-            _editFocus.requestFocus();
-          }
-        });
+    await _compile(newValue).then(_dispatchTree);
+  }
+
+  FutureOr<void> _dispatchTree(value) {
+    var result = widget.dispatcher.notifyStateTreeCompiled(
+      // reconstruct the tree with the new value...
+      StateTree(code: value),
+    );
+    result.then((value) {
+      setState(() {
+        if (_editFocus.canRequestFocus) {
+          _editFocus.requestFocus();
+        }
       });
     });
   }

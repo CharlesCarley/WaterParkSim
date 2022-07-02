@@ -25,7 +25,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
   void initState() {
     _rangeLimit(SettingsState.inputObjectWidth, 40, 100);
     _rangeLimit(SettingsState.inputObjectHeight, 40, 100);
-    _rangeLimit(SettingsState.linSegmentLineSize, 0.01, 4);
+    _rangeLimit(SettingsState.lineSegmentLineSize, 0.01, 4);
     super.initState();
   }
 
@@ -41,7 +41,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: Color.fromARGB(20, 255, 255, 255),
+      color: Palette.backgroundLight,
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +49,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.fromLTRB(8.0, 16, 8, 16),
                   child: Text(
                     "Workspace Parameters",
                     style: Common.sizedTextStyle(24),
@@ -60,7 +60,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                   icon: IconMappings.exit,
                   x: 0,
                   y: 0,
-                  color: Palette.action,
+                  color: Palette.wire,
                   onClick: (){
                     widget.dispatcher.notifyDisplaySettingsClosed();
                   },
@@ -70,7 +70,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 50),
+                padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 16),
                 child: ListView(
                   shrinkWrap: true,
                   children: [
@@ -99,27 +99,27 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                       },
                     ),
                     SettingsDoubleWidget(
-                      value: SettingsState.linSegmentLineSize,
-                      heading: "linSegmentLineSize",
+                      value: SettingsState.lineSegmentLineSize,
+                      heading: "lineSize",
                       description: "Controls stroke width of a line segment.",
                       min: 0.01,
                       max: 5,
                       onChanged: (val) {
                         setState(() {
-                          SettingsState.linSegmentLineSize = val;
+                          SettingsState.lineSegmentLineSize = val;
                         });
                       },
                     ),
                     SettingsDoubleWidget(
-                      value: SettingsState.linSegmentEndPointSize,
-                      heading: "linSegmentEndPointSize",
+                      value: SettingsState.lineSegmentEndPointSize,
+                      heading: "endPointSize",
                       description:
                           "Controls the radius of line segment end points.",
                       min: 0.01,
                       max: 5,
                       onChanged: (val) {
                         setState(() {
-                          SettingsState.linSegmentEndPointSize = val;
+                          SettingsState.lineSegmentEndPointSize = val;
                         });
                       },
                     ),

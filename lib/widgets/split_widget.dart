@@ -20,8 +20,8 @@
 -------------------------------------------------------------------------------
 */
 import 'package:flutter/material.dart';
-import 'package:waterpark_frontend/metrics.dart';
 import 'package:waterpark_frontend/palette.dart';
+import 'package:waterpark_frontend/util/double_utils.dart';
 
 class BoxWidget extends StatelessWidget {
   const BoxWidget({
@@ -164,76 +164,100 @@ class _SplitWidgetState extends State<SplitWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
+    var screenSize = MediaQuery.of(context).size;
     if (splitPosition < 0) {
       splitPosition = widget.initialSplit;
     }
 
     if (widget.direction == SplitWidgetDirection.horizontal) {
-      final double height = screenSize.height - size;
-      final double bottomA = Metrics.clamp(
+      var height = screenSize.height - size;
+      var bottomA = DoubleUtils.lim(
         (height * splitPosition).roundToDouble(),
         0,
         height,
       );
 
-      final Size extent = Size.fromHeight(bottomA);
+      var extent = Size.fromHeight(bottomA);
 
-      return Listener(
-        onPointerUp: (event) {
-          _handlePointerUp();
-        },
-        onPointerDown: (event) {
-          _handlePointerDown(bottomA, event.position.dy);
-        },
-        onPointerHover: (event) {
-          _handleHover(bottomA, event.position.dy);
-        },
-        onPointerMove: (event) {
-          setState(() {
-            if (captured) {
-              splitPosition = event.position.dy / height;
-            }
-          });
-        },
+      return _listenY(
+        bottomA,
+        height,
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: _extractSplit(extent, SplitWidgetDirection.horizontal)),
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: _extractSplit(
+            extent,
+            SplitWidgetDirection.horizontal,
+          ),
+        ),
       );
 
       // col
     } else {
-      final double width = screenSize.width - size;
-      final double rightA = Metrics.clamp(
+      var width = screenSize.width - size;
+      var rightA = DoubleUtils.lim(
         (width * splitPosition).roundToDouble(),
         0,
         width,
       );
-      final Size extent = Size.fromWidth(rightA);
-      return Listener(
-        onPointerUp: (event) {
-          _handlePointerUp();
-        },
-        onPointerDown: (event) {
-          _handlePointerDown(rightA, event.position.dx);
-        },
-        onPointerHover: (event) {
-          _handleHover(rightA, event.position.dx);
-        },
-        onPointerMove: (event) {
-          setState(() {
-            if (captured) {
-              splitPosition = event.position.dx / width;
-            }
-          });
-        },
+      var extent = Size.fromWidth(rightA);
+
+      return _listenX(
+        rightA,
+        width,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _extractSplit(extent, SplitWidgetDirection.vertical),
+          children: _extractSplit(
+            extent,
+            SplitWidgetDirection.vertical,
+          ),
         ),
       );
     }
+  }
+
+  Listener _listenX(double sash, double width, {Widget? child}) {
+    return Listener(
+      onPointerUp: (event) {
+        _handlePointerUp();
+      },
+      onPointerDown: (event) {
+        _handlePointerDown(sash, event.position.dx);
+      },
+      onPointerHover: (event) {
+        _handleHover(sash, event.position.dx);
+      },
+      onPointerMove: (event) {
+        setState(() {
+          if (captured) {
+            splitPosition = event.position.dx / width;
+          }
+        });
+      },
+      child: child,
+    );
+  }
+
+  Listener _listenY(double sash, double height, {Widget? child}) {
+    return Listener(
+      onPointerUp: (event) {
+        _handlePointerUp();
+      },
+      onPointerDown: (event) {
+        _handlePointerDown(sash, event.position.dy);
+      },
+      onPointerHover: (event) {
+        _handleHover(sash, event.position.dy);
+      },
+      onPointerMove: (event) {
+        setState(() {
+          if (captured) {
+            splitPosition = event.position.dy / height;
+          }
+        });
+      },
+      child: child,
+    );
   }
 }

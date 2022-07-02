@@ -3,8 +3,8 @@ class SettingsState {
   static double inputObjectHeight = 50;
 
   // displayed as circle
-  static double linSegmentEndPointSize = 3.0;
-  static double linSegmentLineSize = 2.5;
+  static double lineSegmentEndPointSize = 3.0;
+  static double lineSegmentLineSize = 2.5;
 
   static double tankWidth = 75.0;
   static double tankHeight = 150.0;

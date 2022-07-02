@@ -64,7 +64,7 @@ class LineSegmentPainter extends CustomPainter {
 
   LineSegmentPainter(this.from, this.to, Color color) {
     _paint.isAntiAlias = true;
-    _paint.strokeWidth = SettingsState.linSegmentLineSize;
+    _paint.strokeWidth = SettingsState.lineSegmentLineSize;
     _paint.color = color;
   }
 
@@ -77,13 +77,13 @@ class LineSegmentPainter extends CustomPainter {
     );
     canvas.drawCircle(
       origin,
-      SettingsState.linSegmentEndPointSize,
+      SettingsState.lineSegmentEndPointSize,
       _paint,
     );
     canvas.drawLine(origin, newTo, _paint);
     canvas.drawCircle(
       newTo,
-      SettingsState.linSegmentEndPointSize,
+      SettingsState.lineSegmentEndPointSize,
       _paint,
     );
   }

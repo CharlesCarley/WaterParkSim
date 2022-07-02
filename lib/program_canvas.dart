@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:waterpark_frontend/palette.dart';
 import 'package:waterpark_frontend/state/state_manager.dart';
 import 'package:waterpark_frontend/widgets/event_router.dart';
 
@@ -36,8 +37,10 @@ class _ProgramCanvasState extends State<ProgramCanvas>
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: tree.clearColor,
+      color: Palette.background,
       child: Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.expand,
         children: ProgramCanvasConstructor(
           tree: tree,
         ).widgets,

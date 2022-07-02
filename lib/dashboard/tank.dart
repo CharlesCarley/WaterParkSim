@@ -22,6 +22,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:waterpark_frontend/state/settings_state.dart';
+import 'package:waterpark_frontend/util/double_utils.dart';
 import '../state/tank_state.dart';
 import '../widgets/label_widget.dart';
 import '../metrics.dart';
@@ -57,7 +58,7 @@ class TankWidget extends StatelessWidget {
     final Rect levelTop = Rect.fromLTRB(
       inner.left,
       inner.bottom -
-          ((Metrics.clamp(state.level, 0, state.height) / state.height) *
+          ((DoubleUtils.lim(state.level, 0, state.height) / state.height) *
               innerRectHeight),
       inner.right,
       inner.bottom,

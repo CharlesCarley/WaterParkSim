@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:waterpark_frontend/metrics.dart';
 import 'package:waterpark_frontend/theme.dart';
-import 'package:waterpark_frontend/util/double_utils.dart';
 import 'package:waterpark_frontend/workspace_settings.dart';
 import '../palette.dart';
 import '../state/settings_state.dart';
@@ -60,9 +60,13 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         child: Scaffold(
           key: scaffolding,
           appBar: AppBar(
+            toolbarHeight: 36,
             foregroundColor: Palette.titleForeground,
             backgroundColor: Palette.titleBackground,
-            title: Text(SettingsState.title),
+            title: Text(
+              SettingsState.title,
+              style: Common.sizedTextStyle(18),
+            ),
             actions: _buildActionList(),
           ),
           body: Stack(
@@ -77,7 +81,6 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
     List<Widget> body = [];
 
     if (showSettings) {
-
       body.add(
         WorkspaceSettings(
           dispatcher: dispatcher,
@@ -107,9 +110,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         x: 0,
         y: 0,
         onClick: () {
-          setState(() {
-            dispatcher.notifyRun();
-          });
+          dispatcher.notifyRun();
         },
         tooltip: "",
       ),
@@ -118,9 +119,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         x: 0,
         y: 0,
         onClick: () {
-          setState(() {
-            dispatcher.notifyDisplaySettings();
-          });
+          dispatcher.notifyDisplaySettings();
         },
         tooltip: "",
       ),
@@ -149,16 +148,19 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   @override
   void onStateTreeCompiled(StateTree stateTree) {
     setState(() {
-      keyFocus.requestFocus();
+      keyFocus.unfocus();
     });
   }
 
   @override
   void onKey(RawKeyEvent key) {
-    if (key.physicalKey == (PhysicalKeyboardKey.escape)) {
-      setState(() {
-        showSettings = false;
-      });
+    if (showSettings) {
+      if (key.physicalKey == (PhysicalKeyboardKey.escape)) {
+        setState(() {
+          showSettings = false;
+          keyFocus.unfocus();
+        });
+      }
     }
   }
 }

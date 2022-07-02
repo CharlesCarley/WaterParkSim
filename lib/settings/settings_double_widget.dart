@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:waterpark_frontend/settings/settings_label_widget.dart';
 
-import '../metrics.dart';
 import '../palette.dart';
 
 class SettingsDoubleWidget extends StatelessWidget {
@@ -27,25 +26,23 @@ class SettingsDoubleWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 1,1,4),
       child: ColoredBox(
-        color: Color.fromARGB(180, 25, 25, 25),
+        color: const Color.fromARGB(180, 25, 25, 25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SettingsLabelWidget(
-              label: heading,
-              textSize: 18,
-              labelColor: Palette.settingsForeground,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
+              child: SettingsLabelWidget(
+                label: "$heading:  ${value.toStringAsFixed(0)}",
+                textSize: 18,
+                labelColor: Palette.settingsForeground,
+              ),
             ),
             SettingsLabelWidget(
               label: description,
               textSize: 12,
               labelColor: Palette.settingsForeground1,
-            ),
-            SettingsLabelWidget(
-              label: value.toStringAsFixed(2),
-              textSize: 14,
-              labelColor: Palette.settingsAccent,
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 1,1,1),
@@ -54,9 +51,10 @@ class SettingsDoubleWidget extends StatelessWidget {
                 onChanged: onChanged,
                 min: min,
                 max: max,
-                inactiveColor: Color.fromARGB(255, 54, 54, 58),
-                activeColor: Color.fromARGB(255, 105, 131, 169),
-                thumbColor: Color.fromARGB(255, 162, 153, 227),
+                divisions: 100,
+                inactiveColor: const Color.fromARGB(255, 54, 54, 58),
+                activeColor: const Color.fromARGB(255, 105, 131, 169),
+                thumbColor: const Color.fromARGB(255, 162, 153, 227),
               ),
             ),
           ],

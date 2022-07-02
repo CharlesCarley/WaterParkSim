@@ -57,7 +57,6 @@ class WorkspaceEventDispatcher extends EventDispatcher<WorkSpaceEventReceiver> {
   Future notifyKey(RawKeyEvent key) {
     return Future.microtask(() {
       for (var receiver in receivers) {
-        // print("${receiver} -> onKey");
         receiver.onKey(key);
       }
     });
