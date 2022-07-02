@@ -11,7 +11,7 @@ class SettingsState {
 
 
 
-  static String title = "WaterPark Demo";
+  static String title = "SCADA Demo";
 
   static String debugProg = """
 input 0 10 4

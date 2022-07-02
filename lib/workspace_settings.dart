@@ -41,7 +41,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: Palette.backgroundLight,
+      color: Palette.background,
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +52,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                   padding: const EdgeInsets.fromLTRB(8.0, 16, 8, 16),
                   child: Text(
                     "Workspace Parameters",
-                    style: Common.sizedTextStyle(24),
+                    style: Common.sizedTextStyle(24, color: Palette.titleForeground),
                   ),
                 ),
                 const Spacer(),
@@ -60,7 +60,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                   icon: IconMappings.exit,
                   x: 0,
                   y: 0,
-                  color: Palette.wire,
+                  color: Palette.highlight,
                   onClick: (){
                     widget.dispatcher.notifyDisplaySettingsClosed();
                   },
@@ -104,6 +104,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                       description: "Controls stroke width of a line segment.",
                       min: 0.01,
                       max: 5,
+                      decimals: 2,
                       onChanged: (val) {
                         setState(() {
                           SettingsState.lineSegmentLineSize = val;
@@ -117,6 +118,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                           "Controls the radius of line segment end points.",
                       min: 0.01,
                       max: 5,
+                      decimals: 2,
                       onChanged: (val) {
                         setState(() {
                           SettingsState.lineSegmentEndPointSize = val;

@@ -47,7 +47,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WaterPark Demo',
+      title: SettingsState.title,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Palette.background),
         canvasColor: Palette.canvasColor,
@@ -112,7 +112,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         onClick: () {
           dispatcher.notifyRun();
         },
-        tooltip: "",
+        tooltip: "Runs a simulation with the current script.",
       ),
       ActionIcon.tool(
         icon: IconMappings.edit,
@@ -121,7 +121,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         onClick: () {
           dispatcher.notifyDisplaySettings();
         },
-        tooltip: "",
+        tooltip: "Opens the settings panel.",
       ),
     ];
   }
@@ -159,6 +159,14 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         setState(() {
           showSettings = false;
           keyFocus.unfocus();
+        });
+      }
+    } else {
+      if (key.isControlPressed &&
+          key.physicalKey == (PhysicalKeyboardKey.keyE)) {
+        setState(() {
+          showSettings = true;
+          keyFocus.requestFocus();
         });
       }
     }
