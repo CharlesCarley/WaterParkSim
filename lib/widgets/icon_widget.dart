@@ -73,29 +73,26 @@ class IconWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned.fromRect(
-      rect: Rect.fromLTWH(x, y, size, size),
-      child: TextButton(
-        clipBehavior: Clip.none,
-        onPressed: onClick,
-        style: TextButton.styleFrom(padding: EdgeInsets.zero),
-        child: Tooltip(
-          message: tooltip,
-          textStyle: const TextStyle(
-            color: Palette.toolTipForeground,
-            fontSize: 10,
-          ),
-          decoration: const BoxDecoration(
-            color: Palette.toolTipBackground,
-          ),
-          child: Text(
-            icon,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: color,
-              fontFamily: 'Icons',
-              fontSize: size,
-            ),
+    return TextButton(
+      clipBehavior: Clip.none,
+      onPressed: onClick,
+      style: TextButton.styleFrom(padding: EdgeInsets.zero),
+      child: Tooltip(
+        message: tooltip,
+        textStyle: const TextStyle(
+          color: Palette.toolTipForeground,
+          fontSize: 10,
+        ),
+        decoration: const BoxDecoration(
+          color: Palette.toolTipBackground,
+        ),
+        child: Text(
+          icon,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: color,
+            fontFamily: 'Icons',
+            fontSize: size,
           ),
         ),
       ),

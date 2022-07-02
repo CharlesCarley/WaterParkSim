@@ -100,7 +100,7 @@ class Path:
 
     def remove(self):
         if (os.path.isdir(self.path)):
-            print("Removing".ljust(20), self.path)
+            print("Removing".ljust(20), "=> ", self.path)
             shutil.rmtree(self.path, ignore_errors=True)
 
     def copyTo(self, file, toPath):
@@ -110,6 +110,7 @@ class Path:
         shutil.copymode(self.file(file), toPath.file(file))
 
     def copyTree(self, toPath):
+        print("Copy".ljust(20), "=> ", toPath.path)
         shutil.copytree(self.path, toPath.path, dirs_exist_ok=True)
 
     def removeFile(self, file):

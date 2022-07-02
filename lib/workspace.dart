@@ -75,6 +75,16 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
 
   List<Widget> _buildBody() {
     List<Widget> body = [];
+
+    if (showSettings) {
+
+      body.add(
+        WorkspaceSettings(
+          dispatcher: dispatcher,
+          rect: Rect.fromLTWH(0, 0, _size.width, _size.height),
+        ),
+      );
+    } else {
       body.add(SplitWidget(
         initialSplit: 0.25,
         direction: SplitWidgetDirection.vertical,
@@ -86,19 +96,6 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
           dispatcher: dispatcher,
         ),
       ));
-
-    if (showSettings) {
-
-      double w = DoubleUtils.lim(_size.width, 300, double.maxFinite);
-      double h = DoubleUtils.lim(_size.height, 300, double.maxFinite);
-
-      body.add(
-        WorkspaceSettings(
-          dispatcher: dispatcher,
-          rect: Rect.fromLTWH(w/2, 0, w/2, h),
-        ),
-      );
-    } else {
     }
     return body;
   }
