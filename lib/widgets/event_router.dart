@@ -21,7 +21,7 @@ class WorkspaceEventDispatcher extends EventDispatcher<WorkSpaceEventReceiver> {
   Future notifyRun() {
     return Future.microtask(() {
       for (var receiver in receivers) {
-        print("${receiver} -> onRun");
+        // print("${receiver} -> onRun");
         receiver.onRun();
       }
     });
@@ -30,7 +30,7 @@ class WorkspaceEventDispatcher extends EventDispatcher<WorkSpaceEventReceiver> {
   Future notifyDisplaySettings() {
     return Future.microtask(() {
       for (var receiver in receivers) {
-        print("${receiver} -> onDisplaySettings");
+        // print("${receiver} -> onDisplaySettings");
         receiver.onDisplaySettings();
       }
     });
@@ -38,7 +38,7 @@ class WorkspaceEventDispatcher extends EventDispatcher<WorkSpaceEventReceiver> {
   Future notifyDisplaySettingsClosed() {
     return Future.microtask(() {
       for (var receiver in receivers) {
-        print("${receiver} -> onDisplaySettingsClosed");
+        // print("${receiver} -> onDisplaySettingsClosed");
         receiver.onDisplaySettingsClosed();
       }
     });
@@ -46,7 +46,7 @@ class WorkspaceEventDispatcher extends EventDispatcher<WorkSpaceEventReceiver> {
   Future notifyStateTreeCompiled(StateTree stateTree) {
     return Future.microtask(() {
       for (var receiver in receivers) {
-        print("${receiver} -> onStateTreeCompiled");
+        // print("${receiver} -> onStateTreeCompiled");
         receiver.onStateTreeCompiled(stateTree);
       }
     });
@@ -57,7 +57,7 @@ class WorkspaceEventDispatcher extends EventDispatcher<WorkSpaceEventReceiver> {
   Future notifyKey(RawKeyEvent key) {
     return Future.microtask(() {
       for (var receiver in receivers) {
-        print("${receiver} -> onKey");
+        // print("${receiver} -> onKey");
         receiver.onKey(key);
       }
     });
