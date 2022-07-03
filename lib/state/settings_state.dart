@@ -11,7 +11,6 @@ class SettingsState {
 
   // general border
   static double border = 3.0;
-
   static String title = "Water Facility Demo";
 
   static String debugProg = """
