@@ -130,12 +130,10 @@ class Builder:
         self.release = self.findOpt("--release")
         self.opts = {}
 
-        thisDir = Path()
-        sourceDir = thisDir.back()
-        self.opts['dev'] = thisDir
+        sourceDir = Path()
         self.opts['source'] = sourceDir
-        self.opts['web'] = sourceDir
         self.opts['publish'] = sourceDir.create("docs")
+        self.opts['test'] = sourceDir.join("test")
 
         if (sys.platform == "win32"):
             platname = "windows"
@@ -143,18 +141,12 @@ class Builder:
             platname = 'linux'
 
         self.opts['platform'] = platname
-        buildDir = thisDir.create(platname)
 
-    def home(self): return self.opts['dev']
+    def home(self): return self.opts['source']
     def sourceDir(self): return self.opts['source']
-    def webDir(self): return self.opts['web']
-    def webTestDir(self): return self.opts['web_test']
-    def webAssetDir(self): return self.opts['web_asset']
     def flutterPlatform(self): return self.opts['platform']
-    def buildOutput(self): return self.opts['build_files']
-    def buildOutputEm(self): return self.opts['em_build_files']
-    def bindingFile(self): return self.opts['binding_file']
     def pubDir(self): return self.opts['publish']
+    def testDir(self): return self.opts['test']
 
     def dumpOpts(self):
         print("")
@@ -194,17 +186,19 @@ class Builder:
 
     def buildClean(self, reCreate=False):
         print("Cleaning...".ljust(20), self.argv)
-
-        self.goto(self.webDir())
+        self.pubDir().remove()
+        self.goto(self.sourceDir())
         self.run("flutter clean")
+        self.run("flutter pub get")
 
     def buildBase(self, kind, args):
         self.release = True
-        self.goto(self.webDir())
+        self.buildTest()
+        self.goto(self.sourceDir())
         self.run("flutter pub get")
         self.run("flutter build %s %s"%(kind, args))
 
-        flBuild = self.webDir().subdir("build/%s"%kind)
+        flBuild = self.sourceDir().subdir("build/%s"%kind)
         self.pubDir().remove()
         flBuild.copyTree(self.pubDir())
 
@@ -215,22 +209,24 @@ class Builder:
     def buildLinux(self):
         self.buildBase("linux", "--release")
 
+    def buildTest(self):
+        self.release = True
+        self.goto(self.sourceDir())
+        self.run("flutter test")
+
     def logUsage(self):
         print("build <kind> <options>")
         print("")
         print("Where kind is one of the following")
         print("")
-        print("cpp    - Builds the c++ project")
-        print("em     - Compile the project with emscripten")
-        print("flp    - Publish the application")
-        print("fl     - Build the flutter application")
-        print("clean  - Remove the build directories for all the projects")
+        print("web    - Builds the web project")
+        print("win    - Builds the desktop windows project")
+        print("linux  - Builds the desktop linux project")
+        print("test   - Builds the test source")
         print("")
-        print("Where options is one or more of the following switches")
         print("")
-        print("--with-sdl       - Builds the SDL runtime for the C++ standalone")
-        print("--with-black-box - Bulids the chip library without any performance abastractions")
-        print("--release        - Compiles everything in release mode")
+        print("clean  - Removes the build directories")
+        print("help   - Displays this message")
         print("")
         print("")
 
@@ -247,9 +243,13 @@ def main(argc, argv):
         build.buildLinux()
     elif (build.findOpt("help")):
         build.logUsage()
+    elif (build.findOpt("test")):
+        build.buildTest()
+    elif (build.findOpt("clean")):
+        build.buildClean()
     else:
-        build.buildWin()
-
+        build.logUsage()
+ 
     build.goto(build.home())
 
 if __name__ == '__main__':

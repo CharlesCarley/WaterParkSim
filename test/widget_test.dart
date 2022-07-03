@@ -196,7 +196,6 @@ void main() {
   });
 
   test(makeName("SimBuilder"), () {
-
     var parser = StateTreeCompiler();
 
     var ret = parser.compile("tank 20 20 25 625 15 "
@@ -222,9 +221,7 @@ void main() {
   });
   test(makeName("SimBuilder"), () {
     var parser = StateTreeCompiler();
-    
-    var ret = parser.compile(
-      """
+    var ret = parser.compile("""
       input 0 0 20 
         sock S 0 0
       input 0 0 0 
@@ -239,14 +236,10 @@ void main() {
     expect(i0.hasInputs, false);
     expect(i1.hasOutputs, false);
     expect(i1.hasInputs, true);
-
-
   });
-/////////////////////////////////////////////////////////////////
-/// Widget Tests
-/////////////////////////////////////////////////////////////////
-
-
+  /////////////////////////////////////////////////////////////////
+  /// Widget Tests
+  /////////////////////////////////////////////////////////////////
 }
 
 int testId = 0;
