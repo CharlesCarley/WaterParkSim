@@ -197,6 +197,8 @@ class Builder:
         self.buildClean()
         self.buildTest()
 
+        self.goto(self.sourceDir())
+        self.run("flutter pub get")
         self.run("flutter build %s %s"%(kind, args))
 
         flBuild = self.sourceDir().subdir("build/%s"%kind)
