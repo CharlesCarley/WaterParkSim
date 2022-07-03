@@ -19,11 +19,11 @@ input 0 10 6
  state 0
  sock NE 0 18
 tank 100 10 20 500 1
- sock SW 0 127.8 
+ sock NW 0 20 
 link -1 -3
- sock SE 0 35.5
+ sock NE 0 35.5
 tank 200 10 20 500 1
- sock SW 0 35.5
+ sock NW 0 35.5
  link -1 -3
  sock SE 0 35.5
 tank 300 10 20 500 1
