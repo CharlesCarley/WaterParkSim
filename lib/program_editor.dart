@@ -43,9 +43,9 @@ class _ProgramEditorState extends State<ProgramEditor>
       _triggerCallTimer,
     );
 
+    super.initState();
     _changed = true;
     _triggerCall();
-    super.initState();
   }
 
   @override

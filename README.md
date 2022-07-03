@@ -1,18 +1,20 @@
-# waterpark_frontend
+# WaterParkSim
 
-A new Flutter project.
+This is a demo project for learning to work with and use 
+flutter for web and desktop targets.  
 
-## Getting Started
 
-[Project](https://charlescarley.github.io/WaterParkSim/)
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+## Current State
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+The current web version of this project may be found [here.](https://charlescarley.github.io/WaterParkSim/)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+
+## Project Structure
+
+The application is a workspace widget that is separated into a basic text editor and a display canvas.
+
+The text editor recomputes the text as it is being entered then refreshes the display canvas with the result.
+

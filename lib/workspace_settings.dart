@@ -150,6 +150,18 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                           SettingsState.tankHeight = val;
                         });
                       },
+                    ), SettingsDoubleWidget(
+                      value: SettingsState.border,
+                      heading: "border",
+                      description:
+                          "Controls a general border metric.",
+                      min: 1,
+                      max: 10,
+                      onChanged: (val) {
+                        setState(() {
+                          SettingsState.border = val;
+                        });
+                      },
                     ),
                   ],
                 ),

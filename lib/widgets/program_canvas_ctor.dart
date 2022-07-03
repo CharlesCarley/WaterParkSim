@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:waterpark/dashboard/input_widget.dart';
-import 'package:waterpark/dashboard/socket.dart';
-import 'package:waterpark/dashboard/tank.dart';
+import 'package:waterpark/dashboard/socket_widget.dart';
+import 'package:waterpark/dashboard/tank_widget.dart';
 import '../state/common_state.dart';
 import '../state/input_state.dart';
 import '../state/rect_state.dart';
@@ -9,7 +9,7 @@ import '../state/settings_state.dart';
 import '../state/socket_state.dart';
 import '../state/state_manager.dart';
 import '../state/tank_state.dart';
-import 'link_widget.dart';
+import '../dashboard/link_widget.dart';
 
 class ProgramCanvasConstructor {
   final StateTree tree;

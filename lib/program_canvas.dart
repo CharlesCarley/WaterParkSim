@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:waterpark/palette.dart';
-import 'package:waterpark/state/state_manager.dart';
-import 'package:waterpark/widgets/event_router.dart';
-
-import 'dashboard/program_canvas_ctor.dart';
+import 'palette.dart';
+import 'state/state_manager.dart';
+import 'widgets/event_router.dart';
+import 'widgets/program_canvas_ctor.dart';
 
 class ProgramCanvas extends StatefulWidget {
   final WorkspaceEventDispatcher dispatcher;
@@ -20,9 +19,7 @@ class ProgramCanvas extends StatefulWidget {
 
 class _ProgramCanvasState extends State<ProgramCanvas>
     with WorkSpaceEventReceiver {
-
   StateTree _tree = StateTree.zero();
-
 
   @override
   void initState() {

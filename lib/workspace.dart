@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:waterpark/metrics.dart';
-import 'package:waterpark/theme.dart';
-import 'package:waterpark/workspace_settings.dart';
+import 'metrics.dart';
+import 'theme.dart';
+import 'workspace_settings.dart';
 import '../palette.dart';
 import '../state/settings_state.dart';
 import '../state/state_manager.dart';
@@ -119,7 +119,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         tooltip: "Runs a simulation with the current script.",
       ),
       ActionIcon.tool(
-        icon: IconMappings.edit,
+        icon: IconMappings.gears,
         x: 0,
         y: 0,
         onClick: () {
