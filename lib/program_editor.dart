@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:waterpark/state/settings_state.dart';
 import 'package:waterpark/widgets/event_router.dart';
+import 'package:waterpark/widgets/icon_widget.dart';
 
 import '../metrics.dart';
 import '../palette.dart';
@@ -61,7 +63,18 @@ class _ProgramEditorState extends State<ProgramEditor>
       color: Palette.editTextWidgetBackground,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          ColoredBox(
+            color: Palette.backgroundLight,
+            child: IconWidget(
+              icon: IconMappings.brush,
+              onClick: _clearClicked,
+              color: Palette.titleIcon,
+              tooltip: "Clears the current text",
+              textSize: SettingsState.menuHeight,
+            ),
+          ),
           Expanded(
             child: TextFormField(
               validator: null,
@@ -123,6 +136,13 @@ class _ProgramEditorState extends State<ProgramEditor>
   }
 
   void _triggerCallTimer(Timer timer) {
+    _triggerCall();
+  }
+
+  void _clearClicked() {
+    _controller.text = "";
+    _lastState = "";
+    _changed = true;
     _triggerCall();
   }
 }

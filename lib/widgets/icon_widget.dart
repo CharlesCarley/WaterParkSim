@@ -41,7 +41,6 @@ class IconMappings {
 }
 
 class IconWidget extends StatelessWidget {
-  final double x, y;
   final String icon;
   final Color color;
   final String tooltip;
@@ -51,18 +50,15 @@ class IconWidget extends StatelessWidget {
   const IconWidget({
     Key? key,
     required this.icon,
-    required this.x,
-    required this.y,
     required this.color,
     required this.onClick,
     required this.tooltip,
-  })  : size = 16,
+    double? textSize,
+  })  : size = textSize?? 16,
         super(key: key);
 
   const IconWidget.tool(
     this.icon,
-    this.x,
-    this.y,
     this.onClick,
     this.tooltip, {
     Key? key,

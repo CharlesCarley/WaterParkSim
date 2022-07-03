@@ -66,26 +66,26 @@ class Path:
         result = self.path
         return os.path.join(result, path)
 
-    def create(self, relitave):
+    def create(self, relative):
         result = self.path
         if (sys.platform == "win32"):
-            relitave = relitave.replace('/', '\\')
+            relative = relative.replace('/', '\\')
         else:
-            relitave = relitave.replace('\\', '/')
+            relative = relative.replace('\\', '/')
 
-        joinResult = os.path.join(result, relitave)
+        joinResult = os.path.join(result, relative)
         if (not os.path.isdir(joinResult)):
             os.makedirs(joinResult)
         return Path(joinResult)
 
-    def subdir(self, relitave):
+    def subdir(self, relative):
         result = self.path
         if (sys.platform == "win32"):
-            relitave = relitave.replace('/', '\\')
+            relative = relative.replace('/', '\\')
         else:
-            relitave = relitave.replace('\\', '/')
+            relative = relative.replace('\\', '/')
 
-        joinResult = os.path.join(result, relitave)
+        joinResult = os.path.join(result, relative)
         if (not os.path.isdir(joinResult)):
             msg = "The path '%s' does not exist " % joinResult
             raise Exception(msg)
@@ -136,11 +136,11 @@ class Builder:
         self.opts['test'] = sourceDir.join("test")
 
         if (sys.platform == "win32"):
-            platname = "windows"
+            platName = "windows"
         else:
-            platname = 'linux'
+            platName = 'linux'
 
-        self.opts['platform'] = platname
+        self.opts['platform'] = platName
 
     def home(self): return self.opts['source']
     def sourceDir(self): return self.opts['source']
@@ -193,9 +193,10 @@ class Builder:
 
     def buildBase(self, kind, args):
         self.release = True
-        self.buildTest()
         self.goto(self.sourceDir())
-        self.run("flutter pub get")
+        self.buildClean()
+        self.buildTest()
+
         self.run("flutter build %s %s"%(kind, args))
 
         flBuild = self.sourceDir().subdir("build/%s"%kind)

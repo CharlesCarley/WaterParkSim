@@ -58,8 +58,6 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                 const Spacer(),
                  IconWidget(
                   icon: IconMappings.exit,
-                  x: 0,
-                  y: 0,
                   color: Palette.highlight,
                   onClick: (){
                     widget.dispatcher.notifyDisplaySettingsClosed();
@@ -74,6 +72,18 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                 child: ListView(
                   shrinkWrap: true,
                   children: [
+                    SettingsDoubleWidget(
+                      value: SettingsState.menuHeight,
+                      heading: "menuHeight",
+                      description: "Controls the height of menubars.",
+                      min: 10,
+                      max: 72,
+                      onChanged: (val) {
+                        setState(() {
+                          SettingsState.menuHeight = val;
+                        });
+                      },
+                    ),
                     SettingsDoubleWidget(
                       value: SettingsState.inputObjectWidth,
                       heading: "inputObjectWidth",
