@@ -38,7 +38,7 @@ class _ProgramCanvasState extends State<ProgramCanvas>
     return ColoredBox(
       color: Palette.background,
       child: Stack(
-        clipBehavior: Clip.none,
+        clipBehavior: Clip.hardEdge,
         fit: StackFit.expand,
         children: ProgramCanvasConstructor(
           tree: _tree,
