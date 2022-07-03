@@ -1,27 +1,6 @@
-/*
--------------------------------------------------------------------------------
-    Copyright (c) Charles Carley.
-
-  This software is provided 'as-is', without any express or implied
-  warranty. In no event will the authors be held liable for any damages
-  arising from the use of this software.
-
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely, subject to the following restrictions:
-
-  1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
-  2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
-  3. This notice may not be removed or altered from any source distribution.
--------------------------------------------------------------------------------
-*/
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:waterpark_frontend/widgets/event_router.dart';
+import 'package:waterpark/widgets/event_router.dart';
 
 import '../metrics.dart';
 import '../palette.dart';
@@ -56,17 +35,17 @@ class _ProgramEditorState extends State<ProgramEditor>
     _controller = TextEditingController();
     _controller.text = widget.dispatcher.text;
     _lastState = widget.dispatcher.text;
-    _changed = true;
 
     _editFocus = FocusNode();
 
     _triggerBuild = Timer.periodic(
       const Duration(milliseconds: 500),
-      _triggerCall,
+      _triggerCallTimer,
     );
 
+    _changed = true;
+    _triggerCall();
     super.initState();
-    exitTextChanged(widget.dispatcher.text);
   }
 
   @override
@@ -136,10 +115,14 @@ class _ProgramEditorState extends State<ProgramEditor>
     });
   }
 
-  void _triggerCall(Timer timer) {
+  void _triggerCall() {
     if (_changed) {
       _compile(_lastState).then(_dispatchTree);
       _changed = false;
     }
+  }
+
+  void _triggerCallTimer(Timer timer) {
+    _triggerCall();
   }
 }

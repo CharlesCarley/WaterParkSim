@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:waterpark_frontend/metrics.dart';
-import 'package:waterpark_frontend/theme.dart';
-import 'package:waterpark_frontend/workspace_settings.dart';
+import 'package:waterpark/metrics.dart';
+import 'package:waterpark/theme.dart';
+import 'package:waterpark/workspace_settings.dart';
 import '../palette.dart';
 import '../state/settings_state.dart';
 import '../state/state_manager.dart';
@@ -22,26 +22,30 @@ class WaterParkSimulator extends StatefulWidget {
 
 class _WaterParkSimulatorState extends State<WaterParkSimulator>
     with WorkSpaceEventReceiver {
-  WorkspaceEventDispatcher dispatcher = WorkspaceEventDispatcher();
-  GlobalKey scaffolding = GlobalKey();
 
-  bool showSettings = false;
-  Size _size = Size.zero;
-  late FocusNode keyFocus;
+  final WorkspaceEventDispatcher _dispatcher = WorkspaceEventDispatcher();
+  final GlobalKey scaffolding = GlobalKey();
 
-  @override
-  void dispose() {
-    dispatcher.unsubscribe(this);
-    super.dispose();
-  }
+  late bool _showSettings;
+  late Size _size;
+  late FocusNode _keyFocus;
 
   @override
   void initState() {
-    keyFocus = FocusNode();
-    keyFocus.requestFocus();
+    _keyFocus = FocusNode();
+    _keyFocus.requestFocus();
+    _dispatcher.subscribe(this);
+    _showSettings = false;
+    _size = Size.zero;
 
-    dispatcher.subscribe(this);
     super.initState();
+  }
+
+
+  @override
+  void dispose() {
+    _dispatcher.unsubscribe(this);
+    super.dispose();
   }
 
   @override
@@ -54,9 +58,9 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         textButtonTheme: WorkspaceTheme.textButtonTheme,
       ),
       home: RawKeyboardListener(
-        focusNode: keyFocus,
+        focusNode: _keyFocus,
         autofocus: false,
-        onKey: (key) => dispatcher.notifyKey(key),
+        onKey: (key) => _dispatcher.notifyKey(key),
         child: Scaffold(
           key: scaffolding,
           appBar: AppBar(
@@ -80,10 +84,10 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   List<Widget> _buildBody() {
     List<Widget> body = [];
 
-    if (showSettings) {
+    if (_showSettings) {
       body.add(
         WorkspaceSettings(
-          dispatcher: dispatcher,
+          dispatcher: _dispatcher,
           rect: Rect.fromLTWH(0, 0, _size.width, _size.height),
         ),
       );
@@ -92,11 +96,11 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         initialSplit: 0.25,
         direction: SplitWidgetDirection.vertical,
         childA: ProgramEditor(
-          dispatcher: dispatcher,
+          dispatcher: _dispatcher,
           program: SettingsState.debugProg,
         ),
         childB: ProgramCanvas(
-          dispatcher: dispatcher,
+          dispatcher: _dispatcher,
         ),
       ));
     }
@@ -110,7 +114,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         x: 0,
         y: 0,
         onClick: () {
-          dispatcher.notifyRun();
+          _dispatcher.notifyRun();
         },
         tooltip: "Runs a simulation with the current script.",
       ),
@@ -119,7 +123,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         x: 0,
         y: 0,
         onClick: () {
-          dispatcher.notifyDisplaySettings();
+          _dispatcher.notifyDisplaySettings();
         },
         tooltip: "Opens the settings panel. (Ctrl + E)",
       ),
@@ -132,41 +136,41 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
       if (scaffolding.currentContext != null) {
         _size = MediaQuery.of(scaffolding.currentContext!).size;
       }
-      showSettings = true;
-      keyFocus.requestFocus();
+      _showSettings = true;
+      _keyFocus.requestFocus();
     });
   }
 
   @override
   void onDisplaySettingsClosed() {
     setState(() {
-      showSettings = false;
-      keyFocus.requestFocus();
+      _showSettings = false;
+      _keyFocus.requestFocus();
     });
   }
 
   @override
   void onStateTreeCompiled(StateTree stateTree) {
     setState(() {
-      keyFocus.unfocus();
+      _keyFocus.unfocus();
     });
   }
 
   @override
   void onKey(RawKeyEvent key) {
-    if (showSettings) {
+    if (_showSettings) {
       if (key.physicalKey == (PhysicalKeyboardKey.escape)) {
         setState(() {
-          showSettings = false;
-          keyFocus.unfocus();
+          _showSettings = false;
+          _keyFocus.unfocus();
         });
       }
     } else {
       if (key.isControlPressed &&
           key.physicalKey == (PhysicalKeyboardKey.keyE)) {
         setState(() {
-          showSettings = true;
-          keyFocus.requestFocus();
+          _showSettings = true;
+          _keyFocus.requestFocus();
         });
       }
     }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark_frontend/state/settings_state.dart';
+import 'package:waterpark/state/settings_state.dart';
 
 import '../state/state_manager.dart';
 import 'event_dispatcher.dart';

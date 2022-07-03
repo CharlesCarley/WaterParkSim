@@ -20,8 +20,8 @@
 -------------------------------------------------------------------------------
 */
 import 'package:flutter/material.dart';
-import 'package:waterpark_frontend/palette.dart';
-import 'package:waterpark_frontend/util/double_utils.dart';
+import 'package:waterpark/palette.dart';
+import 'package:waterpark/util/double_utils.dart';
 
 class BoxWidget extends StatelessWidget {
   const BoxWidget({

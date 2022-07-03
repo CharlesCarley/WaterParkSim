@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark_frontend/workspace.dart';
+import 'package:waterpark/workspace.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

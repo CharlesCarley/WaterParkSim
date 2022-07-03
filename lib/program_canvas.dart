@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:waterpark_frontend/palette.dart';
-import 'package:waterpark_frontend/state/state_manager.dart';
-import 'package:waterpark_frontend/widgets/event_router.dart';
+import 'package:waterpark/palette.dart';
+import 'package:waterpark/state/state_manager.dart';
+import 'package:waterpark/widgets/event_router.dart';
 
 import 'dashboard/program_canvas_ctor.dart';
 
@@ -20,18 +20,20 @@ class ProgramCanvas extends StatefulWidget {
 
 class _ProgramCanvasState extends State<ProgramCanvas>
     with WorkSpaceEventReceiver {
-  StateTree tree = StateTree.zero();
 
-  @override
-  void dispose() {
-    widget.dispatcher.unsubscribe(this);
-    super.dispose();
-  }
+  StateTree _tree = StateTree.zero();
+
 
   @override
   void initState() {
     widget.dispatcher.subscribe(this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.dispatcher.unsubscribe(this);
+    super.dispose();
   }
 
   @override
@@ -42,7 +44,7 @@ class _ProgramCanvasState extends State<ProgramCanvas>
         clipBehavior: Clip.none,
         fit: StackFit.expand,
         children: ProgramCanvasConstructor(
-          tree: tree,
+          tree: _tree,
         ).widgets,
       ),
     );
@@ -51,7 +53,7 @@ class _ProgramCanvasState extends State<ProgramCanvas>
   @override
   void onStateTreeCompiled(StateTree stateTree) {
     setState(() {
-      tree = stateTree;
+      _tree = stateTree;
     });
   }
 

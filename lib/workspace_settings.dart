@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark_frontend/metrics.dart';
-import 'package:waterpark_frontend/palette.dart';
-import 'package:waterpark_frontend/state/settings_state.dart';
-import 'package:waterpark_frontend/widgets/event_router.dart';
-import 'package:waterpark_frontend/widgets/icon_widget.dart';
+import 'package:waterpark/metrics.dart';
+import 'package:waterpark/palette.dart';
+import 'package:waterpark/state/settings_state.dart';
+import 'package:waterpark/widgets/event_router.dart';
+import 'package:waterpark/widgets/icon_widget.dart';
 import '../settings/settings_double_widget.dart';
 
 class WorkspaceSettings extends StatefulWidget {

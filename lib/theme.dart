@@ -1,7 +1,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:waterpark_frontend/palette.dart';
+import 'package:waterpark/palette.dart';
 
 class WorkspaceTheme
 {

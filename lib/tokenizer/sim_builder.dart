@@ -1,7 +1,7 @@
-import 'package:waterpark_frontend/state/input_state.dart';
-import 'package:waterpark_frontend/state/common_state.dart';
-import 'package:waterpark_frontend/state/tank_state.dart';
-import 'package:waterpark_frontend/state/toggle_state.dart';
+import 'package:waterpark/state/input_state.dart';
+import 'package:waterpark/state/common_state.dart';
+import 'package:waterpark/state/tank_state.dart';
+import 'package:waterpark/state/toggle_state.dart';
 
 import '../state/socket_state.dart';
 import 'tokenizer.dart';

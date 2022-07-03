@@ -24,9 +24,10 @@ class SockObject extends Node {
 
   void addInput(SockObject? a) {
     if (a != null) {
-      // !should be unique
-      inputs.add(a);
-      a.outputs.add(this);
+      if (!inputs.contains(a)) {
+        inputs.add(a);
+        a.outputs.add(this);
+      }
     }
   }
 
@@ -36,8 +37,7 @@ class SockObject extends Node {
 
   double getCache() {
     double v = 0;
-    if (_cache.isNotEmpty)
-    {
+    if (_cache.isNotEmpty) {
       v = _cache.last;
       _cache.removeLast();
     }

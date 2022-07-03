@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark_frontend/settings/settings_label_widget.dart';
-import 'package:waterpark_frontend/util/double_utils.dart';
+import 'package:waterpark/settings/settings_label_widget.dart';
+import 'package:waterpark/util/double_utils.dart';
 
 import '../palette.dart';
 
@@ -32,7 +32,7 @@ class SettingsDoubleWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 1, 1, 4),
       child: ColoredBox(
-        color: Color.fromARGB(72, 68, 68, 68),
+        color: const Color.fromARGB(72, 68, 68, 68),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

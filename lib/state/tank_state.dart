@@ -1,4 +1,4 @@
-import 'package:waterpark_frontend/state/settings_state.dart';
+import 'package:waterpark/state/settings_state.dart';
 
 import 'rect_state.dart';
 
