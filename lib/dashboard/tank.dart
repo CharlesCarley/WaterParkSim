@@ -47,10 +47,10 @@ class TankWidget extends StatelessWidget {
     );
 
     final Rect inner = Rect.fromLTRB(
-      base.left + Metrics.border,
-      base.top + Metrics.border,
-      base.right - Metrics.border,
-      base.bottom - Metrics.border,
+      base.left + SettingsState.border,
+      base.top + SettingsState.border,
+      base.right - SettingsState.border,
+      base.bottom - SettingsState.border,
     );
 
     final double innerRectHeight = inner.bottom - inner.top;
@@ -72,6 +72,11 @@ class TankWidget extends StatelessWidget {
       levelTop.right,
       levelTop.bottom,
     );
+
+
+    double top =  ((DoubleUtils.lim(state.level, 0, state.height) / state.height) *
+              innerRectHeight);
+
 
     return Stack(children: [
       PositionedColoredBox(

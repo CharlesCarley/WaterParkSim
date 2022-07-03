@@ -48,11 +48,15 @@ class _ProgramCanvasState extends State<ProgramCanvas>
     );
   }
 
-
   @override
   void onStateTreeCompiled(StateTree stateTree) {
     setState(() {
       tree = stateTree;
     });
+  }
+
+  @override
+  void onDisplaySettingsClosed() {
+    setState(() {});
   }
 }

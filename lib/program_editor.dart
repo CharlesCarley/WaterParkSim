@@ -56,12 +56,12 @@ class _ProgramEditorState extends State<ProgramEditor>
     _controller = TextEditingController();
     _controller.text = widget.dispatcher.text;
     _lastState = widget.dispatcher.text;
-    _changed = false;
+    _changed = true;
 
     _editFocus = FocusNode();
 
     _triggerBuild = Timer.periodic(
-      const Duration(seconds: 1),
+      const Duration(milliseconds: 500),
       _triggerCall,
     );
 
@@ -121,12 +121,10 @@ class _ProgramEditorState extends State<ProgramEditor>
       _changed = true;
       _lastState = newValue;
     }
-    // await _compile(newValue).then(_dispatchTree);
   }
 
   FutureOr<void> _dispatchTree(value) {
     var result = widget.dispatcher.notifyStateTreeCompiled(
-      // reconstruct the tree with the new value...
       StateTree(code: value),
     );
     result.then((value) {

@@ -7,6 +7,7 @@ import 'package:waterpark_frontend/metrics.dart';
 import '../state/common_state.dart';
 import '../state/input_state.dart';
 import '../state/rect_state.dart';
+import '../state/settings_state.dart';
 import '../state/socket_state.dart';
 import '../state/state_manager.dart';
 import '../state/tank_state.dart';
@@ -39,18 +40,22 @@ class ProgramCanvasConstructor {
     double h,
   ) {
     if ((sock.dir & SocketBits.S) != 0) {
-      y = y + (h - Metrics.border);
+      y = y + (h - SettingsState.border);
     }
     if ((sock.dir & SocketBits.E) != 0) {
-      x = x + (w - Metrics.border);
+      x = x + (w - SettingsState.border);
     }
-    sock.ax = x + sock.dx + Metrics.border / 2;
-    sock.ay = y + sock.dy + Metrics.border / 2;
+    sock.ax = x + sock.dx + SettingsState.border / 2;
+    sock.ay = y + sock.dy + SettingsState.border / 2;
 
     widgetList.add(SocketWidget(
       state: sock,
       rect: Rect.fromLTWH(
-          x + sock.dx, y + sock.dy, Metrics.border, Metrics.border),
+        x + sock.dx,
+        y + sock.dy,
+        SettingsState.border,
+        SettingsState.border,
+      ),
     ));
 
     if (sock.hasOutputs) {

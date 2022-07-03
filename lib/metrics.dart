@@ -59,7 +59,7 @@ class Metrics {
 
   /// defines the size of a border around simulation object.
   /// This region is used to place sockets
-  static const border = 4.0;
+  //static const border = 4.0;
 
   /// The Height of the title area
   static const titleHeight = 32.0;

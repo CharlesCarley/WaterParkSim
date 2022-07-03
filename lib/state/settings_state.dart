@@ -10,44 +10,45 @@ class SettingsState {
   static double tankHeight = 150.0;
 
 
+  static double border = 4.0;
 
-  static String title = "SCADA Demo";
+  static String title = "Water Facility Demo";
 
   static String debugProg = """
-input 0 10 4
+input 0 10 6
  state 1
  sock SE 0 25
-tank 100 10 20 500 0
- sock NW 0 45
- link -1 -3
+tank 100 10 20 500 1
+ sock NW 0 22 
+link -1 -3
  sock SE 0 25
-tank 250 10 20 500 5
+tank 200 10 20 500 1
  sock SW 0 25
  link -1 -3
- sock SE 0 34
-input 350 110 0
- state 0
- sock NW 0 20
+ sock SE 0 25
+tank 300 10 20 500 1
+ sock SW 0 25
  link -1 -3
- sock NE 0 20
- sock NE -100 20
+ sock SE 0 25
+ sock SE -20 25
  link -1 -2
- sock NE -100 100
+ sock SE -20 -8
  link -1 -2
- sock SW -300 -55
- link -1 -2
- sock SW -300 -200
- link -1 -2
-tank 100 300 20 500 15
- sock N 0 56
+tank 100 170 20 500 1
+ sock NW  -10 -7
  link -1 -3
- sock NE 0 35
-input 350 400 0
- state off
- sock NW 0 25
- link -1 -3
- sock NE 0 25
- sock NE -100 25
+ sock SW -10 25
  link -1 -2
+ sock SW 0 25
+ link -1 -2
+ sock SE 0 25
+tank 200 170 20 500 1
+ sock SW 0 25
+ link -1 -3
+ sock SE 0 25
+tank 300 170 20 500 1
+ sock SW 0 25
+ link -1 -3
+ sock SE 0 25
 """;
 }

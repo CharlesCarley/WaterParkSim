@@ -21,6 +21,7 @@
 */
 import 'package:flutter/material.dart';
 import 'package:waterpark_frontend/metrics.dart';
+import 'package:waterpark_frontend/state/settings_state.dart';
 import '../state/input_state.dart';
 import '../palette.dart';
 import '../widgets/positioned_widgets.dart';
@@ -45,10 +46,10 @@ class InputWidget extends StatelessWidget {
         ),
         PositionedColoredBox(
           rect: Rect.fromLTRB(
-            rect.left + Metrics.border,
-            rect.top + Metrics.border,
-            rect.right - Metrics.border,
-            rect.bottom - Metrics.border,
+            rect.left + SettingsState.border,
+            rect.top + SettingsState.border,
+            rect.right - SettingsState.border,
+            rect.bottom - SettingsState.border,
           ),
           color: state.toggle ? Palette.water : Palette.action,
         ),
