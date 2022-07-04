@@ -13,6 +13,7 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
+        "**/.gitignore": true,
         ".dart_tool": true,
         ".idea": true,
         ".vscode": true,
@@ -22,14 +23,14 @@
         "linux": true,
         "macos": true,
         "web": true,
-        ".gitignore": true,
-        ".metadata": true,
+        "*.gitignore": true,
+        "*.metadata": true,
         "analysis_options.yaml": true,
         "*.lock": true,
         "*.iml": true,
-        ".packages": true,
+        "*.packages": true,
+        "*.bat": true,
         "windows": true,
-        "**/README.md": true
-    },
-    "explorerExclude.backup": null
+        "**/LICENSE.md": true
+    }
 }

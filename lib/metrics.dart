@@ -66,6 +66,8 @@ class Metrics {
 
   static const lineWidth = 1.5;
 
+  static const double tooltipSize = 12;
+
   static double defaultTextSize(BuildContext context) {
     final textStyle = DefaultTextStyle.of(context).style;
     final double d = textStyle.fontSize ?? 14;

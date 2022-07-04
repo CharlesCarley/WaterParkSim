@@ -31,12 +31,14 @@ class _ProgramEditorState extends State<ProgramEditor>
   late Timer _triggerBuild;
   late String _lastState;
   late bool _changed;
+  late bool _minimized;
 
   @override
   void initState() {
     _controller = TextEditingController();
     _controller.text = widget.dispatcher.text;
     _lastState = widget.dispatcher.text;
+    _minimized = true;
 
     _editFocus = FocusNode();
 
@@ -67,12 +69,31 @@ class _ProgramEditorState extends State<ProgramEditor>
         children: [
           ColoredBox(
             color: Palette.backgroundLight,
-            child: IconWidget(
-              icon: IconMappings.brush,
-              onClick: _clearClicked,
-              color: Palette.titleIcon,
-              tooltip: "Clears the current text",
-              textSize: SettingsState.menuHeight,
+            child: Row(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(8, 4, 2, 4),
+                  child: Text(
+                    "Edit script",
+                    style: Common.labelTextStyle,
+                  ),
+                ),
+                const Spacer(),
+                // IconWidget(
+                //   icon: IconMappings.help,
+                //   onClick: _helpClicked,
+                //   color: Palette.titleIcon,
+                //   tooltip: "Clears the current text",
+                //   textSize: SettingsState.menuHeight,
+                // ),
+                IconWidget(
+                  icon: IconMappings.brush,
+                  onClick: _clearClicked,
+                  color: Palette.titleIcon,
+                  tooltip: "Clears the current text",
+                  textSize: SettingsState.menuHeight,
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -144,5 +165,9 @@ class _ProgramEditorState extends State<ProgramEditor>
     _lastState = "";
     _changed = true;
     _triggerCall();
+  }
+
+  void _helpClicked() {
+    widget.dispatcher.notifyHelp();
   }
 }

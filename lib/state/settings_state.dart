@@ -10,6 +10,8 @@ class SettingsState {
   static double tankHeight = 150.0;
   static double menuHeight = 18.0;
 
+  static bool editorMinimized = true;
+
   // general border
   static double border = 3.0;
   static String title = "Water Facility Demo";

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'metrics.dart';
 import 'theme.dart';
+import 'workspace_help.dart';
 import 'workspace_settings.dart';
 import '../palette.dart';
 import '../state/settings_state.dart';
 import '../state/state_manager.dart';
 import 'program_canvas.dart';
 import 'program_editor.dart';
-import 'widgets/action_widget.dart';
 import 'widgets/event_router.dart';
 import 'widgets/icon_widget.dart';
 import 'widgets/split_widget.dart';
@@ -22,11 +22,10 @@ class WaterParkSimulator extends StatefulWidget {
 
 class _WaterParkSimulatorState extends State<WaterParkSimulator>
     with WorkSpaceEventReceiver {
-
   final WorkspaceEventDispatcher _dispatcher = WorkspaceEventDispatcher();
   final GlobalKey scaffolding = GlobalKey();
 
-  late bool _showSettings;
+  late bool _showSettings, _showHelp;
   late Size _size;
   late FocusNode _keyFocus;
 
@@ -36,11 +35,11 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
     _keyFocus.requestFocus();
     _dispatcher.subscribe(this);
     _showSettings = false;
+    _showHelp = false;
     _size = Size.zero;
 
     super.initState();
   }
-
 
   @override
   void dispose() {
@@ -53,7 +52,9 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
     return MaterialApp(
       title: SettingsState.title,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Palette.background),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Palette.background,
+        ),
         canvasColor: Palette.canvasColor,
         textButtonTheme: WorkspaceTheme.textButtonTheme,
       ),
@@ -73,25 +74,25 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
             ),
             actions: _buildActionList(),
           ),
-          body: Stack(
-            children: _buildBody(),
-          ),
+          body: _buildBody(),
         ),
       ),
     );
   }
 
-  List<Widget> _buildBody() {
-    List<Widget> body = [];
-
-    if (_showSettings) {
-      body.add(
-        WorkspaceSettings(
-          dispatcher: _dispatcher,
-          rect: Rect.fromLTWH(0, 0, _size.width, _size.height),
-        ),
+  Widget _buildBody() {
+    if (_showHelp) {
+      return WorkspaceHelp(
+        dispatcher: _dispatcher,
+        rect: Rect.fromLTWH(0, 0, _size.width, _size.height),
+      );
+    } else if (_showSettings) {
+      return WorkspaceSettings(
+        dispatcher: _dispatcher,
+        rect: Rect.fromLTWH(0, 0, _size.width, _size.height),
       );
     } else {
+      List<Widget> body = [];
       body.add(SplitWidget(
         initialSplit: 0.25,
         direction: SplitWidgetDirection.vertical,
@@ -103,29 +104,25 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
           dispatcher: _dispatcher,
         ),
       ));
+      return Stack(children: body);
     }
-    return body;
   }
 
   List<Widget> _buildActionList() {
     return [
-      ActionIcon.tool(
+      IconWidget.tool(
         icon: IconMappings.play,
-        x: 0,
-        y: 0,
         onClick: () {
           _dispatcher.notifyRun();
         },
         tooltip: "Runs a simulation with the current script.",
       ),
-      ActionIcon.tool(
+      IconWidget(
         icon: IconMappings.gears,
-        x: 0,
-        y: 0,
         onClick: () {
           _dispatcher.notifyDisplaySettings();
         },
-        tooltip: "Opens the settings panel. (Ctrl + E)",
+        tooltip: "Opens the settings panel. (Ctrl+Shift+E)",
       ),
     ];
   }
@@ -150,6 +147,22 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   }
 
   @override
+  void onHelpClosed() {
+    setState(() {
+      _showHelp = false;
+      _keyFocus.requestFocus();
+    });
+  }
+
+  @override
+  void onHelp() {
+    setState(() {
+      _showHelp = true;
+      _keyFocus.requestFocus();
+    });
+  }
+
+  @override
   void onStateTreeCompiled(StateTree stateTree) {
     setState(() {
       _keyFocus.unfocus();
@@ -158,15 +171,25 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
 
   @override
   void onKey(RawKeyEvent key) {
-    if (_showSettings) {
+    if (_showHelp) {
       if (key.physicalKey == (PhysicalKeyboardKey.escape)) {
         setState(() {
           _showSettings = false;
-          _keyFocus.unfocus();
+          _showHelp = false;
+          _keyFocus.requestFocus();
+        });
+      }
+    } else if (_showSettings) {
+      if (key.physicalKey == (PhysicalKeyboardKey.escape)) {
+        setState(() {
+          _showSettings = false;
+          _showHelp = false;
+          _keyFocus.requestFocus();
         });
       }
     } else {
       if (key.isControlPressed &&
+          key.isShiftPressed &&
           key.physicalKey == (PhysicalKeyboardKey.keyE)) {
         setState(() {
           _showSettings = true;
