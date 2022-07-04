@@ -1,6 +1,6 @@
 {
-    "name": "waterpark_frontend",
-    "short_name": "waterpark_frontend",
+    "name": "waterpark",
+    "short_name": "waterpark",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
