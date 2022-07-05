@@ -13,15 +13,16 @@ enum TokenId {
 class Token {
   TokenId id = TokenId.none;
   int index = -1;
+
   Token();
   Token.fromId(this.id);
 
-  bool isNone() => id == TokenId.none;
-  bool isEos() => id == TokenId.eos;
-  bool isNoneOrEos() => isNone() || isEos();
-  bool isNumber() => id == TokenId.number;
-  bool isKeyword() => id == TokenId.keyword;
-  bool isIdentifier() => id == TokenId.identifier;
+  get isNone => id == TokenId.none;
+  get isEos => id == TokenId.eos;
+  get isNoneOrEos => isNone || isEos;
+  get isNumber => id == TokenId.number;
+  get isKeyword => id == TokenId.keyword;
+  get isIdentifier => id == TokenId.identifier;
 }
 
 final List<String> keyWords = [
@@ -98,24 +99,21 @@ class Tokenizer {
   Token _nextToken() {
     Token tok = Token.fromId(TokenId.error);
 
-    while (!_endOfStream()) {
+    late bool readMore;
+    do {
+      readMore = false;
       int ch = _currentByte();
-
       if (_isAlpha(ch)) {
-        // ascii
         _scanId(tok);
-        break;
       } else if (_isNumeric(ch)) {
-        // digit
         _scanNumber(tok);
-        break;
       } else if (!_isNewLineOrWhiteSpace(ch)) {
         tok.id = TokenId.error;
-        break;
       } else {
         _advance(1);
+        readMore = true;
       }
-    }
+    } while (readMore && !_endOfStream());
     return tok;
   }
 

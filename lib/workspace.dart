@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:waterpark/simulation/run_canvas.dart';
 import 'metrics.dart';
 import 'theme.dart';
+import 'tokenizer/sim_builder.dart';
 import 'workspace_help.dart';
 import 'workspace_settings.dart';
 import '../palette.dart';
@@ -23,9 +25,9 @@ class WaterParkSimulator extends StatefulWidget {
 class _WaterParkSimulatorState extends State<WaterParkSimulator>
     with WorkSpaceEventReceiver {
   final WorkspaceEventDispatcher _dispatcher = WorkspaceEventDispatcher();
-  final GlobalKey scaffolding = GlobalKey();
+  final GlobalKey scaffolding = GlobalKey(debugLabel: "Scaffold");
 
-  late bool _showSettings, _showHelp;
+  late bool _showSettings, _showHelp, _runScreen;
   late Size _size;
   late FocusNode _keyFocus;
 
@@ -36,6 +38,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
     _dispatcher.subscribe(this);
     _showSettings = false;
     _showHelp = false;
+    _runScreen = false;
     _size = Size.zero;
 
     super.initState();
@@ -81,7 +84,12 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   }
 
   Widget _buildBody() {
-    if (_showHelp) {
+    if (_runScreen) {
+      return RunProgramCanvas(
+        dispatcher: _dispatcher,
+        tree: _compileCurrent(),
+      );
+    } else if (_showHelp) {
       return WorkspaceHelp(
         dispatcher: _dispatcher,
         rect: Rect.fromLTWH(0, 0, _size.width, _size.height),
@@ -171,19 +179,14 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
 
   @override
   void onKey(RawKeyEvent key) {
-    if (_showHelp) {
+    bool canEscExit = _showHelp || _showSettings || _runScreen;
+
+    if (canEscExit) {
       if (key.physicalKey == (PhysicalKeyboardKey.escape)) {
         setState(() {
           _showSettings = false;
           _showHelp = false;
-          _keyFocus.requestFocus();
-        });
-      }
-    } else if (_showSettings) {
-      if (key.physicalKey == (PhysicalKeyboardKey.escape)) {
-        setState(() {
-          _showSettings = false;
-          _showHelp = false;
+          _runScreen = false;
           _keyFocus.requestFocus();
         });
       }
@@ -197,5 +200,18 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         });
       }
     }
+  }
+
+  @override
+  void onRun() {
+    setState(() {
+      _runScreen = !_runScreen;
+      _keyFocus.requestFocus();
+    });
+  }
+
+  StateTree _compileCurrent() {
+    StateTreeCompiler obj = StateTreeCompiler();
+    return StateTree.cloned(code: obj.compile(_dispatcher.text));
   }
 }

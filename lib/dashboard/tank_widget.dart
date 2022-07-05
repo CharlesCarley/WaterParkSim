@@ -67,7 +67,9 @@ class TankWidget extends StatelessWidget {
           x: textRect.left,
           y: textRect.top,
           color: Palette.wireChange,
-          text: state.level.toString(),
+          text: state.level.toStringAsPrecision(
+            SettingsState.displayPrecision,
+          ),
         ),
       ),
     ]);

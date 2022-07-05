@@ -36,7 +36,9 @@ class InputWidget extends StatelessWidget {
           rect: rect,
           child: Center(
             child: Text(
-              state.flowRate.toString(),
+              state.flowRate.toStringAsPrecision(
+                SettingsState.displayPrecision,
+              ),
               style: Common.labelTextStyle,
             ),
           ),

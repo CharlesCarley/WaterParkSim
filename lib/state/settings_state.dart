@@ -9,8 +9,7 @@ class SettingsState {
   static double tankWidth = 75.0;
   static double tankHeight = 150.0;
   static double menuHeight = 18.0;
-
-  static bool editorMinimized = true;
+  static int displayPrecision = 2;
 
   // general border
   static double border = 3.0;

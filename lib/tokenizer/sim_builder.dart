@@ -6,9 +6,11 @@ import 'package:waterpark/state/toggle_state.dart';
 import '../state/socket_state.dart';
 import 'tokenizer.dart';
 
+/// Utility class to compile a state tree.
 class StateTreeCompiler {
   final Tokenizer _tokenizer = Tokenizer();
 
+  /// Compiles the supplied buffer.
   List<Node> compile(String buffer) {
     _position = 0;
     _tokens = _tokenizer.tokenize(buffer);
@@ -16,9 +18,9 @@ class StateTreeCompiler {
 
     bool running = true;
     do {
-      Token it = nextToken();
-      if (it.isKeyword()) {
-        readKeyword(it);
+      Token it = _nextToken();
+      if (it.isKeyword) {
+        _readKeyword(it);
       } else {
         running = false;
       }
@@ -27,20 +29,20 @@ class StateTreeCompiler {
     return _stateObjects;
   }
 
-  void readKeyword(Token current) {
+  void _readKeyword(Token current) {
     String kw = _tokenizer.getKeyword(current.index);
     if (kw.isEmpty) return;
 
-    if (kw == "tank") {
-      parseTank();
-    } else if (kw == "sock") {
-      parseSock();
-    } else if (kw == "input") {
-      parseInput();
-    } else if (kw == "state") {
-      parseState();
-    } else if (kw == "link") {
-      parseLink();
+    if (kw.compareTo("tank") == 0) {
+      _parseTank();
+    } else if (kw.compareTo("sock") == 0) {
+      _parseSock();
+    } else if (kw.compareTo("input") == 0) {
+      _parseInput();
+    } else if (kw.compareTo("state") == 0) {
+      _parseState();
+    } else if (kw.compareTo("link") == 0) {
+      _parseLink();
     }
   }
 
@@ -48,19 +50,7 @@ class StateTreeCompiler {
   int _position = 0;
   List<Node> _stateObjects = [];
 
-  bool endOfStream() {
-    return _position >= _tokens.length;
-  }
-
-  Token peekToken(int offset) {
-    int loc = _position + offset;
-    if (loc < 0 || loc >= _tokens.length) {
-      return Token.fromId(TokenId.none);
-    }
-    return _tokens[loc];
-  }
-
-  Token nextToken() {
+  Token _nextToken() {
     int loc = _position;
     if (loc < 0 || loc >= _tokens.length) {
       return Token.fromId(TokenId.none);
@@ -69,53 +59,41 @@ class StateTreeCompiler {
     return _tokens[loc];
   }
 
-  void advance(int offset) {
-    _position += offset;
-  }
-
-  void readEnd() {
-    _position = _tokens.length + 1;
-  }
-
-  double number(int idx, {double def = 0.0}) {
+  double _number(int idx, {double def = 0.0}) {
     return _tokenizer.getNumber(idx, def: def);
   }
 
-  int integer(int idx, {int def = 0}) {
-    return _tokenizer.getNumber(idx, def: def.toDouble()).toInt();
-  }
-
-  String string(int idx, {String def = ""}) {
+  String _string(int idx, {String def = ""}) {
     return _tokenizer.getIdentifier(idx, def: def);
   }
 
-  String keyword(int idx, {String def = ""}) {
+  String _keyword(int idx, {String def = ""}) {
     return _tokenizer.getKeyword(idx, def: def);
   }
 
-  double nextDouble({double def = 0}) {
-    Token a1 = nextToken();
-    if (a1.isNumber()) return number(a1.index, def: def);
+  double _nextDouble({double def = 0}) {
+    Token a1 = _nextToken();
+    if (a1.isNumber) return _number(a1.index, def: def);
     return def;
   }
 
-  int nextInteger({int def = 0}) {
-    return nextDouble(def: def.toDouble()).toInt();
+  int _nextInteger({int def = 0}) {
+    return _nextDouble(def: def.toDouble()).toInt();
   }
 
-  String nextString({String def = ""}) {
-    Token a1 = nextToken();
-    if (a1.isIdentifier()) return string(a1.index, def: def);
-    if (a1.isKeyword()) return keyword(a1.index, def: def);
+  String _nextString({String def = ""}) {
+    Token a1 = _nextToken();
+    if (a1.isIdentifier) return _string(a1.index, def: def);
+    if (a1.isKeyword) return _keyword(a1.index, def: def);
     return def;
   }
 
-  void parseSock() {
-    String a1 = nextString();
-    double a2 = nextDouble();
-    double a3 = nextDouble();
+  void _parseSock() {
+    String a1 = _nextString();
+    double a2 = _nextDouble();
+    double a3 = _nextDouble();
 
-    int dir = parseDirection(a1);
+    int dir = _parseDirection(a1);
 
     int signX = (dir & SocketBits.E) != 0 ? -1 : 1;
     int signY = (dir & SocketBits.S) != 0 ? -1 : 1;
@@ -127,25 +105,25 @@ class StateTreeCompiler {
     ));
   }
 
-  void parseTank() {
-    double x = nextDouble();
-    double y = nextDouble();
-    double h = nextDouble();
-    double c = nextDouble();
-    double d = nextDouble();
+  void _parseTank() {
+    double x = _nextDouble();
+    double y = _nextDouble();
+    double h = _nextDouble();
+    double c = _nextDouble();
+    double d = _nextDouble();
     _stateObjects.add(
       TankObject(x: x, y: y, height: h, capacity: c, level: d),
     );
   }
 
-  void parseInput() {
-    double x = nextDouble();
-    double y = nextDouble();
-    double r = nextDouble();
+  void _parseInput() {
+    double x = _nextDouble();
+    double y = _nextDouble();
+    double r = _nextDouble();
     _stateObjects.add(InputObject(x: x, y: y, flowRate: r, state: false));
   }
 
-  int parseDirection(String string) {
+  int _parseDirection(String string) {
     int dir = 0;
     for (int i = 0; i < string.length && i < 2; ++i) {
       int unit = string.codeUnitAt(i);
@@ -168,10 +146,11 @@ class StateTreeCompiler {
           break;
       }
     }
+    if (dir == 0) dir |= SocketBits.N;
     return dir;
   }
 
-  ToggleObject? findToggle() {
+  ToggleObject? _findToggle() {
     for (int i = _stateObjects.length - 1; i >= 0; --i) {
       if (_stateObjects[i] is ToggleObject) {
         return _stateObjects[i] as ToggleObject;
@@ -180,7 +159,7 @@ class StateTreeCompiler {
     return null;
   }
 
-  SockObject? findSocket(int idx) {
+  SockObject? _findSocket(int idx) {
     int loc = (_stateObjects.length) + idx;
 
     if (loc >= 0 && loc < _stateObjects.length) {
@@ -188,36 +167,38 @@ class StateTreeCompiler {
         return _stateObjects[loc] as SockObject;
       }
     }
-
     return null;
   }
 
-  void parseState() {
-    Token a1 = nextToken();
+  void _parseState() {
+    Token a1 = _nextToken();
 
-    if (a1.isNumber()) {
-      ToggleObject? obj = findToggle();
+    if (a1.isNumber) {
+      ToggleObject? obj = _findToggle();
       if (obj != null) {
-        obj.toggle = number(a1.index) != 0;
+        obj.toggle = _number(a1.index) != 0;
       }
-    } else if (a1.isIdentifier()) {
-      ToggleObject? obj = findToggle();
+    } else if (a1.isIdentifier) {
+      ToggleObject? obj = _findToggle();
       if (obj != null) {
-        var val = string(a1.index);
+        var val = _string(a1.index);
         obj.toggle = val == "yes" || val == "open";
       }
     }
   }
 
-  void parseLink() {
-    int offsA = nextInteger(def: _stateObjects.length + 1);
-    int offsB = nextInteger(def: _stateObjects.length + 1);
+  void _parseLink() {
+    // enforce the limit if it is not found
+    var max = _stateObjects.length;
 
-    SockObject? a = findSocket(offsA);
-    SockObject? b = findSocket(offsB);
+    var offsA = _nextInteger(def: max);
+    var offsB = _nextInteger(def: max);
+
+    SockObject? a = _findSocket(offsA);
+    SockObject? b = _findSocket(offsB);
 
     if (b != null && a != null) {
-      a.addInput(b);
+      b.addInput(a);
     }
   }
 }

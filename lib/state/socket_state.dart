@@ -20,7 +20,11 @@ class SockObject extends Node {
     required this.dir,
     required this.dx,
     required this.dy,
-  });
+  })
+  {
+    _cache.clear();
+    clear();
+  }
 
   void addInput(SockObject? a) {
     if (a != null) {

@@ -7,11 +7,10 @@ import 'widgets/program_canvas_ctor.dart';
 
 class ProgramCanvas extends StatefulWidget {
   final WorkspaceEventDispatcher dispatcher;
-
   const ProgramCanvas({
     Key? key,
     required this.dispatcher,
-  }) : super(key: key);
+  })  : super(key: key);
 
   @override
   State<ProgramCanvas> createState() => _ProgramCanvasState();
