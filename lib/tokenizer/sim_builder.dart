@@ -6,11 +6,9 @@ import 'package:waterpark/state/toggle_state.dart';
 import '../state/socket_state.dart';
 import 'tokenizer.dart';
 
-/// Utility class to compile a state tree.
 class StateTreeCompiler {
   final Tokenizer _tokenizer = Tokenizer();
 
-  /// Compiles the supplied buffer.
   List<Node> compile(String buffer) {
     _position = 0;
     _tokens = _tokenizer.tokenize(buffer);

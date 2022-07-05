@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:waterpark/metrics.dart';
-import 'package:waterpark/state/input_state.dart';
 import 'package:waterpark/widgets/icon_widget.dart';
 import '../palette.dart';
 import '../state/state_manager.dart';

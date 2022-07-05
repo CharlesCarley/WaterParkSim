@@ -31,14 +31,12 @@ class _ProgramEditorState extends State<ProgramEditor>
   late Timer _triggerBuild;
   late String _lastState;
   late bool _changed;
-  late bool _minimized;
 
   @override
   void initState() {
     _controller = TextEditingController();
     _controller.text = widget.dispatcher.text;
     _lastState = widget.dispatcher.text;
-    _minimized = true;
 
     _editFocus = FocusNode();
 
@@ -167,7 +165,7 @@ class _ProgramEditorState extends State<ProgramEditor>
     _triggerCall();
   }
 
-  void _helpClicked() {
-    widget.dispatcher.notifyHelp();
-  }
+  // void _helpClicked() {
+  //   widget.dispatcher.notifyHelp();
+  // }
 }

@@ -98,7 +98,6 @@ class Tokenizer {
 
   Token _nextToken() {
     Token tok = Token.fromId(TokenId.error);
-
     late bool readMore;
     do {
       readMore = false;
