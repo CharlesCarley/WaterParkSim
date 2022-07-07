@@ -26,8 +26,12 @@ class Stack<T> {
 
   T? top() {
     if (_stack.isNotEmpty) {
-      _stack.last;
+      return _stack.last;
     }
     return null;
+  }
+
+  void clear() {
+    _stack.clear();
   }
 }

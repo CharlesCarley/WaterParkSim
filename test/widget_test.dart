@@ -220,23 +220,6 @@ void main() {
       expect(s.dy, 0);
     }
   });
-  test("SimBuilder_3", () {
-    var ret = StateTreeCompiler().compile("""
-      input 0 0 20 
-        sock S 0 0
-      input 0 0 0 
-        sock S 0 0
-      link -1 -3
-      """);
-
-    var i2 = ret[1] as SockObject;
-    var i4 = ret[3] as SockObject;
-
-    expect(i2.hasOutputs, true);
-    expect(i2.hasInputs, false);
-    expect(i4.hasOutputs, false);
-    expect(i4.hasInputs, true);
-  });
 
   test("SimBuilder_4", () {
     StateTreeExecutor executor = StateTreeExecutor(
