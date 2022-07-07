@@ -9,6 +9,7 @@ import 'package:waterpark/xml/node.dart';
 import 'package:waterpark/xml/parser.dart';
 import 'package:waterpark/xml/scanner.dart';
 import 'package:waterpark/xml/token.dart';
+import 'package:waterpark/tokenizer/sim_builder.dart';
 
 class PrintLogger extends XmlParseLogger {
   @override
@@ -33,26 +34,26 @@ void main() {
 
   test("XML_SmokeTest_2", () {
     XmlScanner scan = XmlScanner.fromString("""
-<?xml version="1.0"?>
+      <?xml version="1.0"?>
     """);
 
-    expect(scan.scan().type, XmlTokenType.tokStTag);
-    expect(scan.scan().type, XmlTokenType.tokQuestion);
-    expect(scan.scan().type, XmlTokenType.tokIdentifier);
-    expect(scan.scan().type, XmlTokenType.tokIdentifier);
-    expect(scan.scan().type, XmlTokenType.tokEquals);
-    expect(scan.scan().type, XmlTokenType.tokString);
-    expect(scan.scan().type, XmlTokenType.tokQuestion);
-    expect(scan.scan().type, XmlTokenType.tokEnTag);
+    expect(scan.scan().type, XmlTok.tokStTag);
+    expect(scan.scan().type, XmlTok.tokQuestion);
+    expect(scan.scan().type, XmlTok.tokIdentifier);
+    expect(scan.scan().type, XmlTok.tokIdentifier);
+    expect(scan.scan().type, XmlTok.tokEquals);
+    expect(scan.scan().type, XmlTok.tokString);
+    expect(scan.scan().type, XmlTok.tokQuestion);
+    expect(scan.scan().type, XmlTok.tokEnTag);
   });
 
   test("XML_SmokeTest_2", () {
     XmlScanner scan = XmlScanner.fromString("""
-<page>
-  <input>
-  <foo/>
-  </input>
-</page>
+      <page>
+        <input>
+        <foo/>
+        </input>
+      </page>
     """);
 
     expectTag(scan, "page", false);
@@ -64,60 +65,116 @@ void main() {
 
   test("XML_SmokeTest_3", () {
     XmlScanner scan = XmlScanner.fromString("""
-<page name="Foo">
-  <input x="0" y="10" r="5"/>
-</page>
+      <page name="Foo">
+        <input x="0" y="10" r="5"/>
+      </page>
     """);
     expectTagAttributes(scan, "page", ["name"], ["Foo"], false, false);
     expectTagAttributes(
         scan, "input", ["x", "y", "r"], ["0", "10", "5"], false, true);
     expectTag(scan, "page", true);
   });
+
   test("XML_SmokeTest_4", () {
     var tags = ["page", "input"];
 
     XmlParser parser = XmlParser(tags, logger: PrintLogger());
 
     parser.parse("""
-<page name="Foo">
-  <input x="0" y="10" r="5"/>
+      <page name="Foo">
+        <input x="0" y="10" r="5"/>
+      </page>
+    """);
+
+    XmlNode nd = parser.root;
+
+    expect(nd.hasAttribute('name'), true);
+    expect(nd.attributeString('name'), "Foo");
+
+    expect(parser.root.hasChildren, true);
+
+    nd = parser.root.children.first;
+    expect(nd.hasAttribute('x'), true);
+    expect(nd.attributeDouble('x'), 0.0);
+
+    expect(nd.hasAttribute('y'), true);
+    expect(nd.attributeDouble('y'), 10.0);
+
+    expect(nd.hasAttribute('r'), true);
+    expect(nd.attributeDouble('r'), 5.0);
+  });
+  test("XML_SmokeTest_5", () {
+    XmlParser parser = XmlParser(
+      ObjectTags.values.asNameMap().keys.toList(),
+      logger: PrintLogger(),
+    );
+
+    parser.parse("""
+<page>
+  <!-- =========================== -->
+  <input x="10" 
+         y="10" 
+         rate="6" 
+         state="on">
+    <osock id="0" dir="NE" ox="0" oy="0"/>
+  </input>
+  
+  <!-- =========================== -->
+  <tank x="10" 
+        y="10" 
+        height="20" 
+        capacity="500"
+        level="15">
+  
+  </tank>
 </page>
     """);
 
+    XmlNode nd = parser.root;
 
-    XmlNode nd = parser.root.children.first;
-    print("$nd");
+    expect(nd.hasAttribute('name'), true);
+    expect(nd.attributeString('name'), "Foo");
 
-    
+    expect(parser.root.hasChildren, true);
+
+    nd = parser.root.children.first;
+    expect(nd.hasAttribute('x'), true);
+    expect(nd.attributeDouble('x'), 0.0);
+
+    expect(nd.hasAttribute('y'), true);
+    expect(nd.attributeDouble('y'), 10.0);
+
+    expect(nd.hasAttribute('r'), true);
+    expect(nd.attributeDouble('r'), 5.0);
   });
 }
 
 void expectTag(XmlScanner scan, String name, bool isClose) {
-  expect(scan.scan().type, XmlTokenType.tokStTag);
+  expect(scan.scan().type, XmlTok.tokStTag);
   if (isClose) {
-    expect(scan.scan().type, XmlTokenType.tokSlash);
+    expect(scan.scan().type, XmlTok.tokSlash);
   }
 
   XmlToken tok = scan.scan();
-  expect(tok.type, XmlTokenType.tokIdentifier);
+  expect(tok.type, XmlTok.tokIdentifier);
   expect(tok.index != -1, true);
 
   String value = scan.tokenValue(tok.index);
   expect(value, name);
-  expect(scan.scan().type, XmlTokenType.tokEnTag);
+  expect(scan.scan().type, XmlTok.tokEnTag);
 }
 
 void expectInlineTag(XmlScanner scan, String name) {
-  expect(scan.scan().type, XmlTokenType.tokStTag);
+  expect(scan.scan().type, XmlTok.tokStTag);
 
   XmlToken tok = scan.scan();
-  expect(tok.type, XmlTokenType.tokIdentifier);
+  expect(tok.type, XmlTok.tokIdentifier);
   expect(tok.index != -1, true);
 
   String value = scan.tokenValue(tok.index);
   expect(value, name);
-  expect(scan.scan().type, XmlTokenType.tokSlash);
-  expect(scan.scan().type, XmlTokenType.tokEnTag);
+  expect(scan.scan().type, XmlTok.tokSlash);
+  expect(scan.scan().type, XmlTok.tokEnTag);
 }
 
 void expectTagAttributes(
@@ -129,13 +186,13 @@ void expectTagAttributes(
   bool isInline,
 ) {
   expect(keys.length == values.length, true);
-  expect(scan.scan().type, XmlTokenType.tokStTag);
+  expect(scan.scan().type, XmlTok.tokStTag);
   if (isClose) {
-    expect(scan.scan().type, XmlTokenType.tokSlash);
+    expect(scan.scan().type, XmlTok.tokSlash);
   }
 
   XmlToken tok = scan.scan();
-  expect(tok.type, XmlTokenType.tokIdentifier);
+  expect(tok.type, XmlTok.tokIdentifier);
   expect(tok.index != -1, true);
 
   for (int i = 0; i < keys.length; ++i) {
@@ -143,22 +200,22 @@ void expectTagAttributes(
     String val = values[i];
 
     tok = scan.scan();
-    expect(tok.type, XmlTokenType.tokIdentifier);
+    expect(tok.type, XmlTok.tokIdentifier);
     expect(tok.index != -1, true);
 
     String value = scan.tokenValue(tok.index);
     expect(value, key);
 
-    expect(scan.scan().type, XmlTokenType.tokEquals);
+    expect(scan.scan().type, XmlTok.tokEquals);
     tok = scan.scan();
-    expect(tok.type, XmlTokenType.tokString);
+    expect(tok.type, XmlTok.tokString);
     expect(tok.index != -1, true);
 
     value = scan.tokenValue(tok.index);
     expect(value, val);
   }
   if (isInline) {
-    expect(scan.scan().type, XmlTokenType.tokSlash);
+    expect(scan.scan().type, XmlTok.tokSlash);
   }
-  expect(scan.scan().type, XmlTokenType.tokEnTag);
+  expect(scan.scan().type, XmlTok.tokEnTag);
 }

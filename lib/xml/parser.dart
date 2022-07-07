@@ -9,18 +9,37 @@ class XmlParseLogger {
 }
 
 class XmlParser {
-  XmlNode root = XmlNode(-1);
   late XmlScanner _scanner;
   late int _cursor;
   late List<XmlToken> _tokens;
   final List<String> _tags;
   final Stack<XmlNode> _stack = Stack.zero();
-
   final XmlParseLogger _logger;
+  late XmlNode _root;
 
+  bool get hasRoot => _root.children.isNotEmpty;
+  XmlNode get root => _root.children.first;
+
+  /// Constructs an xml parser with a list of tag names and an optional
+  /// error logger callback.
+  ///
+  /// Actual tag names are stored in the [XmlNode.name] as the integer index
+  /// into the supplied tag list. A [XmlNode.name] of -1 means that the tag is
+  /// unnamed.
   XmlParser(this._tags, {XmlParseLogger? logger})
       : _logger = _getLogger(logger);
 
+  /// Utility construction method to guarantee a valid [XmlParseLogger] instance.
+  static XmlParseLogger _getLogger(XmlParseLogger? logger) {
+    if (logger != null) {
+      return logger;
+    }
+    return XmlParseLogger();
+  }
+
+  /// Provides access to the token at the supplied offset from the curser
+  /// position. If the offset is greater than the number of tokens read, a new
+  /// token will be scanned and added to the internal list of tokens.
   XmlToken _getToken(int offset) {
     int pos = _cursor + offset;
     while (pos + 1 > _tokens.length) {
@@ -30,52 +49,44 @@ class XmlParser {
     return _tokens[pos];
   }
 
+  /// Moves the cursor position forward by [n] steps.
   void _advanceCursor(int n) {
     _cursor += n;
   }
 
-  static XmlParseLogger _getLogger(XmlParseLogger? logger) {
-    if (logger != null) {
-      return logger;
-    }
-    return XmlParseLogger();
-  }
-
+  /// Interprets the supplied buffer as XML and attempts to construct an XML
+  /// parse tree using [XmlNode].
   void parse(String buffer) {
     _tokens = [];
     _cursor = 0;
     _stack.clear();
-    _stack.push(root);
+    _root = XmlNode(-1);
+    _stack.push(_root);
     _scanner = XmlScanner.fromString(buffer);
 
-    bool keepGoing = true;
+    bool rd = true;
     do {
       XmlToken tok = _getToken(0);
-      if (tok.type == XmlTokenType.tokEof) {
-        keepGoing = false;
-      } else if (tok.type == XmlTokenType.tokError) {
-        keepGoing = false;
-      } else {
+      rd = tok.type == XmlTok.tokEof || tok.type == XmlTok.tokError;
+      if (rd) {
         int old = _cursor;
-        keepGoing = _parseRuleObjectList();
+        rd = _parseRuleObjectList();
         if (old == _cursor) {
           _advanceCursor(1);
         }
       }
-    } while (keepGoing);
+    } while (rd);
   }
 
   bool _parseRuleObjectList() {
     XmlToken t0 = _getToken(0);
     XmlToken t1 = _getToken(1);
 
-    if (t0.type == XmlTokenType.tokStTag &&
-        t1.type == XmlTokenType.tokQuestion) {
+    if (t0.type == XmlTok.tokStTag && t1.type == XmlTok.tokQuestion) {
       return _ruleXmlRoot();
-    } else if (t0.type == XmlTokenType.tokStTag) {
+    } else if (t0.type == XmlTok.tokStTag) {
       return _ruleObject();
     }
-
     return false;
   }
 
@@ -86,11 +97,11 @@ class XmlParser {
 
     String val = _scanner.tokenValue(t2);
 
-    if (t0 != XmlTokenType.tokStTag) {
+    if (t0 != XmlTok.tokStTag) {
       _logger.log("expected the '<' character");
       return false;
     }
-    if (t1 != XmlTokenType.tokQuestion) {
+    if (t1 != XmlTok.tokQuestion) {
       _logger.log("expected the '/' character");
       return false;
     }
@@ -102,10 +113,10 @@ class XmlParser {
     _advanceCursor(3);
     t0 = _getToken(0).type;
 
-    while (t0 != XmlTokenType.tokQuestion) {
+    while (t0 != XmlTok.tokQuestion) {
       if (!_ruleAttribute()) return false;
       t0 = _getToken(0).type;
-      if (t0 == XmlTokenType.tokEof) {
+      if (t0 == XmlTok.tokEof) {
         _logger.log("unexpected end of file");
         return false;
       }
@@ -113,7 +124,7 @@ class XmlParser {
 
     _advanceCursor(1);
     t0 = _getToken(0).type;
-    if (t0 != XmlTokenType.tokEnTag) {
+    if (t0 != XmlTok.tokEnTag) {
       _logger.log("unexpected token $t0");
       return false;
     }
@@ -126,16 +137,16 @@ class XmlParser {
     var t1 = _getToken(1).type;
     var t2 = _getToken(2).type;
 
-    if (t0 != XmlTokenType.tokIdentifier) {
+    if (t0 != XmlTok.tokIdentifier) {
       _logger.log("expected an identifier");
       return false;
     }
-    if (t1 != XmlTokenType.tokEquals) {
+    if (t1 != XmlTok.tokEquals) {
       _logger.log("expected an equals sign");
 
       return false;
     }
-    if (t2 != XmlTokenType.tokString) {
+    if (t2 != XmlTok.tokString) {
       _logger.log("expected an equals sign");
       return false;
     }
@@ -164,12 +175,12 @@ class XmlParser {
     var t1 = _getToken(1).type;
     var t2 = _getToken(2).type;
 
-    if (t0 == XmlTokenType.tokStTag && t1 == XmlTokenType.tokIdentifier) {
+    if (t0 == XmlTok.tokStTag && t1 == XmlTok.tokIdentifier) {
       return _ruleStartTag();
     }
-    if (t0 == XmlTokenType.tokStTag &&
-        t1 == XmlTokenType.tokSlash &&
-        t2 == XmlTokenType.tokIdentifier) {
+    if (t0 == XmlTok.tokStTag &&
+        t1 == XmlTok.tokSlash &&
+        t2 == XmlTok.tokIdentifier) {
       return _ruleEndTag();
     }
     return false;
@@ -179,18 +190,17 @@ class XmlParser {
     var t0 = _getToken(0);
     var t1 = _getToken(1);
 
-    if (t0.type != XmlTokenType.tokStTag) {
+    if (t0.type != XmlTok.tokStTag) {
       _logger.log("expected the < character");
       return false;
     }
 
-    if (t1.type != XmlTokenType.tokIdentifier) {
+    if (t1.type != XmlTok.tokIdentifier) {
       _logger.log("expected a tag identifier");
       return false;
     }
 
-    String value = _scanner.tokenValue(t1.index);
-
+    var value = _scanner.tokenValue(t1.index);
     if (value.isEmpty) {
       _logger.log("empty tag name");
       return false;
@@ -209,15 +219,15 @@ class XmlParser {
 
     var et0 = _getToken(0).type;
     var result = true;
-    if (et0 == XmlTokenType.tokSlash) {
+    if (et0 == XmlTok.tokSlash) {
       var et1 = _getToken(1).type;
-      if (et1 != XmlTokenType.tokEnTag) {
+      if (et1 != XmlTok.tokEnTag) {
         _logger.log("expected the '>' character ");
       }
 
       _reduceRule();
       _advanceCursor(2);
-    } else if (et0 != XmlTokenType.tokEnTag) {
+    } else if (et0 != XmlTok.tokEnTag) {
       _logger.log("expected the '>' character ");
       result = false;
     } else {
@@ -227,37 +237,40 @@ class XmlParser {
   }
 
   bool _ruleEndTag() {
-    // '<' '/'
     var t0 = _getToken(0).type;
     var t1 = _getToken(1).type;
     var t2 = _getToken(2).type;
     var t3 = _getToken(3).type;
 
-    if (t0 != XmlTokenType.tokStTag) {
+    if (t0 != XmlTok.tokStTag) {
       _logger.log("expected the '<' character");
       return false;
     }
-    if (t1 != XmlTokenType.tokSlash) {
+
+    if (t1 != XmlTok.tokSlash) {
       _logger.log("expected the '/' character");
       return false;
     }
-    if (t2 != XmlTokenType.tokIdentifier) {
+
+    if (t2 != XmlTok.tokIdentifier) {
       _logger.log("expected a tag identifier");
       return false;
     }
-    if (t3 != XmlTokenType.tokEnTag) {
+    if (t3 != XmlTok.tokEnTag) {
       _logger.log("expected the '>' character");
       return false;
     }
 
-    String identifier = _scanner.tokenValue(_getToken(2).index);
-    XmlNode? nodePtr = _stack.top();
-    if (nodePtr == null) {
+    var identifier = _scanner.tokenValue(_getToken(2).index);
+    var top = _stack.top();
+    if (top == null) {
+      _logger.log("Too many nodes were removed from the stack");
       return false;
     }
-    if (nodePtr.name >= 0 && identifier != _tags[nodePtr.name]) {
-      _logger.log(
-          "closing tag mis-match between '${_tags[nodePtr.name]}' and '$identifier'");
+
+    if (top.name >= 0 && identifier != _tags[top.name]) {
+      _logger.log("closing tag mis-match between "
+          "'${_tags[top.name]}' and '$identifier'");
       return false;
     }
 
@@ -265,17 +278,15 @@ class XmlParser {
       _logger.log("empty closing tag");
       return false;
     }
+
     _advanceCursor(4);
     _reduceRule();
     return true;
   }
 
   void _createTag(String value) {
-    int idx = _tags.indexOf(value);
-
-    // allow -1
-    XmlNode node = XmlNode(idx);
-    _stack.push(node);
+    // indexOf returns -1 if not found
+    _stack.push(XmlNode(_tags.indexOf(value)));
   }
 
   void _reduceRule() {
@@ -284,7 +295,6 @@ class XmlParser {
       _stack.pop();
 
       XmlNode? a = _stack.top();
-
       if (a != null && b != null) {
         a.addChild(b);
       }
@@ -293,20 +303,18 @@ class XmlParser {
 
   bool _ruleAttributeList() {
     var t0 = _getToken(0).type;
-
-    if (t0 != XmlTokenType.tokEnTag && t0 != XmlTokenType.tokSlash) {
+    if (t0 != XmlTok.tokEnTag && t0 != XmlTok.tokSlash) {
       do {
         if (!_ruleAttribute()) {
           return false;
         }
 
         t0 = _getToken(0).type;
-
-        if (t0 == XmlTokenType.tokEof) {
+        if (t0 == XmlTok.tokEof) {
           _logger.log("unexpected end of file");
           return false;
         }
-      } while (t0 != XmlTokenType.tokEnTag && t0 != XmlTokenType.tokSlash);
+      } while (t0 != XmlTok.tokEnTag && t0 != XmlTok.tokSlash);
     }
     return true;
   }

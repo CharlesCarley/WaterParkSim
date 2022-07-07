@@ -3,7 +3,6 @@ import 'package:waterpark/state/socket_state.dart';
 import '../state/common_state.dart';
 import '../state/input_state.dart';
 import '../state/tank_state.dart';
-import '../util/stack.dart';
 
 class StateTreeExecutor {
   final List<Node> code;
@@ -16,28 +15,31 @@ class StateTreeExecutor {
 
   void updateValues() {}
 
-  void step(double durMs) {
-    Stack<Node> stack = Stack.zero();
-    Stack<double> values = Stack.zero();
-
+  void step(double dur) {
     for (Node node in code) {
-      _filterTypeNodesOnStack(stack, values, node);
+      bool sockType = node is SockObject;
+      if (sockType) continue;
 
-      if (values.isNotEmpty && node is SockObject) {
-        double? v = values.top();
-        if (v != null) {
-          node.cacheValue(v);
-        }
+      if (node is InputObject) {
+        _processInputObject(node);
+      } else if (node is TankObject) {
+        _processTankObject(node);
       }
     }
   }
 
-  void _filterTypeNodesOnStack(
-      Stack<Node> stack, Stack<double> values, Node node) {
-    if (node is InputObject) {
-      stack.push(node);
-    } else if (node is TankObject) {
-      stack.push(node);
+  void _processInputObject(InputObject node) {
+    if (node.toggle) {
+      for (var osock in node.outputs) {
+        osock.cacheValue(node.flowRate);
+      }
+    }
+  }
+
+  void _processTankObject(TankObject node) {
+    for (var isock in node.inputs) {
+      double v = isock.getCache();
+      node.level += v;
     }
   }
 }

@@ -102,7 +102,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
     } else {
       List<Widget> body = [];
       body.add(SplitWidget(
-        initialSplit: 0.25,
+        initialSplit: SettingsState.sashPos,
         direction: SplitWidgetDirection.vertical,
         childA: ProgramEditor(
           dispatcher: _dispatcher,
@@ -212,6 +212,6 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
 
   StateTree _compileCurrent() {
     StateTreeCompiler obj = StateTreeCompiler();
-    return StateTree.cloned(code: obj.compile(_dispatcher.text));
+    return StateTree(code: obj.compile(_dispatcher.text));
   }
 }

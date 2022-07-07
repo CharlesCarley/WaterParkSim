@@ -1,4 +1,4 @@
-enum XmlTokenType {
+enum XmlTok {
   tokError,
   tokEof,
   tokIdentifier,
@@ -13,11 +13,11 @@ enum XmlTokenType {
 }
 
 class XmlToken {
-  final XmlTokenType type;
+  final XmlTok type;
   final int index;
 
   XmlToken({
-    XmlTokenType tokenType = XmlTokenType.tokEof,
+    XmlTok tokenType = XmlTok.tokEof,
     int idx = -1,
   })  : type = tokenType,
         index = idx;

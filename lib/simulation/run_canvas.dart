@@ -33,7 +33,7 @@ class _RunProgramCanvasState extends State<RunProgramCanvas>
     widget.dispatcher.subscribe(this);
     _tree = widget.tree;
     _timer = Timer.periodic(
-      const Duration(milliseconds: 20),
+      const Duration(milliseconds: 60),
       _onTick,
     );
 
@@ -91,7 +91,7 @@ class _RunProgramCanvasState extends State<RunProgramCanvas>
   }
 
   void _onTick(Timer dur) {
-    Future.microtask(() => _tree.step(20)).whenComplete((() {
+    Future.microtask(() => _tree.step(60)).whenComplete((() {
       setState(() {});
     }));
   }

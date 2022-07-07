@@ -21,6 +21,7 @@
 */
 import 'package:flutter/material.dart';
 import 'package:waterpark/palette.dart';
+import 'package:waterpark/state/settings_state.dart';
 import 'package:waterpark/util/double_utils.dart';
 
 class BoxWidget extends StatelessWidget {
@@ -232,6 +233,7 @@ class _SplitWidgetState extends State<SplitWidget> {
         setState(() {
           if (captured) {
             splitPosition = event.position.dx / width;
+            SettingsState.sashPos = splitPosition;
           }
         });
       },

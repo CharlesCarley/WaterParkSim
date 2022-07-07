@@ -62,16 +62,16 @@ class XmlScanner {
       switch (ch) {
         case 0x3D: // =
           _advance(1);
-          return XmlToken(tokenType: XmlTokenType.tokEquals);
+          return XmlToken(tokenType: XmlTok.tokEquals);
         case 0x3E: // >
           _advance(1);
-          return XmlToken(tokenType: XmlTokenType.tokEnTag);
+          return XmlToken(tokenType: XmlTok.tokEnTag);
         case 0x2F: // =
           _advance(1);
-          return XmlToken(tokenType: XmlTokenType.tokSlash);
+          return XmlToken(tokenType: XmlTok.tokSlash);
         case 0x3F: // =
           _advance(1);
-          return XmlToken(tokenType: XmlTokenType.tokQuestion);
+          return XmlToken(tokenType: XmlTok.tokQuestion);
         case 0x3C: // <
           {
             if (_peek() == 0x21) // !
@@ -79,7 +79,7 @@ class XmlScanner {
               _skipComment();
             } else {
               _advance(1);
-              return XmlToken(tokenType: XmlTokenType.tokStTag);
+              return XmlToken(tokenType: XmlTok.tokStTag);
             }
           }
           break;
@@ -100,7 +100,7 @@ class XmlScanner {
               return _scanSymbol();
             } else {
               _advance(1);
-              return XmlToken(tokenType: XmlTokenType.tokError);
+              return XmlToken(tokenType: XmlTok.tokError);
             }
           }
       }
@@ -123,6 +123,7 @@ class XmlScanner {
       _advance(1);
       ch = _current();
     }
+    _advance(1);
   }
 
   void _skipNewLine() {
@@ -159,13 +160,13 @@ class XmlScanner {
       int idx = _saveString(buf.toString());
       if (idx != -1) {
         return XmlToken(
-          tokenType: XmlTokenType.tokIdentifier,
+          tokenType: XmlTok.tokIdentifier,
           idx: idx,
         );
       }
     }
 
-    return XmlToken(tokenType: XmlTokenType.tokError);
+    return XmlToken(tokenType: XmlTok.tokError);
   }
 
   XmlToken _scanString() {
@@ -183,12 +184,12 @@ class XmlScanner {
     int idx = _saveString(buf.toString());
     if (idx != -1) {
       return XmlToken(
-        tokenType: XmlTokenType.tokString,
+        tokenType: XmlTok.tokString,
         idx: idx,
       );
     }
 
-    return XmlToken(tokenType: XmlTokenType.tokError);
+    return XmlToken(tokenType: XmlTok.tokError);
   }
 
   String tokenValue(int idx, {String def = ""}) {

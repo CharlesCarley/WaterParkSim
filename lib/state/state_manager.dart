@@ -5,22 +5,16 @@ class StateTree {
   final List<Node> code;
   final StateTreeExecutor _executor;
 
+  /// Constructs an empty state tree
   StateTree.zero()
       : code = [],
         _executor = StateTreeExecutor.zero();
 
+  /// Constructs a state tree from the supplied code.
   StateTree({required this.code}) : _executor = StateTreeExecutor.zero();
 
-  StateTree.cloned({required this.code})
-      : _executor = StateTreeExecutor(code: code) {
-    Future.microtask(() {
-      _executor.updateValues();
-    });
-  }
-
-  void step(double durMs) {
-    Future.microtask(() {
-      _executor.step(durMs);
-    });
+  /// Executes a single step
+  void step(double ms) {
+    _executor.step(ms);
   }
 }

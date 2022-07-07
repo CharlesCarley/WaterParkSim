@@ -59,4 +59,22 @@ class XmlNode {
     }
     return def;
   }
+
+  bool attributeBool(String key, {bool def = false}) {
+    if (_attributes.containsKey(key)) {
+      Attribute? attr = _attributes[key];
+      if (attr != null) {
+        var str = attr.asString();
+        bool res = str == "yes" || str == "on" || str == "true";
+        if (!res) {
+          double? v = double.tryParse(str);
+          if (v != null) {
+            return v.toInt() != 0;
+          }
+        }
+        return res;
+      }
+    }
+    return def;
+  }
 }
