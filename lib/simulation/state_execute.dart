@@ -35,7 +35,7 @@ class StateTreeExecutor {
   void _filterTypeNodesOnStack(
       Stack<Node> stack, Stack<double> values, Node node) {
     if (node is InputObject) {
-      values.push(node.flowRate);
+      stack.push(node);
     } else if (node is TankObject) {
       stack.push(node);
     }
