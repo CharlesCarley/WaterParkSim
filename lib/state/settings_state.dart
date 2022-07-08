@@ -22,7 +22,7 @@ class SettingsState {
 
   static String debugProg = """
 <page>
-    <input param="10,10,6" 
+    <input param="10,10,4" 
            state="on">
         <osock param="NE,0,15" 
                id="0" />
@@ -35,7 +35,7 @@ class SettingsState {
                id="1"   
                target="spill" />
     </tank>
-    <tank param="210,10,20,500,3">
+    <tank param="210,10,20,500,1">
         <isock param="N,0,20"  
                link="1" 
                target="dump" />
@@ -43,7 +43,7 @@ class SettingsState {
                id="2"   
                target="eq" />
     </tank>
-    <tank param="310,10,20,500,3">
+    <tank param="310,10,20,500,15">
         <isock param="S,0,20"  
                link="2" 
                target="eq" />
