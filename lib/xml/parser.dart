@@ -3,8 +3,12 @@ import 'package:waterpark/xml/node.dart';
 import 'package:waterpark/xml/scanner.dart';
 import 'package:waterpark/xml/token.dart';
 
-class XmlParseLogger {
-  XmlParseLogger();
+abstract class XmlParseLogger {
+  void log(String message);
+}
+
+class XmlStubParseLogger with XmlParseLogger {
+  @override
   void log(String message) {}
 }
 
@@ -34,7 +38,7 @@ class XmlParser {
     if (logger != null) {
       return logger;
     }
-    return XmlParseLogger();
+    return XmlStubParseLogger();
   }
 
   /// Provides access to the token at the supplied offset from the curser
@@ -67,7 +71,7 @@ class XmlParser {
     bool rd = true;
     do {
       XmlToken tok = _getToken(0);
-      rd = tok.type == XmlTok.tokEof || tok.type == XmlTok.tokError;
+      rd = tok.type != XmlTok.tokEof || tok.type != XmlTok.tokError;
       if (rd) {
         int old = _cursor;
         rd = _parseRuleObjectList();
@@ -158,7 +162,7 @@ class XmlParser {
     XmlNode node = nodePtr;
     String identifier = _scanner.tokenValue(_getToken(0).index);
 
-    if (node.hasAttribute(identifier)) {
+    if (node.contains(identifier)) {
       _logger.log("node ${node.name} duplicate attribute $identifier");
       return false;
     }
@@ -218,22 +222,22 @@ class XmlParser {
     // / means remove the node from the stack
 
     var et0 = _getToken(0).type;
-    var result = true;
     if (et0 == XmlTok.tokSlash) {
-      var et1 = _getToken(1).type;
-      if (et1 != XmlTok.tokEnTag) {
+      if (_getToken(1).type != XmlTok.tokEnTag) {
         _logger.log("expected the '>' character ");
+        return false;
       }
 
       _reduceRule();
       _advanceCursor(2);
     } else if (et0 != XmlTok.tokEnTag) {
       _logger.log("expected the '>' character ");
-      result = false;
+      return false;
     } else {
       _advanceCursor(1);
     }
-    return result;
+
+    return true;
   }
 
   bool _ruleEndTag() {
@@ -297,6 +301,8 @@ class XmlParser {
       XmlNode? a = _stack.top();
       if (a != null && b != null) {
         a.addChild(b);
+      } else {
+        _logger.log("failed to reduce rule");
       }
     }
   }

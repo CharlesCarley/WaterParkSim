@@ -88,20 +88,20 @@ void main() {
 
     XmlNode nd = parser.root;
 
-    expect(nd.hasAttribute('name'), true);
-    expect(nd.attributeString('name'), "Foo");
+    expect(nd.contains('name'), true);
+    expect(nd.asString('name'), "Foo");
 
     expect(parser.root.hasChildren, true);
 
     nd = parser.root.children.first;
-    expect(nd.hasAttribute('x'), true);
-    expect(nd.attributeDouble('x'), 0.0);
+    expect(nd.contains('x'), true);
+    expect(nd.asDouble('x'), 0.0);
 
-    expect(nd.hasAttribute('y'), true);
-    expect(nd.attributeDouble('y'), 10.0);
+    expect(nd.contains('y'), true);
+    expect(nd.asDouble('y'), 10.0);
 
-    expect(nd.hasAttribute('r'), true);
-    expect(nd.attributeDouble('r'), 5.0);
+    expect(nd.contains('r'), true);
+    expect(nd.asDouble('r'), 5.0);
   });
   test("XML_SmokeTest_5", () {
     XmlParser parser = XmlParser(
@@ -130,22 +130,17 @@ void main() {
 </page>
     """);
 
+    expect(parser.root.hasChildren, true);
     XmlNode nd = parser.root;
 
-    expect(nd.hasAttribute('name'), true);
-    expect(nd.attributeString('name'), "Foo");
+    expect(nd.name, ObjectTags.page.index);
+    expect(nd.hasChildren, true);
 
-    expect(parser.root.hasChildren, true);
+    nd = parser.root.children[0];
+    expect(nd.name, ObjectTags.input.index);
 
-    nd = parser.root.children.first;
-    expect(nd.hasAttribute('x'), true);
-    expect(nd.attributeDouble('x'), 0.0);
-
-    expect(nd.hasAttribute('y'), true);
-    expect(nd.attributeDouble('y'), 10.0);
-
-    expect(nd.hasAttribute('r'), true);
-    expect(nd.attributeDouble('r'), 5.0);
+    nd = parser.root.children[1];
+    expect(nd.name, ObjectTags.input.index);
   });
 }
 

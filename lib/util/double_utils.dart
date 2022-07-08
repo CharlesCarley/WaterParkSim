@@ -14,4 +14,8 @@ class DoubleUtils {
             ? b
             : v;
   }
+
+  static double abs(double v) {
+    return v < 0 ? -v : v;
+  }
 }

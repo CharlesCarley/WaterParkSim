@@ -1,0 +1,93 @@
+import 'package:flutter/material.dart';
+import 'package:waterpark/palette.dart';
+import 'package:waterpark/widgets/event_router.dart';
+import 'package:waterpark/xml/parser.dart';
+
+import '../metrics.dart';
+
+class XmlListLogger extends XmlParseLogger {
+  final List<String> messages = [];
+  final WorkspaceEventDispatcher dispatcher;
+
+  XmlListLogger(this.dispatcher);
+
+  @override
+  void log(String message) {
+    messages.add(message);
+    dispatcher.notifyMessageLogged();
+  }
+
+  void clear() {
+    messages.clear();
+  }
+
+  List<Widget> getMessages() {
+    List<Widget> ret = [];
+    for (var str in messages) {
+      ret.add(Text(
+        str,
+        style: Common.editTextStyle,
+      ));
+    }
+    return ret;
+  }
+}
+
+class LogWidget extends StatefulWidget {
+  final XmlListLogger logger;
+  final WorkspaceEventDispatcher dispatcher;
+
+  const LogWidget({
+    required this.logger,
+    required this.dispatcher,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<LogWidget> createState() => _LogWidgetState();
+}
+
+class _LogWidgetState extends State<LogWidget> with WorkSpaceEventReceiver {
+  late ScrollController _controller;
+
+  @override
+  void initState() {
+    _controller = ScrollController();
+    widget.dispatcher.subscribe(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.dispatcher.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const ColoredBox(
+          color: Palette.background,
+          child: Text(
+            "Output",
+            style: Common.labelTextStyle,
+          ),
+        ),
+        Expanded(
+          child: ListView(
+            controller: _controller,
+            children: widget.logger.getMessages(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void onMessageLogged() {
+    _controller.position.jumpTo(widget.logger.messages.length.toDouble());
+  }
+}

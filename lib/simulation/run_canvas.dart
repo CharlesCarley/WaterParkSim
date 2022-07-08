@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:waterpark/metrics.dart';
 import 'package:waterpark/widgets/icon_widget.dart';
 import '../palette.dart';
-import '../state/state_manager.dart';
+import '../state/state_tree.dart';
 import '../widgets/event_router.dart';
 import '../widgets/program_canvas_ctor.dart';
 

@@ -1,4 +1,4 @@
-import 'common_state.dart';
+import 'object_state.dart';
 
 class SocketBits {
   static const int N = 0x01;
@@ -7,12 +7,15 @@ class SocketBits {
   static const int W = 0x08;
 }
 
-class SockObject extends Node {
-  int dir;
-  double dx;
-  double dy;
+class SockObject extends SimObject {
+  final int dir;
+  final double dx;
+  final double dy;
+  final SimNode parent;
+  final int target;
   double ax = 0;
   double ay = 0;
+  SockObject? link;
 
   final List<double> _cache = [];
 
@@ -20,23 +23,10 @@ class SockObject extends Node {
     required this.dir,
     required this.dx,
     required this.dy,
-  })
-  {
+    required this.parent,
+    required this.target,
+  }) {
     _cache.clear();
-    clear();
-  }
-
-  void addInput(SockObject? a) {
-    if (a != null) {
-      if (!inputs.contains(a)) {
-        inputs.add(a);
-        a.outputs.add(this);
-      }
-    }
-  }
-
-  List<SockObject> getOutputs() {
-    return outputs;
   }
 
   double getCache() {
@@ -50,5 +40,9 @@ class SockObject extends Node {
 
   void cacheValue(double v) {
     _cache.add(v);
+  }
+
+  void connect(SockObject obj) {
+    link = obj;
   }
 }

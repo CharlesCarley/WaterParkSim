@@ -1,6 +1,8 @@
-import 'rect_state.dart';
+import 'package:waterpark/state/object_state.dart';
 
-class ToggleObject extends RectState {
+import 'object_state.dart';
+
+class ToggleObject extends SimNode {
   bool toggle;
 
   ToggleObject({

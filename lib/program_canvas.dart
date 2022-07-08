@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'palette.dart';
-import 'state/state_manager.dart';
+import 'state/state_tree.dart';
 import 'widgets/event_router.dart';
 import 'widgets/program_canvas_ctor.dart';
 

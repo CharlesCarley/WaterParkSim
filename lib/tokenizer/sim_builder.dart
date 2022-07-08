@@ -1,7 +1,10 @@
+
+import 'package:waterpark/main.dart';
 import 'package:waterpark/state/input_state.dart';
-import 'package:waterpark/state/common_state.dart';
+import 'package:waterpark/state/object_state.dart';
 import 'package:waterpark/state/socket_state.dart';
 import 'package:waterpark/state/tank_state.dart';
+import 'package:waterpark/state/target_ids.dart';
 import 'package:waterpark/xml/parser.dart';
 import '../xml/node.dart';
 
@@ -23,20 +26,22 @@ class PrintLogger extends XmlParseLogger {
 class StateTreeCompiler {
   final XmlParser _parser = XmlParser(
     ObjectTags.values.asNameMap().keys.toList(),
-    logger: PrintLogger(),
+    logger: logger,
   );
-  final List<Node> _stateObjects = [];
+  final List<SimObject> _stateObjects = [];
+  final List<String> _targetStates =
+      SimTargetId.values.asNameMap().keys.toList();
 
   final Map<String, SockObject> _findSocket = {};
 
   /// Interprets the supplied buffer as XML,
   /// then compiles a node state tree from the XML parse tree.
   /// Returns a linear sequence of all nodes in the tree.
-  List<Node> compile(String buffer) {
+  List<SimObject> compile(String buffer) {
     _stateObjects.clear();
     _findSocket.clear();
-
     _parser.parse(buffer);
+
     if (_parser.hasRoot) {
       if (_parser.root.name == 0) {
         for (XmlNode node in _parser.root.children) {
@@ -53,10 +58,10 @@ class StateTreeCompiler {
 
   void _buildInputObject(XmlNode node) {
     var obj = InputObject(
-      x: node.attributeDouble("x"),
-      y: node.attributeDouble("y"),
-      flowRate: node.attributeDouble("rate"),
-      state: node.attributeBool("state"),
+      x: node.asDouble("x"),
+      y: node.asDouble("y"),
+      flowRate: node.asDouble("rate"),
+      state: node.asBool("state"),
     );
 
     _stateObjects.add(obj);
@@ -65,44 +70,44 @@ class StateTreeCompiler {
 
   void _buildTankObject(XmlNode node) {
     var obj = TankObject(
-      x: node.attributeDouble("x"),
-      y: node.attributeDouble("y"),
-      height: node.attributeDouble("height"),
-      capacity: node.attributeDouble("capacity"),
-      level: node.attributeDouble("level"),
+      x: node.asDouble("x"),
+      y: node.asDouble("y"),
+      height: node.asDouble("height"),
+      capacity: node.asDouble("capacity"),
+      level: node.asDouble("level"),
     );
 
     _stateObjects.add(obj);
     _buildSocketsForObjects(node, obj);
   }
 
-  SockObject _buildBaseSock(XmlNode node) {
+  SockObject _buildBaseSock(XmlNode node, SimNode parent) {
     int dir = _parseDirection(
-      node.attributeString("dir"),
+      node.asString("dir"),
     );
 
     int signX = (dir & SocketBits.E) != 0 ? -1 : 1;
     int signY = (dir & SocketBits.S) != 0 ? -1 : 1;
 
     var obj = SockObject(
-      dir: dir,
-      dx: signX * node.attributeDouble("dx"),
-      dy: signY * node.attributeDouble("dy"),
-    );
+        dir: dir,
+        dx: signX * node.asDouble("dx"),
+        dy: signY * node.asDouble("dy"),
+        parent: parent,
+        target: _lookUpTargetState(node.asString("target")));
 
     if (node.name == ObjectTags.osock.index) {
-      var id = node.attributeString("id");
+      var id = node.asString("id");
       if (id.isNotEmpty) {
         _findSocket.putIfAbsent(id, () => obj);
       }
       _findSocket.putIfAbsent(id, () => obj);
     } else if (node.name == ObjectTags.isock.index) {
-      var id = node.attributeString("link");
+      var id = node.asString("link");
       if (id.isNotEmpty && _findSocket.containsKey(id)) {
         SockObject? link = _findSocket[id];
-
         if (link != null) {
-          link.addInput(obj);
+          obj.connect(link);
         }
       }
     }
@@ -111,52 +116,17 @@ class StateTreeCompiler {
     return obj;
   }
 
-  void _buildSocketsForObjects(XmlNode node, Node obj) {
+  void _buildSocketsForObjects(XmlNode node, SimNode obj) {
     for (var child in node.children) {
       if (child.name == ObjectTags.isock.index) {
-        var sock = _buildBaseSock(child);
-        obj.inputs.add(sock);
+        var sock = _buildBaseSock(child, obj);
+        obj.addSocket(sock, true);
       } else if (child.name == ObjectTags.osock.index) {
-        var sock = _buildBaseSock(child);
-        obj.outputs.add(sock);
+        var sock = _buildBaseSock(child, obj);
+        obj.addSocket(sock, false);
       }
     }
   }
-
-  // void _parseSock() {
-  //   String a1 = _nextString();
-  //   double a2 = _nextDouble();
-  //   double a3 = _nextDouble();
-
-  //   int dir = _parseDirection(a1);
-
-  //   int signX = (dir & SocketBits.E) != 0 ? -1 : 1;
-  //   int signY = (dir & SocketBits.S) != 0 ? -1 : 1;
-
-  //   _stateObjects.add(SockObject(
-  //     dir: dir,
-  //     dx: signX * a2,
-  //     dy: signY * a3,
-  //   ));
-  // }
-
-  // void _parseTank() {
-  //   double x = _nextDouble();
-  //   double y = _nextDouble();
-  //   double h = _nextDouble();
-  //   double c = _nextDouble();
-  //   double d = _nextDouble();
-  //   _stateObjects.add(
-  //     TankObject(x: x, y: y, height: h, capacity: c, level: d),
-  //   );
-  // }
-
-  // void _parseInput() {
-  //   double x = _nextDouble();
-  //   double y = _nextDouble();
-  //   double r = _nextDouble();
-  //   _stateObjects.add(InputObject(x: x, y: y, flowRate: r, state: false));
-  // }
 
   int _parseDirection(String string) {
     int dir = 0;
@@ -185,55 +155,7 @@ class StateTreeCompiler {
     return dir;
   }
 
-  // ToggleObject? _findToggle() {
-  //   for (int i = _stateObjects.length - 1; i >= 0; --i) {
-  //     if (_stateObjects[i] is ToggleObject) {
-  //       return _stateObjects[i] as ToggleObject;
-  //     }
-  //   }
-  //   return null;
-  // }
-
-  // SockObject? _findSocket(int idx) {
-  //   int loc = (_stateObjects.length) + idx;
-
-  //   if (loc >= 0 && loc < _stateObjects.length) {
-  //     if (_stateObjects[loc] is SockObject) {
-  //       return _stateObjects[loc] as SockObject;
-  //     }
-  //   }
-  //   return null;
-  // }
-
-  // void _parseState() {
-  //   Token a1 = _nextToken();
-
-  //   if (a1.isNumber) {
-  //     ToggleObject? obj = _findToggle();
-  //     if (obj != null) {
-  //       obj.toggle = _number(a1.index) != 0;
-  //     }
-  //   } else if (a1.isIdentifier) {
-  //     ToggleObject? obj = _findToggle();
-  //     if (obj != null) {
-  //       var val = _string(a1.index);
-  //       obj.toggle = val == "yes" || val == "open";
-  //     }
-  //   }
-  // }
-
-  // void _parseLink() {
-  //   // enforce the limit if it is not found
-  //   var max = _stateObjects.length;
-
-  //   var offsA = _nextInteger(def: max);
-  //   var offsB = _nextInteger(def: max);
-
-  //   SockObject? a = _findSocket(offsA);
-  //   SockObject? b = _findSocket(offsB);
-
-  //   if (b != null && a != null) {
-  //     b.addInput(a);
-  //   }
-  // }
+  int _lookUpTargetState(String target) {
+    return _targetStates.indexOf(target);
+  }
 }

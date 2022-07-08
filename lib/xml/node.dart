@@ -32,15 +32,15 @@ class XmlNode {
     );
   }
 
-  bool hasAttribute(String key) {
+  bool contains(String key) {
     return _attributes.containsKey(key);
   }
 
-  int attributeInt(String key, {int def = -1}) {
-    return attributeDouble(key, def: def.toDouble()).toInt();
+  int asInt(String key, {int def = -1}) {
+    return asDouble(key, def: def.toDouble()).toInt();
   }
 
-  double attributeDouble(String key, {double def = -1.0}) {
+  double asDouble(String key, {double def = -1.0}) {
     if (_attributes.containsKey(key)) {
       Attribute? attr = _attributes[key];
       if (attr != null) {
@@ -50,7 +50,7 @@ class XmlNode {
     return def;
   }
 
-  String attributeString(String key, {String def = ""}) {
+  String asString(String key, {String def = ""}) {
     if (_attributes.containsKey(key)) {
       Attribute? attr = _attributes[key];
       if (attr != null) {
@@ -60,7 +60,7 @@ class XmlNode {
     return def;
   }
 
-  bool attributeBool(String key, {bool def = false}) {
+  bool asBool(String key, {bool def = false}) {
     if (_attributes.containsKey(key)) {
       Attribute? attr = _attributes[key];
       if (attr != null) {

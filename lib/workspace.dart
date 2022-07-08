@@ -4,11 +4,12 @@ import 'package:waterpark/simulation/run_canvas.dart';
 import 'metrics.dart';
 import 'theme.dart';
 import 'tokenizer/sim_builder.dart';
+import 'widgets/compile_log.dart';
 import 'workspace_help.dart';
 import 'workspace_settings.dart';
 import '../palette.dart';
 import '../state/settings_state.dart';
-import '../state/state_manager.dart';
+import 'state/state_tree.dart';
 import 'program_canvas.dart';
 import 'program_editor.dart';
 import 'widgets/event_router.dart';
@@ -16,7 +17,9 @@ import 'widgets/icon_widget.dart';
 import 'widgets/split_widget.dart';
 
 class WaterParkSimulator extends StatefulWidget {
-  const WaterParkSimulator({Key? key}) : super(key: key);
+  final WorkspaceEventDispatcher dispatcher;
+   
+  const WaterParkSimulator({required this.dispatcher, Key? key}) : super(key: key);
 
   @override
   State<WaterParkSimulator> createState() => _WaterParkSimulatorState();
@@ -24,7 +27,6 @@ class WaterParkSimulator extends StatefulWidget {
 
 class _WaterParkSimulatorState extends State<WaterParkSimulator>
     with WorkSpaceEventReceiver {
-  final WorkspaceEventDispatcher _dispatcher = WorkspaceEventDispatcher();
   final GlobalKey scaffolding = GlobalKey(debugLabel: "Scaffold");
 
   late bool _showSettings, _showHelp, _runScreen;
@@ -34,19 +36,19 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   @override
   void initState() {
     _keyFocus = FocusNode();
-    _keyFocus.requestFocus();
-    _dispatcher.subscribe(this);
+    widget.dispatcher.subscribe(this);
     _showSettings = false;
     _showHelp = false;
     _runScreen = false;
     _size = Size.zero;
 
     super.initState();
+    _focus();
   }
 
   @override
   void dispose() {
-    _dispatcher.unsubscribe(this);
+    widget.dispatcher.unsubscribe(this);
     super.dispose();
   }
 
@@ -64,7 +66,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
       home: RawKeyboardListener(
         focusNode: _keyFocus,
         autofocus: false,
-        onKey: (key) => _dispatcher.notifyKey(key),
+        onKey: (key) => widget.dispatcher.notifyKey(key),
         child: Scaffold(
           key: scaffolding,
           appBar: AppBar(
@@ -86,17 +88,17 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   Widget _buildBody() {
     if (_runScreen) {
       return RunProgramCanvas(
-        dispatcher: _dispatcher,
+        dispatcher: widget.dispatcher,
         tree: _compileCurrent(),
       );
     } else if (_showHelp) {
       return WorkspaceHelp(
-        dispatcher: _dispatcher,
+        dispatcher: widget.dispatcher,
         rect: Rect.fromLTWH(0, 0, _size.width, _size.height),
       );
     } else if (_showSettings) {
       return WorkspaceSettings(
-        dispatcher: _dispatcher,
+        dispatcher: widget.dispatcher,
         rect: Rect.fromLTWH(0, 0, _size.width, _size.height),
       );
     } else {
@@ -105,11 +107,11 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         initialSplit: SettingsState.sashPos,
         direction: SplitWidgetDirection.vertical,
         childA: ProgramEditor(
-          dispatcher: _dispatcher,
+          dispatcher: widget.dispatcher,
           program: SettingsState.debugProg,
         ),
         childB: ProgramCanvas(
-          dispatcher: _dispatcher,
+          dispatcher: widget.dispatcher,
         ),
       ));
       return Stack(children: body);
@@ -121,14 +123,14 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
       IconWidget.tool(
         icon: IconMappings.play,
         onClick: () {
-          _dispatcher.notifyRun();
+          widget.dispatcher.notifyRun();
         },
         tooltip: "Runs a simulation with the current script.",
       ),
       IconWidget(
         icon: IconMappings.gears,
         onClick: () {
-          _dispatcher.notifyDisplaySettings();
+          widget.dispatcher.notifyDisplaySettings();
         },
         tooltip: "Opens the settings panel. (Ctrl+Shift+E)",
       ),
@@ -142,7 +144,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         _size = MediaQuery.of(scaffolding.currentContext!).size;
       }
       _showSettings = true;
-      _keyFocus.requestFocus();
+      _focus();
     });
   }
 
@@ -150,7 +152,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   void onDisplaySettingsClosed() {
     setState(() {
       _showSettings = false;
-      _keyFocus.requestFocus();
+      _focus();
     });
   }
 
@@ -158,7 +160,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   void onHelpClosed() {
     setState(() {
       _showHelp = false;
-      _keyFocus.requestFocus();
+      _focus();
     });
   }
 
@@ -166,15 +168,13 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   void onHelp() {
     setState(() {
       _showHelp = true;
-      _keyFocus.requestFocus();
+      _focus();
     });
   }
 
   @override
   void onStateTreeCompiled(StateTree stateTree) {
-    setState(() {
-      _keyFocus.unfocus();
-    });
+    setState(() {});
   }
 
   @override
@@ -187,7 +187,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
           _showSettings = false;
           _showHelp = false;
           _runScreen = false;
-          _keyFocus.requestFocus();
+          _focus();
         });
       }
     } else {
@@ -196,7 +196,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
           key.physicalKey == (PhysicalKeyboardKey.keyE)) {
         setState(() {
           _showSettings = true;
-          _keyFocus.requestFocus();
+          _focus();
         });
       }
     }
@@ -206,12 +206,18 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   void onRun() {
     setState(() {
       _runScreen = !_runScreen;
-      _keyFocus.requestFocus();
+      _focus();
     });
   }
 
   StateTree _compileCurrent() {
     StateTreeCompiler obj = StateTreeCompiler();
-    return StateTree(code: obj.compile(_dispatcher.text));
+    return StateTree(code: obj.compile(widget.dispatcher.text));
+  }
+
+  void _focus() {
+    if (!_keyFocus.hasFocus && _keyFocus.canRequestFocus) {
+      _keyFocus.requestFocus();
+    }
   }
 }

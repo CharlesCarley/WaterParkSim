@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:waterpark/state/settings_state.dart';
+import 'package:waterpark/widgets/compile_log.dart';
 
-import '../state/state_manager.dart';
+import '../state/state_tree.dart';
 import 'event_dispatcher.dart';
 
 class WorkSpaceEventReceiver {
@@ -12,10 +13,13 @@ class WorkSpaceEventReceiver {
   void onKey(RawKeyEvent key) {}
   void onHelp() {}
   void onHelpClosed() {}
+  void onMessageLogged(){}
 }
 
 class WorkspaceEventDispatcher extends EventDispatcher<WorkSpaceEventReceiver> {
   String text = SettingsState.debugProg;
+
+  late final XmlListLogger logger;
 
   Future notifyRun() {
     return Future.microtask(() {
@@ -69,6 +73,13 @@ class WorkspaceEventDispatcher extends EventDispatcher<WorkSpaceEventReceiver> {
     return Future.microtask(() {
       for (var receiver in receivers) {
         receiver.onHelp();
+      }
+    });
+  }
+  Future notifyMessageLogged() {
+    return Future.microtask(() {
+      for (var receiver in receivers) {
+        receiver.onMessageLogged();
       }
     });
   }

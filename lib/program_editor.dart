@@ -6,9 +6,10 @@ import 'package:waterpark/widgets/icon_widget.dart';
 
 import '../metrics.dart';
 import '../palette.dart';
-import '../state/common_state.dart';
-import '../state/state_manager.dart';
+import 'state/object_state.dart';
+import 'state/state_tree.dart';
 import '../tokenizer/sim_builder.dart';
+import 'widgets/compile_log.dart';
 
 class ProgramEditor extends StatefulWidget {
   final String program;
@@ -38,6 +39,8 @@ class _ProgramEditorState extends State<ProgramEditor>
     _controller.text = widget.dispatcher.text;
     _lastState = widget.dispatcher.text;
 
+    widget.dispatcher.subscribe(this);
+
     _editFocus = FocusNode();
 
     _triggerBuild = Timer.periodic(
@@ -54,6 +57,7 @@ class _ProgramEditorState extends State<ProgramEditor>
   void dispose() {
     _triggerBuild.cancel();
     _controller.dispose();
+    widget.dispatcher.unsubscribe(this);
     super.dispose();
   }
 
@@ -109,6 +113,13 @@ class _ProgramEditorState extends State<ProgramEditor>
               decoration: Common.defaultTextDecoration,
             ),
           ),
+          SizedBox.fromSize(
+            size: const Size.fromHeight(150),
+            child: LogWidget(
+              dispatcher: widget.dispatcher,
+              logger: widget.dispatcher.logger,
+            ),
+          )
         ],
       ),
     );
@@ -118,7 +129,7 @@ class _ProgramEditorState extends State<ProgramEditor>
     exitTextChanged(newValue);
   }
 
-  Future<List<Node>> _compile(String newValue) {
+  Future<List<SimObject>> _compile(String newValue) {
     return Future.microtask(() {
       widget.dispatcher.text = newValue;
       StateTreeCompiler obj = StateTreeCompiler();
@@ -163,6 +174,11 @@ class _ProgramEditorState extends State<ProgramEditor>
     _lastState = "";
     _changed = true;
     _triggerCall();
+  }
+
+  @override
+  void onMessageLogged() {
+    setState(() {});
   }
 
   // void _helpClicked() {

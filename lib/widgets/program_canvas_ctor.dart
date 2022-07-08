@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:waterpark/dashboard/input_widget.dart';
 import 'package:waterpark/dashboard/socket_widget.dart';
 import 'package:waterpark/dashboard/tank_widget.dart';
-import '../state/common_state.dart';
+import '../state/object_state.dart';
 import '../state/input_state.dart';
-import '../state/rect_state.dart';
 import '../state/settings_state.dart';
 import '../state/socket_state.dart';
-import '../state/state_manager.dart';
+import '../state/state_tree.dart';
 import '../state/tank_state.dart';
 import '../dashboard/link_widget.dart';
 
@@ -18,15 +17,6 @@ class ProgramCanvasConstructor {
 
   ProgramCanvasConstructor({required this.tree}) {
     widgets = _construct();
-  }
-
-  RectState? lastPosition() {
-    for (int i = _cur; i >= 0; --i) {
-      if (tree.code[i] is RectState) {
-        return tree.code[i] as RectState;
-      }
-    }
-    return null;
   }
 
   void _addSocket(
@@ -56,15 +46,12 @@ class ProgramCanvasConstructor {
       ),
     ));
 
-    if (sock.hasOutputs) {
-      List<SockObject> oSock = sock.getOutputs();
-
-      for (var link in oSock) {
-        widgetList.add(LinkWidget(
-          state: sock,
-          link: link,
-        ));
-      }
+    if (sock.link != null) {
+      SockObject linked = sock.link!;
+      widgetList.add(LinkWidget(
+        state: sock,
+        link: linked,
+      ));
     }
   }
 
@@ -72,7 +59,7 @@ class ProgramCanvasConstructor {
     List<Widget> widgetList = [];
 
     for (_cur = 0; _cur < tree.code.length; ++_cur) {
-      Node node = tree.code[_cur];
+      SimObject node = tree.code[_cur];
       if (node is TankObject) {
         widgetList.add(TankWidget(state: node));
       } else if (node is SockObject) {
@@ -89,13 +76,8 @@ class ProgramCanvasConstructor {
   }
 
   void constructSocket(List<Widget> widgetList, SockObject node) {
-    RectState? loc = lastPosition();
-
-    if (loc != null) {
-      _addSocket(widgetList, node, loc.x, loc.y, loc.w, loc.h);
-    } else {
-      _addSocket(widgetList, node, 0, 0, 1, 1);
-    }
+    SimNode loc = node.parent;
+    _addSocket(widgetList, node, loc.x, loc.y, loc.w, loc.h);
   }
 
   void constructInput(List<Widget> widgetList, InputObject node) {
