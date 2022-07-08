@@ -11233,8 +11233,8 @@ this.b=b},
 a7k:function a7k(a){this.a=a},
 a8E:function a8E(){},
 AF:function AF(){},
-as4(a,b,c,d,e,f,g,h,i,j,k){var s=null,r=b.a.a
-return new A.x7(b,k,new A.a1h(d,h,s,e,f,s,j,s,B.b4,s,s,B.GJ,!1,s,!1,s,"\u2022",!1,!0,s,s,!0,s,g,s,!1,s,s,s,s,s,s,2,s,s,c,B.zq,s,s,s,s,s,s,s,!0,s),r,!0,B.vi,s,s)},
+as4(a,b,c,d,e,f,g,h,i,j,k,l,m){var s=null,r=c.a.a
+return new A.x7(c,m,new A.a1h(e,j,s,g,h,s,l,s,B.b4,s,s,B.GJ,!1,s,!1,s,"\u2022",!1,!1,s,s,!1,s,i,s,!1,s,s,s,s,s,s,2,s,s,d,B.zq,s,s,s,s,s,s,s,!0,s),r,!0,B.vi,s,s)},
 x7:function x7(a,b,c,d,e,f,g,h){var _=this
 _.z=a
 _.d=b
@@ -15154,7 +15154,7 @@ qg:function qg(){},
 aq7(a){return B.DX},
 va:function va(a,b){this.a=a
 this.b=b},
-agR(a,b,c,d,e,f,g,h,i,j,k,l,m,n){return new A.a1l(h,k,!1,!0,b,l,m,!0,e,g,n,i,!0,!1)},
+agR(a,b,c,d,e,f,g,h,i,j,k,l,m,n){return new A.a1l(h,k,!1,!1,b,l,m,!1,e,g,n,i,!0,!1)},
 auN(a){switch(a){case"TextAffinity.downstream":return B.k
 case"TextAffinity.upstream":return B.aa}return null},
 agQ(a){var s,r,q,p=J.ax(a),o=A.be(p.h(a,"text")),n=A.fA(p.h(a,"selectionBase"))
@@ -42054,7 +42054,7 @@ else s.kP()}},
 G7(a){if(a!==this.f)this.Y(new A.a7i(this,a))},
 gjy(){this.a.toString
 var s=this.y.ga_().gjy()
-return A.agR(!0,B.vh,!1,!0,s.x,!0,s.z,s.a,s.as,!1,s.b,s.f,s.r,s.Q)},
+return A.agR(!1,B.vh,!1,!0,s.x,!1,s.z,s.a,s.as,!1,s.b,s.f,s.r,s.Q)},
 I(c8,c9){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,c0,c1=this,c2=null,c3="forcePressEnabled",c4={},c5=A.aw(c9),c6=A.agV(c9),c7=c5.R8.w
 c7.toString
 s=c7.bg(c1.a.x)
@@ -42152,7 +42152,7 @@ b6=a9.p3
 b7=a9.to
 b8=a9.aI
 a9=a9.an
-c7=A.HU(o,new A.tW(r,q,a4,!1,!1,d,c,!0,!0,a5,a6,!0,s,a1,a2,a3,a0,m,h,B.dA,a7,e,!1,!1,a8,b1,b,a,b2,b3,b4,c2,c1.gXt(),c1.gXz(),p,B.c2,!0,b5,b6,l,f,i,g,B.cx,B.bv,c7.a,b7,b0,B.aT,b8,a9,!0,c1,B.O,"editable",!0,c1.y))
+c7=A.HU(o,new A.tW(r,q,a4,!1,!1,d,c,!0,!1,a5,a6,!1,s,a1,a2,a3,a0,m,h,B.dA,a7,e,!1,!1,a8,b1,b,a,b2,b3,b4,c2,c1.gXt(),c1.gXz(),p,B.c2,!0,b5,b6,l,f,i,g,B.cx,B.bv,c7.a,b7,b0,B.aT,b8,a9,!0,c1,B.O,"editable",!0,c1.y))
 b9=A.jW(new A.nk(A.b([q,r],t.Eo)),new A.a7n(c1,q,r),new A.fo(c7,c2))
 c1.a.toString
 c7=A.aS(t.ui)
@@ -51689,10 +51689,10 @@ kz(){var s=this,r=s.e.kz(),q=A.y(t.N,t.z)
 q.l(0,"inputType",s.a.kz())
 q.l(0,"readOnly",s.b)
 q.l(0,"obscureText",!1)
-q.l(0,"autocorrect",!0)
+q.l(0,"autocorrect",!1)
 q.l(0,"smartDashesType",B.i.i(s.f.a))
 q.l(0,"smartQuotesType",B.i.i(s.r.a))
-q.l(0,"enableSuggestions",!0)
+q.l(0,"enableSuggestions",!1)
 q.l(0,"enableInteractiveSelection",s.x)
 q.l(0,"actionLabel",null)
 q.l(0,"inputAction","TextInputAction."+s.z.b)
@@ -53966,7 +53966,7 @@ else q=!1
 l=r.k(0,B.ux)?B.uw:B.kJ
 k=i.a
 j=k.dx
-return A.agR(!0,o,!1,!0,q,!0,l,r,k.bX,!1,p,n,m,j)},
+return A.agR(!1,o,!1,!0,q,!1,l,r,k.bX,!1,p,n,m,j)},
 Ml(a,b){this.Y(new A.RX(this,a,b))},
 a07(a){var s=this.a
 if(s.t)if(s.z.a&&!0)if(s.d.gbe()){if(a==null)s=null
@@ -62348,7 +62348,7 @@ s.to$=0
 r.a.d.pb(0,r)
 r.aP(0)},
 I(a,b){var s,r=this,q=null,p=t.p,o=A.mC(A.b([B.Et,B.db,A.up(B.yE,"e",r.gTL(),$.a_1,"Clears the current text")],p),B.c4,B.a8,B.ab),n=A.a(r.d,"_editFocus")
-n=A.oq(A.as4(!1,A.a(r.e,"_controller"),B.f6,B.zR,n,B.ux,q,r.ga1h(),q,B.uD,q),1)
+n=A.oq(A.as4(!1,!1,A.a(r.e,"_controller"),B.f6,B.zR,!1,n,B.ux,q,r.ga1h(),q,B.uD,q),1)
 s=r.a.d
 return new A.cU(B.f1,A.lE(A.b([new A.cU(B.lN,o,q),n,A.abT(new A.uX(A.a(s.c,"logger"),s,q),B.Gm)],p),B.bd,B.a8,B.ab),q)},
 a1i(a){a=B.e.Aa(a)
@@ -62456,7 +62456,7 @@ if(h.e===1&&p.x>=i*g)++j}if(j>0)for(m=0;m<o.length;o.length===i||(0,A.D)(o),++m)
 n=l-h.r
 if(n<0)n=-n
 g=p.yW()
-if(h.e===1&&p.x>=n*g){f=a*($.aat()/j)/8
+if(h.e===1&&p.x>=n*g){f=a*($.aat()/j)
 h.y.push(f)
 p.x=p.mf(p.me()-f)}}}},
 UU(a){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d=$.Vq
@@ -62477,7 +62477,7 @@ A.abu()
 h=$.aat()
 g=q.a-p.a
 if(g<0)g=-g
-f=i*h/(g/10)*a
+f=i*h/(g/20)*a
 e=m-k
 if((e<0?-e:e)>0.1)if(m>=k){q.x=q.mf(q.me()-f)
 p.x=p.mf(p.me()+f)}else{q.x=q.mf(q.me()+f)

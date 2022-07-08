@@ -102,6 +102,8 @@ class _ProgramEditorState extends State<ProgramEditor>
             child: TextFormField(
               validator: null,
               onSaved: null,
+              autocorrect: false,
+              enableSuggestions: false,
               onChanged: _triggerChange,
               autofocus: false,
               focusNode: _editFocus,

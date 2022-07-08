@@ -72,7 +72,7 @@ class StateTreeExecutor {
           double outputHeight = tank.sockHeight(sock);
           if (sock.target == SimTargetId.spill.index &&
               tank.level >= outputHeight) {
-            double bbl = tick * (ManifoldUtils.maxFlow / maxOut) / 8;
+            double bbl = tick * (ManifoldUtils.maxFlow / maxOut);
             sock.cacheValue(bbl);
             tank.delBarrels(bbl);
           }
@@ -101,7 +101,7 @@ class StateTreeExecutor {
       ManifoldUtils.calculateMaxFlow();
 
       double d = (ap) * ManifoldUtils.maxFlow;
-      double t = DoubleUtils.abs(p.x - c.x) / 10;
+      double t = DoubleUtils.abs(p.x - c.x) / 20;
 
       d = (d / t) * tick;
       double ad = DoubleUtils.abs(p.level - c.level);
