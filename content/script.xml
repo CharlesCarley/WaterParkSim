@@ -1,26 +1,3 @@
-class SettingsState {
-  static double inputObjectWidth = 50;
-  static double inputObjectHeight = 50;
-
-  // displayed as circle
-  static double lineSegmentEndPointSize = 3.0;
-  static double lineSegmentLineSize = 2.5;
-
-  static double tankWidth = 75.0;
-  static double tankHeight = 150.0;
-  static double menuHeight = 18.0;
-  static int displayPrecision = 2;
- 
-  static double sashPos = 0.25;
-
-  static int stepRateMs = 60;
-  
-
-  // general border
-  static double border = 3.0;
-  static String title = "Water Facility Demo";
-
-  static String debugProg = """
 <page>
     <input param="10,10,6" 
            state="on">
@@ -52,5 +29,3 @@ class SettingsState {
                target="eq" />
     </tank>
 </page>
-""";
-}

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:waterpark/main.dart';
 import 'package:waterpark/palette.dart';
+import 'package:waterpark/state/settings_state.dart';
 import 'package:waterpark/widgets/event_router.dart';
+import 'package:waterpark/widgets/icon_widget.dart';
 import 'package:waterpark/xml/parser.dart';
 
 import '../metrics.dart';
@@ -69,11 +72,29 @@ class _LogWidgetState extends State<LogWidget> with WorkSpaceEventReceiver {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const ColoredBox(
+        ColoredBox(
           color: Palette.background,
-          child: Text(
-            "Output",
-            style: Common.labelTextStyle,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  "Output",
+                  style: Common.labelTextStyle,
+                ),
+              ),
+              const Spacer(),
+              IconWidget(
+                icon: IconMappings.brush,
+                textSize: SettingsState.menuHeight,
+                onClick: () {
+                  setState(() {
+                    logger.clear();
+                  });
+                },
+              ),
+            ],
           ),
         ),
         Expanded(
@@ -88,6 +109,6 @@ class _LogWidgetState extends State<LogWidget> with WorkSpaceEventReceiver {
 
   @override
   void onMessageLogged() {
-    _controller.position.jumpTo(widget.logger.messages.length.toDouble());
+    _controller.position.jumpTo(14 * widget.logger.messages.length.toDouble());
   }
 }

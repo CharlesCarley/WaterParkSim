@@ -1,10 +1,10 @@
-
 import 'package:waterpark/main.dart';
 import 'package:waterpark/state/input_state.dart';
 import 'package:waterpark/state/object_state.dart';
 import 'package:waterpark/state/socket_state.dart';
 import 'package:waterpark/state/tank_state.dart';
 import 'package:waterpark/state/target_ids.dart';
+import 'package:waterpark/util/double_utils.dart';
 import 'package:waterpark/xml/parser.dart';
 import '../xml/node.dart';
 
@@ -57,42 +57,87 @@ class StateTreeCompiler {
   }
 
   void _buildInputObject(XmlNode node) {
-    var obj = InputObject(
-      x: node.asDouble("x"),
-      y: node.asDouble("y"),
-      flowRate: node.asDouble("rate"),
-      state: node.asBool("state"),
-    );
-
-    _stateObjects.add(obj);
-    _buildSocketsForObjects(node, obj);
+    InputObject? obj;
+    if (node.contains("param")) {
+      var list = node.asListDouble("param");
+      if (list.length >= 3) {
+        obj = InputObject(
+            x: list[0],
+            y: list[1],
+            flowRate: list[2],
+            state: node.asBool("state"));
+      }
+    } else {
+      obj = InputObject(
+        x: node.asDouble("x"),
+        y: node.asDouble("y"),
+        flowRate: node.asDouble("rate"),
+        state: node.asBool("state"),
+      );
+    }
+    if (obj != null) {
+      _stateObjects.add(obj);
+      _buildSocketsForObjects(node, obj);
+    }
   }
 
   void _buildTankObject(XmlNode node) {
-    var obj = TankObject(
-      x: node.asDouble("x"),
-      y: node.asDouble("y"),
-      height: node.asDouble("height"),
-      capacity: node.asDouble("capacity"),
-      level: node.asDouble("level"),
-    );
+    TankObject? obj;
 
-    _stateObjects.add(obj);
-    _buildSocketsForObjects(node, obj);
+    if (node.contains("param")) {
+      var list = node.asListDouble("param");
+      if (list.length >= 5) {
+        obj = TankObject(
+          x: list[0],
+          y: list[1],
+          height: list[2],
+          capacity: list[3],
+          level: list[4],
+        );
+      }
+    } else {
+      obj = TankObject(
+        x: node.asDouble("x"),
+        y: node.asDouble("y"),
+        height: node.asDouble("height"),
+        capacity: node.asDouble("capacity"),
+        level: node.asDouble("level"),
+      );
+    }
+    if (obj != null) {
+      _stateObjects.add(obj);
+      _buildSocketsForObjects(node, obj);
+    }
   }
 
   SockObject _buildBaseSock(XmlNode node, SimNode parent) {
-    int dir = _parseDirection(
-      node.asString("dir"),
-    );
+    double x = 0, y = 0;
+    int dir = 0;
+
+    if (node.contains("param")) {
+      var sl = node.asString("param").split(",");
+      if (sl.length >= 3) {
+        // dir,x,y
+
+        dir = _parseDirection(sl[0]);
+        x = DoubleUtils.fromString(sl[1]);
+        y = DoubleUtils.fromString(sl[2]);
+      }
+    } else {
+      x = node.asDouble("dx");
+      y = node.asDouble("dy");
+      dir = _parseDirection(
+        node.asString("dir"),
+      );
+    }
 
     int signX = (dir & SocketBits.E) != 0 ? -1 : 1;
     int signY = (dir & SocketBits.S) != 0 ? -1 : 1;
 
     var obj = SockObject(
         dir: dir,
-        dx: signX * node.asDouble("dx"),
-        dy: signY * node.asDouble("dy"),
+        dx: signX * x,
+        dy: signY * y,
         parent: parent,
         target: _lookUpTargetState(node.asString("target")));
 

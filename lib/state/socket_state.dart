@@ -16,7 +16,7 @@ class SockObject extends SimObject {
   double ax = 0;
   double ay = 0;
   SockObject? link;
-
+  final List<SockObject> fromLinks = [];
   final List<double> _cache = [];
 
   SockObject({
@@ -25,9 +25,7 @@ class SockObject extends SimObject {
     required this.dy,
     required this.parent,
     required this.target,
-  }) {
-    _cache.clear();
-  }
+  });
 
   double getCache() {
     double v = 0;
@@ -44,5 +42,6 @@ class SockObject extends SimObject {
 
   void connect(SockObject obj) {
     link = obj;
+    obj.fromLinks.add(this);
   }
 }

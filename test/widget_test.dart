@@ -5,10 +5,6 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 import 'package:flutter_test/flutter_test.dart';
-import 'package:waterpark/simulation/state_execute.dart';
-import 'package:waterpark/state/socket_state.dart';
-import 'package:waterpark/state/tank_state.dart';
-import 'package:waterpark/tokenizer/sim_builder.dart';
 import 'package:waterpark/tokenizer/tokenizer.dart';
 
 void main() {
@@ -175,64 +171,6 @@ void main() {
     expect(tokenizer.getKeyword(ret[0].index), "link");
     expect(tokenizer.getNumber(ret[1].index), -1);
     expect(tokenizer.getNumber(ret[2].index), -2);
-  });
-
-  /////////////////////////////////////////////////////////////////
-  ///
-  /// SimBuilder Tests
-  /////////////////////////////////////////////////////////////////
-
-  test("SimBuilder_1", () {
-    var parser = StateTreeCompiler();
-    var ret = parser.compile("tank 20 20 25 625 15 ");
-
-    expect(ret.length, 1);
-
-    var t = ret[0] as TankObject;
-    expect(t.x, 20);
-    expect(t.y, 20);
-    expect(t.height, 25);
-    expect(t.capacity, 625);
-    expect(t.level, 15);
-  });
-
-  test("SimBuilder_2", () {
-    var parser = StateTreeCompiler();
-
-    var ret = parser.compile("tank 20 20 25 625 15 "
-        "sock N 0 0 "
-        "sock E 0 0 "
-        "sock S 0 0 "
-        "sock W 0 0 ");
-
-    var t = ret[0] as TankObject;
-    expect(t.x, 20);
-    expect(t.y, 20);
-    expect(t.height, 25);
-    expect(t.capacity, 625);
-    expect(t.level, 15);
-
-    List<int> bits = [SocketBits.N, SocketBits.E, SocketBits.S, SocketBits.W];
-    for (int i = 0; i < bits.length; ++i) {
-      var s = ret[1 + i] as SockObject;
-      expect(s.dir, bits[i]);
-      expect(s.dx, 0);
-      expect(s.dy, 0);
-    }
-  });
-
-  test("SimBuilder_4", () {
-    StateTreeExecutor executor = StateTreeExecutor(
-      code: StateTreeCompiler().compile("""
-      input 0 0 20 
-        sock S 0 0
-      input 0 0 0 
-        sock S 0 0
-      link -1 -3
-      """),
-    );
-
-    executor.step(1);
   });
 
   /////////////////////////////////////////////////////////////////

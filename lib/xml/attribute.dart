@@ -26,4 +26,17 @@ class Attribute {
     }
     return def;
   }
+
+  List<double> asListDouble() {
+    List<double> rv = [];
+    List<String> sl = _value.split(',');
+
+    for (var s in sl) {
+      double? v = double.tryParse(s);
+      if (v != null) {
+        rv.add(v);
+      }
+    }
+    return rv;
+  }
 }

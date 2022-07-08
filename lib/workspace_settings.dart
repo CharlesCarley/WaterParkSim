@@ -5,6 +5,7 @@ import 'package:waterpark/state/settings_state.dart';
 import 'package:waterpark/widgets/event_router.dart';
 import 'package:waterpark/widgets/icon_widget.dart';
 import '../settings/settings_double_widget.dart';
+import 'util/double_utils.dart';
 
 class WorkspaceSettings extends StatefulWidget {
   final Rect rect;
@@ -23,19 +24,10 @@ class WorkspaceSettings extends StatefulWidget {
 class _WorkspaceSettingsState extends State<WorkspaceSettings> {
   @override
   void initState() {
-    _rangeLimit(SettingsState.inputObjectWidth, 40, 100);
-    _rangeLimit(SettingsState.inputObjectHeight, 40, 100);
-    _rangeLimit(SettingsState.lineSegmentLineSize, 0.01, 4);
+    DoubleUtils.lim(SettingsState.inputObjectWidth, 40, 100);
+    DoubleUtils.lim(SettingsState.inputObjectHeight, 40, 100);
+    DoubleUtils.lim(SettingsState.lineSegmentLineSize, 0.01, 5);
     super.initState();
-  }
-
-  void _rangeLimit(double val, double mi, double ma) {
-    if (val < mi) {
-      val = mi;
-    }
-    if (val > ma) {
-      val = ma;
-    }
   }
 
   @override
@@ -52,14 +44,15 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                   padding: const EdgeInsets.fromLTRB(8.0, 16, 8, 16),
                   child: Text(
                     "Workspace Parameters",
-                    style: Common.sizedTextStyle(24, color: Palette.titleForeground),
+                    style: Common.sizedTextStyle(24,
+                        color: Palette.titleForeground),
                   ),
                 ),
                 const Spacer(),
-                 IconWidget(
+                IconWidget(
                   icon: IconMappings.exit,
                   color: Palette.highlight,
-                  onClick: (){
+                  onClick: () {
                     widget.dispatcher.notifyDisplaySettingsClosed();
                   },
                   tooltip: "Closes the settings panel (Esc)",
@@ -138,8 +131,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                     SettingsDoubleWidget(
                       value: SettingsState.tankWidth,
                       heading: "tankWidth",
-                      description:
-                          "Controls tank object's width.",
+                      description: "Controls tank object's width.",
                       min: 40,
                       max: 300,
                       onChanged: (val) {
@@ -151,8 +143,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                     SettingsDoubleWidget(
                       value: SettingsState.tankHeight,
                       heading: "tankHeight",
-                      description:
-                          "Controls tank object's height.",
+                      description: "Controls tank object's height.",
                       min: 40,
                       max: 300,
                       onChanged: (val) {
@@ -160,11 +151,11 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                           SettingsState.tankHeight = val;
                         });
                       },
-                    ), SettingsDoubleWidget(
+                    ),
+                    SettingsDoubleWidget(
                       value: SettingsState.border,
                       heading: "border",
-                      description:
-                          "Controls a general border metric.",
+                      description: "Controls a general border metric.",
                       min: 1,
                       max: 10,
                       onChanged: (val) {

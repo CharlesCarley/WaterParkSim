@@ -3,5 +3,5 @@ enum SimTargetId
 {
   dump,
   spill,
-  eqManifold,
+  eq,
 }

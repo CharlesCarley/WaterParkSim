@@ -60,6 +60,16 @@ class XmlNode {
     return def;
   }
 
+  List<double> asListDouble(String key) {
+    if (_attributes.containsKey(key)) {
+      Attribute? attr = _attributes[key];
+      if (attr != null) {
+        return attr.asListDouble();
+      }
+    }
+    return [];
+  }
+
   bool asBool(String key, {bool def = false}) {
     if (_attributes.containsKey(key)) {
       Attribute? attr = _attributes[key];

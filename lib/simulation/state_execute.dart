@@ -1,68 +1,122 @@
 import 'package:waterpark/state/socket_state.dart';
 import 'package:waterpark/state/target_ids.dart';
+import '../state/manifold_utils.dart';
 import '../state/object_state.dart';
 import '../state/input_state.dart';
 import '../state/tank_state.dart';
+import '../util/double_utils.dart';
 
 class StateTreeExecutor {
   final List<SimObject> code;
+  final List<InputObject> _flow = [];
+  final List<TankObject> _tanks = [];
 
   StateTreeExecutor.zero() : code = [];
+  StateTreeExecutor({required this.code}) {
+    _sort();
+  }
 
-  StateTreeExecutor({required this.code});
+  void step(double tickMs) {
+    tickMs /= 16;
+    if (tickMs > 0) tickMs = 1.0 / tickMs;
 
-  void step(double dur) {
-    dur /= 16;
+    _pushIncoming(tickMs);
+    _relayTanks(tickMs);
+    _equalize(tickMs);
+  }
 
+  void _sort() {
     for (SimObject node in code) {
       bool sockType = node is SockObject;
       if (sockType) continue;
 
       if (node is InputObject) {
-        _processInputObject(dur, node);
+        _flow.add(node);
       } else if (node is TankObject) {
-        _processTankObject(dur, node);
+        _tanks.add(node);
       }
     }
   }
 
-  void _processInputObject(double dur, InputObject node) {
-    if (node.toggle) {
-      for (var osock in node.outputs) {
-        osock.cacheValue(node.flowRate);
+  void _pushIncoming(double tick) {
+    for (var flow in _flow) {
+      for (var sock in flow.outputs) {
+        sock.cacheValue(
+          ManifoldUtils.limit(
+            flow.flowRate * tick,
+          ),
+        );
       }
     }
   }
 
-  void _processTankObject(double dur, TankObject node) {
-    double bbl = node.toBarrels();
+  void _relayTanks(double tick) {
+    for (var tank in _tanks) {
+      for (var sock in tank.inputs) {
+        if (sock.link != null) {
+          tank.addBarrels(sock.link!.getCache());
+        }
+      }
 
-    for (var isock in node.inputs) {
-      if (isock.link != null) {
-        bool pullCache = isock.target == SimTargetId.dump.index ||
-            isock.target == SimTargetId.eqManifold.index;
-        if (pullCache) {
-          double v = isock.link!.getCache();
-          bbl += v / dur;
+      int maxOut = 0;
+
+      for (var sock in tank.outputs) {
+        double outputHeight = tank.sockHeight(sock);
+        if (sock.target == SimTargetId.spill.index &&
+            tank.level >= outputHeight) {
+          ++maxOut;
+        }
+      }
+      if (maxOut > 0) {
+        for (var sock in tank.outputs) {
+          double outputHeight = tank.sockHeight(sock);
+          if (sock.target == SimTargetId.spill.index &&
+              tank.level >= outputHeight) {
+            double bbl = tick * (ManifoldUtils.maxFlow / maxOut) / 8;
+            sock.cacheValue(bbl);
+            tank.delBarrels(bbl);
+          }
         }
       }
     }
+  }
 
-    for (var osock in node.outputs) {
-      if (osock.target == SimTargetId.spill.index) {
-        if (node.toLevel(bbl) > node.sockHeight(osock)) {
-          bbl -= 6 / dur;
-          osock.cacheValue(6);
-        }
-      }
+  void _equalize(double tick) {
+    double old = ManifoldUtils.velocity;
 
-      if (osock.target == SimTargetId.eqManifold.index) {
-        if (node.toLevel(bbl) > node.sockHeight(osock)) {
-          bbl -= 3 / dur;
-          osock.cacheValue(3);
+    for (int i = 1; i < _tanks.length; ++i) {
+      TankObject p = _tanks[i - 1];
+      TankObject c = _tanks[i];
+
+      double pt = p.equalizeHeight();
+      double ct = c.equalizeHeight();
+
+      if (p.level < pt && c.level < ct) continue;
+
+      double a = p.level / 2.31;
+      double b = c.level / 2.31;
+      double ap = DoubleUtils.abs(a - b);
+
+      ManifoldUtils.velocity = ((a + b) / 2) > old ? old : ((a + b) / 2);
+      ManifoldUtils.calculateMaxFlow();
+
+      double d = (ap) * ManifoldUtils.maxFlow;
+      double t = DoubleUtils.abs(p.x - c.x) / 10;
+
+      d = (d / t) * tick;
+      double ad = DoubleUtils.abs(p.level - c.level);
+
+      if (ad > 0.1) {
+        if (p.level >= c.level) {
+          p.delBarrels(d);
+          c.addBarrels(d);
+        } else {
+          p.addBarrels(d);
+          c.delBarrels(d);
         }
       }
     }
-    node.level = node.toLevel(bbl);
+    ManifoldUtils.velocity = old;
+    ManifoldUtils.calculateMaxFlow();
   }
 }

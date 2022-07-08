@@ -140,7 +140,7 @@ void main() {
     expect(nd.name, ObjectTags.input.index);
 
     nd = parser.root.children[1];
-    expect(nd.name, ObjectTags.input.index);
+    expect(nd.name, ObjectTags.tank.index);
   });
 }
 
