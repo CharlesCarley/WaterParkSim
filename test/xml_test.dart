@@ -4,6 +4,8 @@
 // utility in the flutter_test package. For example, you can send tap and scroll
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
+// ignore_for_file: avoid_print
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:waterpark/xml/node.dart';
 import 'package:waterpark/xml/parser.dart';
@@ -35,7 +37,7 @@ void main() {
   test("XML_SmokeTest_2", () {
     XmlScanner scan = XmlScanner.fromString("""
       <?xml version="1.0"?>
-    """);
+    """, PrintLogger());
 
     expect(scan.scan().type, XmlTok.tokStTag);
     expect(scan.scan().type, XmlTok.tokQuestion);
@@ -54,7 +56,7 @@ void main() {
         <foo/>
         </input>
       </page>
-    """);
+    """, PrintLogger());
 
     expectTag(scan, "page", false);
     expectTag(scan, "input", false);
@@ -68,7 +70,7 @@ void main() {
       <page name="Foo">
         <input x="0" y="10" r="5"/>
       </page>
-    """);
+    """, PrintLogger());
     expectTagAttributes(scan, "page", ["name"], ["Foo"], false, false);
     expectTagAttributes(
         scan, "input", ["x", "y", "r"], ["0", "10", "5"], false, true);

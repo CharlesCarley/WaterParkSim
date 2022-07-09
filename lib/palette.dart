@@ -25,16 +25,12 @@ class Palette {
   static const background = Color(0xFF131313);
   static const backgroundLight = Color(0xFF333333);
 
-  static const titleBackground = Color(0xFF131313);
-  static const titleForeground = Color.fromARGB(255, 94, 94, 97);
-
   static const controlBackground = Color.fromARGB(255, 37, 37, 37);
 
   static const tankBorder = Color(0xFF2E2E2E);
   static const tankBackground = Color(0xFF282828);
   static const water = Color(0xFF3D3483);
   static const socketColor = Color.fromARGB(255, 165, 146, 146);
-  
 
   static const darkGrey = Color(0xFF181818);
   static const darkGrey1 = Color(0xFF2A2A2F);
@@ -52,6 +48,8 @@ class Palette {
 
   static const titleText = Color(0xFF9F9B9B);
   static const titleIcon = Color(0xFFA5A1A0);
+  static const titleBackground = Color(0xFF131313);
+  static const titleForeground = titleText;
 
   static const wireNoChange = Color(0xFF585357);
   static const wireChange = Color(0xFF716B71);
@@ -60,21 +58,21 @@ class Palette {
   static const editTextBackground = Color(0xFF323030);
   static const editTextWidgetBackground = Color(0xFF252525);
   static const editTextWidgetInnerBorder = Color(0xFF201E1F);
-  static const editTextWidgetBorder = Color.fromARGB(255, 230, 230, 230);
+  static const editTextWidgetBorder = Color(0xFFE6E6E6);
   static const editTextButtonBackground = Color(0xFF1E1E1E);
   static const editTextButtonForeground = Color(0xFF9F9B9B);
 
-  static const settingsBackground = Color.fromARGB(255, 28, 28, 28);
-  static const settingsForeground = Color.fromARGB(255, 190, 190, 190);
-  static const settingsForeground1 = Color.fromARGB(255, 120, 120, 120);
-  static const settingsForeground2 = Color.fromARGB(255, 190, 182, 182);
-  static const settingsAccent = Color.fromARGB(255, 255, 255, 255);
+  static const settingsBackground = Color(0xFF1C1C1C);
+  static const settingsForeground = Color(0xFFBEBEBE);
+  static const settingsForeground1 = Color(0xFF787878);
+  static const settingsForeground2 = Color(0xFFBEB6B6);
+  static const settingsAccent = Color(0xFFFFFFFF);
 
   static const boxBackground = Color(0xFF1E1E1E);
   static const pinBackground = Color(0xFF383439);
   static const pinBorder = Color(0xFF383439);
 
-  static const toolTipForeground = Color.fromARGB(255, 255, 255, 255);
+  static const toolTipForeground = Color(0xFFFFFFFF);
   static const toolTipBackground = Color(0x401E1E1E);
 
   static const memoryAction = Color(0xFFE94545);
@@ -87,7 +85,7 @@ class Palette {
 
   static const empty = Color.fromARGB(255, 255, 0, 255);
 
-  static const Color colorSchemeSeed = Color.fromARGB(0, 255, 0, 144);
+  static const Color colorSchemeSeed = Color(0x00FF0090);
   static const Brightness brightness = Brightness.dark;
   static const MaterialColor primarySwatch = Colors.amber;
   static const Color primaryColor = Palette.empty;
@@ -113,4 +111,67 @@ class Palette {
   static const Color hintColor = Palette.empty;
   static const Color errorColor = Palette.empty;
   static const Color toggleableActiveColor = Palette.empty;
+
+  static const programTheme = {
+    'root': TextStyle(
+      backgroundColor: Palette.canvasColor,
+      color: Color(0xFFDDDDDD),
+      fontWeight: FontWeight.w500,
+    ),
+    'keyword': TextStyle(
+      color: Palette.empty,
+      fontWeight: FontWeight.bold,
+    ),
+    'selector-tag': TextStyle(
+      color: Palette.empty,
+      fontWeight: FontWeight.bold,
+    ),
+    'literal': TextStyle(
+      color: Palette.empty,
+      fontWeight: FontWeight.bold,
+    ),
+    'section': TextStyle(
+      color: Color(0xffffffff),
+      fontWeight: FontWeight.bold,
+    ),
+    'link': TextStyle(color: Color(0xffffffff)),
+    'subst': TextStyle(color: Color(0xffffffff)),
+    'string': TextStyle(
+      color: Color(0xFFF5A180),
+      fontWeight: FontWeight.w500,
+    ),
+    'title': TextStyle(
+      color: Palette.empty,
+      fontWeight: FontWeight.bold,
+    ),
+    'name': TextStyle(
+      color: Color(0xFF59AFF4),
+      fontWeight: FontWeight.w800,
+    ),
+    'type': TextStyle(
+      color: Color(0xFF59AFF4),
+      fontWeight: FontWeight.w800,
+    ),
+    'attribute': TextStyle(
+      color: Color(0xFF59AFF4),
+      fontWeight: FontWeight.w600,
+    ),
+    'symbol': TextStyle(color: Color(0xff569cd6)),
+    'bullet': TextStyle(color: Color(0xffdd8888)),
+    'built_in': TextStyle(color: Color(0xffdd8888)),
+    'addition': TextStyle(color: Color(0xffdd8888)),
+    'variable': TextStyle(color: Color(0xffdd8888)),
+    'template-tag': TextStyle(color: Color(0xffdd8888)),
+    'template-variable': TextStyle(color: Color(0xffdd8888)),
+    'comment': TextStyle(
+      color: Color.fromARGB(255, 126, 192, 96),
+      fontWeight: FontWeight.w500,
+    ),
+    'quote': TextStyle(color: Color.fromARGB(255, 255, 0, 255)),
+    'deletion': TextStyle(color: Color.fromARGB(255, 255, 0, 255)),
+    'meta': TextStyle(color: Color.fromARGB(255, 255, 0, 255)),
+    'doctag': TextStyle(fontWeight: FontWeight.bold),
+    'strong': TextStyle(fontWeight: FontWeight.bold),
+    'emphasis': TextStyle(fontStyle: FontStyle.italic),
+  };
 }

@@ -4,7 +4,6 @@ import 'package:waterpark/simulation/run_canvas.dart';
 import 'metrics.dart';
 import 'theme.dart';
 import 'tokenizer/sim_builder.dart';
-import 'widgets/compile_log.dart';
 import 'workspace_help.dart';
 import 'workspace_settings.dart';
 import '../palette.dart';
@@ -108,7 +107,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         direction: SplitWidgetDirection.vertical,
         childA: ProgramEditor(
           dispatcher: widget.dispatcher,
-          program: SettingsState.debugProg,
+          //program: SettingsState.debugProg,
         ),
         childB: ProgramCanvas(
           dispatcher: widget.dispatcher,

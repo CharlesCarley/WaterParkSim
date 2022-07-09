@@ -2,10 +2,12 @@
     "cSpell.words": [
         "BBLS",
         "Cupertino",
+        "doctag",
         "microtask",
         "osock",
         "Roboto",
         "Schyler",
+        "toggleable",
         "unfocus"
     ],
     "files.exclude": {
@@ -34,5 +36,6 @@
         "*.bat": true,
         "windows": true,
         "**/LICENSE.md": true
-    }
+    },
+    "explorerExclude.backup": null
 }

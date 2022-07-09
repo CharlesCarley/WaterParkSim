@@ -206,7 +206,11 @@ class Builder:
         flBuild.copyTree(self.pubDir())
 
     def buildWeb(self):
-        self.buildBase("web", "--release --base-href /WaterParkSim/")
+        if self.findOpt("gh"):
+            self.buildBase("web", "--release --base-href /WaterParkSim/")
+        else:
+            self.buildBase("web", "--release --base-href /")
+
     def buildWin(self):
         self.buildBase("windows", "--release")
     def buildLinux(self):

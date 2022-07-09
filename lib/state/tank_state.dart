@@ -9,6 +9,7 @@ class TankObject extends SimNode {
   double height;
   double capacity;
   double level;
+  bool _hasEqualizationTarget;
 
   TankObject({
     required double x,
@@ -16,11 +17,19 @@ class TankObject extends SimNode {
     required this.height,
     required this.capacity,
     required this.level,
-  }) : super(
+  })  : _hasEqualizationTarget = false,
+        super(
             x: x,
             y: y,
             w: SettingsState.tankWidth,
             h: SettingsState.tankHeight);
+
+  @override
+  void onSocketAdded(SockObject sock, bool isInput) {
+    if (!_hasEqualizationTarget) {
+      _hasEqualizationTarget = sock.target == SimTargetId.eq.index;
+    }
+  }
 
   double toLevel(double bbl) {
     if (capacity <= 0 || height <= 0) {
@@ -59,17 +68,26 @@ class TankObject extends SimNode {
     level = toLevel(cur);
   }
 
+  bool canEqualize() {
+    return _hasEqualizationTarget;
+  }
+
   double equalizeHeight() {
     double p = height;
 
     for (var sock in inputs) {
       if (sock.link != null) {
-        if (sock.link!.target != SimTargetId.dump.index) {
+        if (sock.link!.target == SimTargetId.eq.index) {
           p = DoubleUtils.min(p, sockHeight(sock));
         }
       }
     }
 
+    for (var sock in outputs) {
+      if (sock.target == SimTargetId.eq.index) {
+        p = DoubleUtils.min(p, sockHeight(sock));
+      }
+    }
     return p;
   }
 }

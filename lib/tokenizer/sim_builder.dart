@@ -1,5 +1,6 @@
 import 'package:waterpark/main.dart';
 import 'package:waterpark/state/input_state.dart';
+import 'package:waterpark/state/manifold_utils.dart';
 import 'package:waterpark/state/object_state.dart';
 import 'package:waterpark/state/socket_state.dart';
 import 'package:waterpark/state/tank_state.dart';
@@ -10,6 +11,7 @@ import '../xml/node.dart';
 
 enum ObjectTags {
   page,
+  manifold,
   input,
   tank,
   osock,
@@ -19,6 +21,7 @@ enum ObjectTags {
 class PrintLogger extends XmlParseLogger {
   @override
   void log(String message) {
+    // ignore: avoid_print
     print(message);
   }
 }
@@ -49,6 +52,8 @@ class StateTreeCompiler {
             _buildInputObject(node);
           } else if (node.name == ObjectTags.tank.index) {
             _buildTankObject(node);
+          } else if (node.name == ObjectTags.manifold.index) {
+            _setManifold(node);
           }
         }
       }
@@ -202,5 +207,20 @@ class StateTreeCompiler {
 
   int _lookUpTargetState(String target) {
     return _targetStates.indexOf(target);
+  }
+
+  void _setManifold(XmlNode node) {
+    ManifoldUtils.diameter = DoubleUtils.lim(
+      node.asDouble("dia", def: 4),
+      1,
+      200,
+    );
+    ManifoldUtils.velocity = DoubleUtils.lim(
+      node.asDouble("vel", def: 1),
+      0,
+      50,
+    );
+
+    ManifoldUtils.calculateMaxFlow();
   }
 }

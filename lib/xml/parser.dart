@@ -66,7 +66,7 @@ class XmlParser {
     _stack.clear();
     _root = XmlNode(-1);
     _stack.push(_root);
-    _scanner = XmlScanner.fromString(buffer);
+    _scanner = XmlScanner.fromString(buffer, _logger);
 
     bool rd = true;
     do {

@@ -74,6 +74,7 @@ class _RunProgramCanvasState extends State<RunProgramCanvas>
                 IconWidget(
                   icon: IconMappings.exit,
                   onClick: () {
+                    
                     widget.dispatcher.notifyRun();
                   },
                 ),

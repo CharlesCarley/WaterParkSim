@@ -26,10 +26,32 @@ class XmlListLogger extends XmlParseLogger {
 
   List<Widget> getMessages() {
     List<Widget> ret = [];
-    for (var str in messages) {
-      ret.add(Text(
-        str,
-        style: Common.editTextStyle,
+
+    int len = messages.length.toString().length;
+    double dig = Common.editTextSize * len.toDouble();
+
+    for (int idx = 0; idx < messages.length; ++idx) {
+      var str = messages[idx];
+      ret.add(Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 0, 8, 0),
+            child: SizedBox(
+              width: dig,
+              child: Text(
+                idx.toString(),
+                style: Common.editTextStyle,
+                textAlign: TextAlign.end,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              str,
+              style: Common.editTextStyle,
+            ),
+          ),
+        ],
       ));
     }
     return ret;
@@ -109,6 +131,10 @@ class _LogWidgetState extends State<LogWidget> with WorkSpaceEventReceiver {
 
   @override
   void onMessageLogged() {
-    _controller.position.jumpTo(14 * widget.logger.messages.length.toDouble());
+    _controller.position.animateTo(
+      _controller.position.maxScrollExtent,
+      duration: Duration(milliseconds: 20),
+      curve: Curves.bounceIn,
+    );
   }
 }

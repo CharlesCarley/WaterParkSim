@@ -3,18 +3,24 @@ import 'dart:typed_data';
 
 import 'package:waterpark/xml/token.dart';
 
+import 'parser.dart';
+
 class XmlScanner {
   late final Uint8List _buffer;
   late int _position;
+  final XmlParseLogger _logger;
 
   final List<String> _stringCache = [];
 
   XmlScanner()
       : _buffer = Uint8List(0),
-        _position = 0;
-  XmlScanner.fromString(String buffer)
+        _position = 0,
+        _logger = XmlStubParseLogger();
+
+  XmlScanner.fromString(String buffer, XmlParseLogger logger)
       : _buffer = ascii.encode(buffer),
-        _position = 0;
+        _position = 0,
+        _logger = logger;
 
   bool _notEndOfStream() {
     return _position < _buffer.length;
@@ -155,6 +161,12 @@ class XmlScanner {
         buf.writeCharCode(ch);
         _advance(1);
         ch = _current();
+
+        // just to keep some sane limit
+        if (buf.length > 16) {
+          _logger.log("maximum symbol length of 16 exceeded");
+          return XmlToken(tokenType: XmlTok.tokError);
+        }
       }
 
       int idx = _saveString(buf.toString());
@@ -177,6 +189,12 @@ class XmlScanner {
       buf.writeCharCode(ch);
       _advance(1);
       ch = _current();
+
+      // just to keep some sane limit
+      if (buf.length > 64) {
+        _logger.log("maximum string length of 64 exceeded");
+        return XmlToken(tokenType: XmlTok.tokError);
+      }
     }
     // skip '"' or move beyond end of stream
     _advance(1);

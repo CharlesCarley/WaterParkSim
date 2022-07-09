@@ -26,6 +26,8 @@ class StateTreeExecutor {
   }
 
   void _sort() {
+    ManifoldUtils.setMaxFlow();
+
     for (SimObject node in code) {
       bool sockType = node is SockObject;
       if (sockType) continue;
@@ -88,25 +90,27 @@ class StateTreeExecutor {
       TankObject p = _tanks[i - 1];
       TankObject c = _tanks[i];
 
+      if (!p.canEqualize()) continue;
+
       double pt = p.equalizeHeight();
       double ct = c.equalizeHeight();
 
       if (p.level < pt && c.level < ct) continue;
 
-      double a = p.level / 2.31;
-      double b = c.level / 2.31;
+      double a = p.level / ManifoldUtils.atmosphereFt;
+      double b = c.level / ManifoldUtils.atmosphereFt;
       double ap = DoubleUtils.abs(a - b);
 
       ManifoldUtils.velocity = ((a + b) / 2) > old ? old : ((a + b) / 2);
       ManifoldUtils.calculateMaxFlow();
 
       double d = (ap) * ManifoldUtils.maxFlow;
-      double t = DoubleUtils.abs(p.x - c.x) / 20;
+      double t = 1; //DoubleUtils.abs(p.x - c.x) / 5;
 
       d = (d / t) * tick;
       double ad = DoubleUtils.abs(p.level - c.level);
 
-      if (ad > 0.1) {
+      if (ad > 0.0001) {
         if (p.level >= c.level) {
           p.delBarrels(d);
           c.addBarrels(d);

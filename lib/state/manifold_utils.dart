@@ -3,14 +3,20 @@ import 'dart:math';
 import 'package:waterpark/util/double_utils.dart';
 
 class ManifoldUtils {
-  static double velocity = 8;
-  static double diameter = 4;
+  static const double atmosphereFt = 29.9212 / 12.0;
+  static double velocity = 2;
+  static double diameter = 5;
   static double maxFlow = calculateMaxFlow();
 
+  static void setMaxFlow()
+  {
+    maxFlow = calculateMaxFlow();
+  }
+
   static double calculateMaxFlow() {
-    double r = diameter / 12;
-    double a = (pi * r * r) / 4;
-    return (448.8*velocity * a)/42.0;
+    double r = diameter * 0.5;
+    double a = (pi * r * r) * 0.25;
+    return (velocity * a);
   }
 
   static double limit(double rate) {

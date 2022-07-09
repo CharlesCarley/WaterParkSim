@@ -26,6 +26,8 @@ class SimNode extends SimObject {
     outputs.clear();
   }
 
+  void onSocketAdded(SockObject sock, bool isInput) {}
+
   void addSocket(SockObject? a, bool isInput) {
     if (a != null) {
       if (isInput) {
@@ -33,6 +35,7 @@ class SimNode extends SimObject {
       } else {
         outputs.add(a);
       }
+      onSocketAdded(a, isInput);
     }
   }
 }

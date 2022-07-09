@@ -123,7 +123,7 @@ class Metrics {
 class Common {
   /// defines the default text decoration, with no border and a 4 pt padding
   static const InputDecoration defaultTextDecoration = InputDecoration(
-    contentPadding: EdgeInsets.all(4.0),
+    contentPadding: EdgeInsets.all(8.0),
     border: InputBorder.none,
   );
 
@@ -131,11 +131,15 @@ class Common {
     border: Border.all(color: Palette.action),
   );
 
+  static const double editTextSize = 12;
+
   static const TextStyle editTextStyle = TextStyle(
-    fontSize: 12,
+    fontSize: editTextSize,
     fontFamily: "Mono",
-    color: Palette.editTextForeground,
+    color: Palette.highlight,
   );
+
+  static const double labelTextSize = 14;
 
   static const TextStyle labelTextStyle = TextStyle(
     fontSize: 14,
@@ -153,4 +157,5 @@ class Common {
       fontFamily: "RobotoMedium",
     );
   }
+
 }
