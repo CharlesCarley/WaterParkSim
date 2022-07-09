@@ -149,6 +149,9 @@ class XmlScanner {
       }
       return idx;
     }
+    else{
+      _logger.log("cannot store an empty string");
+    }
     return -1;
   }
 
