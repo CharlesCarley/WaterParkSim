@@ -133,7 +133,7 @@ class _LogWidgetState extends State<LogWidget> with WorkSpaceEventReceiver {
   void onMessageLogged() {
     _controller.position.animateTo(
       _controller.position.maxScrollExtent,
-      duration: Duration(milliseconds: 20),
+      duration: const Duration(milliseconds: 20),
       curve: Curves.bounceIn,
     );
   }

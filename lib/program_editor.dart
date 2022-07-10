@@ -7,10 +7,10 @@ import 'package:waterpark/widgets/event_router.dart';
 import 'package:waterpark/widgets/icon_widget.dart';
 import '../metrics.dart';
 import '../palette.dart';
+import 'logger.dart';
 import 'state/object_state.dart';
 import 'state/state_tree.dart';
 import '../tokenizer/sim_builder.dart';
-import 'widgets/compile_log.dart';
 
 class ProgramEditor extends StatefulWidget {
   final WorkspaceEventDispatcher dispatcher;

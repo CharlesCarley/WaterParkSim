@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark/widgets/compile_log.dart';
 import 'package:waterpark/workspace.dart';
-
+import 'logger.dart';
 import 'widgets/event_router.dart';
 
 late XmlListLogger logger;
@@ -18,7 +17,5 @@ WorkspaceEventDispatcher initDispatcher() {
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  var disp = initDispatcher();
-  runApp(WaterParkSimulator(dispatcher: disp));
+  runApp(WaterParkSimulator(dispatcher: initDispatcher()));
 }

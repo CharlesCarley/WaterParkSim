@@ -15,10 +15,16 @@ import 'widgets/event_router.dart';
 import 'widgets/icon_widget.dart';
 import 'widgets/split_widget.dart';
 
+
+
+/// Is the primary widget for this program. 
 class WaterParkSimulator extends StatefulWidget {
+
+  /// Global event dispatcher
   final WorkspaceEventDispatcher dispatcher;
-   
-  const WaterParkSimulator({required this.dispatcher, Key? key}) : super(key: key);
+
+  const WaterParkSimulator({required this.dispatcher, Key? key})
+      : super(key: key);
 
   @override
   State<WaterParkSimulator> createState() => _WaterParkSimulatorState();
@@ -36,6 +42,8 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   void initState() {
     _keyFocus = FocusNode();
     widget.dispatcher.subscribe(this);
+
+
     _showSettings = false;
     _showHelp = false;
     _runScreen = false;

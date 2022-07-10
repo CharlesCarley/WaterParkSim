@@ -34,7 +34,7 @@ class IconWidget extends StatelessWidget {
     Color? color,
     double? textSize,
   })  : size = textSize ?? 16,
-        color = color ?? Palette.wire,
+        color = color ?? Palette.titleIcon,
         tooltip = tooltip ?? "",
         super(key: key);
 
@@ -46,7 +46,7 @@ class IconWidget extends StatelessWidget {
     double? textSize,
     Color? color,
   })  : size = (textSize ?? Metrics.iconSize),
-        color = (color ?? Palette.wire),
+        color = (color ?? Palette.titleIcon),
         tooltip = tooltip ?? "",
         super(key: key);
 

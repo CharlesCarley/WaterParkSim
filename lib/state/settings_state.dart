@@ -20,11 +20,11 @@ class SettingsState {
   static String title = "Water Facility Demo";
   static String debugProg = """
 <page>
-    <manifold dia="6" vel="1"/> 
+    <manifold dia="6" vel="4"/> 
     <!-- 
     Incoming @ 3 bbl/min 
     -->
-    <input param="10,10,3" 
+    <input param="10,10,6" 
            state="on">
         <osock param="NE,0,6" 
                id="0" />
