@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 class SettingsState {
   static double inputObjectWidth = 50;
-  static double inputObjectHeight = 50;
+  static double inputObjectHeight = 30;
+
+  static double pumpObjectWidth = 50;
+  static double pumpObjectHeight = 50;
 
   // displayed as circle
   static double lineSegmentEndPointSize = 3.0;
@@ -18,7 +21,7 @@ class SettingsState {
   static int stepRateMs = 60;
 
   static TextSelection position = TextSelection.fromPosition(
-    const TextPosition(offset: 0),
+    const TextPosition(offset: 1),
   );
 
   // general border
@@ -76,14 +79,25 @@ class SettingsState {
                id="4"   
                target="eq" />
     </tank>
-    <tank param="510,10,20,500,15">
+    <tank param="510,10,20,500,15" id="trig">
         <isock param="S,0,21.6"  
                link="4" 
                target="eq" />
         <osock param="SE,0,21.6" 
                id="5"   
-               target="eq" />
+               target="suction" />
     </tank>
+    <pump param="600,110,12" state="off">
+       <trigger start="16" 
+                stop="5" 
+                link="trig"/>
+       <isock param="SW,5,20"
+              link="5"
+              target="suction" />
+        <osock param="SE,0,20" 
+               id="6"   
+               target="discharge" />
+    </pump>
 </page>
 """;
 }

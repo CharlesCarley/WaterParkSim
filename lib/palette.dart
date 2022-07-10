@@ -43,7 +43,9 @@ class Palette {
   static const wire = Color(0xFF4F4F69);
   static const wireShadow = Color(0xFF30303F);
   static const action = Color(0xFFE94545);
+  static const actionLight = Color.fromARGB(255, 249, 114, 114);
   static const actionSecondary = Color(0xFF45E945);
+  static const actionSecondaryLight = Color.fromARGB(255, 114, 246, 114);
   static const transparent = Color(0x00E94545);
 
   static const titleText = Color(0xFF9F9B9B);

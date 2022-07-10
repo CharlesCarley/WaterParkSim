@@ -1,9 +1,6 @@
 import 'settings_state.dart';
 import 'toggle_state.dart';
 
-
-
-
 class InputObject extends ToggleObject {
   double flowRate;
 

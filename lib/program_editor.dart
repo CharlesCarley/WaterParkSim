@@ -10,8 +10,8 @@ import '../metrics.dart';
 import '../palette.dart';
 import 'logger.dart';
 import 'state/object_state.dart';
+import 'state/state_tree_compiler.dart';
 import 'state/state_tree.dart';
-import '../tokenizer/sim_builder.dart';
 
 class ProgramEditor extends StatefulWidget {
   final WorkspaceEventDispatcher dispatcher;
@@ -63,7 +63,11 @@ class _ProgramEditorState extends State<ProgramEditor>
       text: _lastState,
     );
     _changed = true;
-    _controller.selection = SettingsState.position;
+
+    // if (SettingsState.position.base.offset <
+    //     _controller.selection.base.offset) {
+      _controller.selection = SettingsState.position;
+    // }
   }
 
   void _setupTrigger() {
@@ -160,7 +164,7 @@ class _ProgramEditorState extends State<ProgramEditor>
             padding: const EdgeInsets.fromLTRB(8, 4, 2, 4),
             child: Text(
               "Edit script",
-              style: Common.sizedTextStyle(SettingsState.menuHeight-2),
+              style: Common.sizedTextStyle(SettingsState.menuHeight - 2),
             ),
           ),
           const Spacer(),

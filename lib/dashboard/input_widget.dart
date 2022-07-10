@@ -5,7 +5,7 @@ import '../state/input_state.dart';
 import '../palette.dart';
 import '../widgets/positioned_widgets.dart';
 
-class InputWidget extends StatelessWidget {
+class InputWidget extends StatefulWidget {
   final InputObject state;
   final Rect rect;
 
@@ -16,34 +16,55 @@ class InputWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<InputWidget> createState() => _InputWidgetState();
+}
+
+class _InputWidgetState extends State<InputWidget> {
+
+  late InputObject _inputState;
+
+  @override
+  void initState() {
+    _inputState = widget.state;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        PositionedColoredBox(
-          rect: rect,
-          color: Palette.controlBackground,
-        ),
-        PositionedColoredBox(
-          rect: Rect.fromLTRB(
-            rect.left + SettingsState.border,
-            rect.top + SettingsState.border,
-            rect.right - SettingsState.border,
-            rect.bottom - SettingsState.border,
+    return Listener(
+      onPointerUp: (event) {
+        setState(() {
+          _inputState.toggle = !_inputState.toggle;
+        });
+      },
+      child: Stack(
+        children: [
+          PositionedColoredBox(
+            rect: widget.rect,
+            color: Palette.controlBackground,
           ),
-          color: state.toggle ? Palette.water : Palette.action,
-        ),
-        Positioned.fromRect(
-          rect: rect,
-          child: Center(
-            child: Text(
-              state.flowRate.toStringAsPrecision(
-                SettingsState.displayPrecision,
-              ),
-              style: Common.labelTextStyle,
+          PositionedColoredBox(
+            rect: Rect.fromLTRB(
+              widget.rect.left + SettingsState.border,
+              widget.rect.top + SettingsState.border,
+              widget.rect.right - SettingsState.border,
+              widget.rect.bottom - SettingsState.border,
             ),
+            color: _inputState.toggle ? Palette.water : Palette.action,
           ),
-        )
-      ],
+          Positioned.fromRect(
+            rect: widget.rect,
+            child: Center(
+              child: Text(
+                widget.state.flowRate.toStringAsPrecision(
+                  SettingsState.displayPrecision,
+                ),
+                style: Common.labelTextStyle,
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

@@ -25,7 +25,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
   @override
   void initState() {
     DoubleUtils.lim(SettingsState.inputObjectWidth, 40, 100);
-    DoubleUtils.lim(SettingsState.inputObjectHeight, 40, 100);
+    DoubleUtils.lim(SettingsState.inputObjectHeight, 30, 100);
     DoubleUtils.lim(SettingsState.lineSegmentLineSize, 0.01, 5);
     super.initState();
   }
@@ -93,7 +93,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                       value: SettingsState.inputObjectHeight,
                       heading: "inputObjectHeight",
                       description: "Controls the height of the input object.",
-                      min: 40,
+                      min: 30,
                       max: 100,
                       onChanged: (val) {
                         setState(() {

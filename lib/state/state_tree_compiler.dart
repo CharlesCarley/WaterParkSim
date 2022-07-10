@@ -2,6 +2,7 @@ import 'package:waterpark/main.dart';
 import 'package:waterpark/state/input_state.dart';
 import 'package:waterpark/state/manifold_utils.dart';
 import 'package:waterpark/state/object_state.dart';
+import 'package:waterpark/state/pump_state.dart';
 import 'package:waterpark/state/socket_state.dart';
 import 'package:waterpark/state/tank_state.dart';
 import 'package:waterpark/state/target_ids.dart';
@@ -9,6 +10,8 @@ import 'package:waterpark/util/double_utils.dart';
 import 'package:waterpark/xml/parser.dart';
 import '../xml/node.dart';
 
+/// Definition for used XML tags.
+/// The XML parser will map each string name to the corresponding enum index.
 enum ObjectTags {
   page,
   manifold,
@@ -16,14 +19,8 @@ enum ObjectTags {
   tank,
   osock,
   isock,
-}
-
-class PrintLogger extends XmlParseLogger {
-  @override
-  void log(String message) {
-    // ignore: avoid_print
-    print(message);
-  }
+  trigger,
+  pump,
 }
 
 class StateTreeCompiler {
@@ -36,6 +33,7 @@ class StateTreeCompiler {
       SimTargetId.values.asNameMap().keys.toList();
 
   final Map<String, SockObject> _findSocket = {};
+  final Map<String, SimObject> _findObject = {};
 
   /// Interprets the supplied buffer as XML,
   /// then compiles a node state tree from the XML parse tree.
@@ -54,6 +52,8 @@ class StateTreeCompiler {
             _buildTankObject(node);
           } else if (node.name == ObjectTags.manifold.index) {
             _setManifold(node);
+          } else if (node.name == ObjectTags.pump.index) {
+            _buildPumpObject(node);
           }
         }
       }
@@ -61,9 +61,19 @@ class StateTreeCompiler {
     return _stateObjects;
   }
 
+  /// Maps objects with an id attribute for later retrieval
+  void _storeObject(XmlNode node, SimObject obj) {
+    if (node.hasAttribute("id")) {
+      var id = node.asString("id");
+      if (id.isNotEmpty) {
+        _findObject.putIfAbsent(id, () => obj);
+      }
+    }
+  }
+
   void _buildInputObject(XmlNode node) {
     InputObject? obj;
-    if (node.contains("param")) {
+    if (node.hasAttribute("param")) {
       var list = node.asListDouble("param");
       if (list.length >= 3) {
         obj = InputObject(
@@ -80,16 +90,16 @@ class StateTreeCompiler {
         state: node.asBool("state"),
       );
     }
+
     if (obj != null) {
-      _stateObjects.add(obj);
-      _buildSocketsForObjects(node, obj);
+      _onObjectBuilt(node, obj);
     }
   }
 
   void _buildTankObject(XmlNode node) {
     TankObject? obj;
 
-    if (node.contains("param")) {
+    if (node.hasAttribute("param")) {
       var list = node.asListDouble("param");
       if (list.length >= 5) {
         obj = TankObject(
@@ -110,16 +120,65 @@ class StateTreeCompiler {
       );
     }
     if (obj != null) {
-      _stateObjects.add(obj);
-      _buildSocketsForObjects(node, obj);
+      _onObjectBuilt(node, obj);
     }
+  }
+
+  void _buildPumpObject(XmlNode node) {
+    PumpObject? obj;
+    if (node.hasAttribute("param")) {
+      var list = node.asListDouble("param");
+      if (list.length >= 3) {
+        obj = PumpObject(
+            x: list[0],
+            y: list[1],
+            pumpRate: list[2],
+            state: node.asBool("state"));
+      }
+    } else {
+      obj = PumpObject(
+        x: node.asDouble("x"),
+        y: node.asDouble("y"),
+        pumpRate: node.asDouble("rate"),
+        state: node.asBool("state"),
+      );
+    }
+
+    // check for triggers
+    if (node.hasChildren) {
+      var triggers = node.childrenOf(ObjectTags.trigger.index);
+      if (triggers.isNotEmpty) {
+        var link = triggers[0].asString("link");
+        if (link.isNotEmpty) {
+          if (_findObject.containsKey(link)) {
+            SimObject? linkObj = _findObject[link];
+            if (linkObj != null && linkObj is TankObject) {
+              obj?.levelMonitor = linkObj;
+              obj?.levelStart = triggers[0].asDouble("start");
+              obj?.levelStop = triggers[0].asDouble("stop");
+            }
+          }
+        }
+      }
+    }
+
+    if (obj != null) {
+      _onObjectBuilt(node, obj);
+    }
+  }
+
+  /// Stores and builds extra information common to all nodes.
+  void _onObjectBuilt(XmlNode node, SimNode obj) {
+    _storeObject(node, obj);
+    _stateObjects.add(obj);
+    _buildSocketsForObjects(node, obj);
   }
 
   SockObject _buildBaseSock(XmlNode node, SimNode parent) {
     double x = 0, y = 0;
     int dir = 0;
 
-    if (node.contains("param")) {
+    if (node.hasAttribute("param")) {
       var sl = node.asString("param").split(",");
       if (sl.length >= 3) {
         // dir,x,y
@@ -151,7 +210,6 @@ class StateTreeCompiler {
       if (id.isNotEmpty) {
         _findSocket.putIfAbsent(id, () => obj);
       }
-      _findSocket.putIfAbsent(id, () => obj);
     } else if (node.name == ObjectTags.isock.index) {
       var id = node.asString("link");
       if (id.isNotEmpty && _findSocket.containsKey(id)) {

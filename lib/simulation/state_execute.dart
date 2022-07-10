@@ -1,3 +1,4 @@
+import 'package:waterpark/state/pump_state.dart';
 import 'package:waterpark/state/socket_state.dart';
 import 'package:waterpark/state/target_ids.dart';
 import '../state/manifold_utils.dart';
@@ -10,6 +11,7 @@ class StateTreeExecutor {
   final List<SimObject> code;
   final List<InputObject> _flow = [];
   final List<TankObject> _tanks = [];
+  final List<PumpObject> _pumps = [];
 
   StateTreeExecutor.zero() : code = [];
   StateTreeExecutor({required this.code}) {
@@ -22,6 +24,7 @@ class StateTreeExecutor {
 
     _pushIncoming(tickMs);
     _relayTanks(tickMs);
+    _runPumps(tickMs);
     _equalize(tickMs);
   }
 
@@ -36,18 +39,22 @@ class StateTreeExecutor {
         _flow.add(node);
       } else if (node is TankObject) {
         _tanks.add(node);
+      } else if (node is PumpObject) {
+        _pumps.add(node);
       }
     }
   }
 
   void _pushIncoming(double tick) {
     for (var flow in _flow) {
-      for (var sock in flow.outputs) {
-        sock.cacheValue(
-          ManifoldUtils.limit(
-            flow.flowRate * tick,
-          ),
-        );
+      if (flow.toggle) {
+        for (var sock in flow.outputs) {
+          sock.cacheValue(
+            ManifoldUtils.limit(
+              flow.flowRate * tick,
+            ),
+          );
+        }
       }
     }
   }
@@ -97,15 +104,19 @@ class StateTreeExecutor {
 
       if (p.level < pt && c.level < ct) continue;
 
-      double a = p.level / ManifoldUtils.atmosphereFt;
-      double b = c.level / ManifoldUtils.atmosphereFt;
+      double a = p.psi;
+      double b = c.psi;
       double ap = DoubleUtils.abs(a - b);
 
-      ManifoldUtils.velocity = ((a + b) / 2) > old ? old : ((a + b) / 2);
+      ManifoldUtils.velocity = ((a + b) * 0.5) > old ? old : ((a + b) * 0.5);
       ManifoldUtils.calculateMaxFlow();
 
       double d = (ap) * ManifoldUtils.maxFlow;
-      double t = 1; //DoubleUtils.abs(p.x - c.x) / 5;
+
+      // disabled: calculate the relative distance between
+      //   sockets and factor in the distance traveled through
+      //   the manifold. needs (a.right - b.left) | vice versa.
+      double t = 1; //DoubleUtils.abs(p.x - c.x) / 10;
 
       d = (d / t) * tick;
       double ad = DoubleUtils.abs(p.level - c.level);
@@ -122,5 +133,45 @@ class StateTreeExecutor {
     }
     ManifoldUtils.velocity = old;
     ManifoldUtils.calculateMaxFlow();
+  }
+
+  void _runPumps(double tickMs) {
+    for (var pump in _pumps) {
+      if (!pump.toggle) {
+        _monitorLink(pump);
+      } else {
+        _runPump(tickMs, pump);
+      }
+    }
+  }
+
+  void _monitorLink(PumpObject pump) {
+    if (pump.levelMonitor == null) return;
+
+    TankObject tank = pump.levelMonitor!;
+    if (tank.level >= pump.levelStart) {
+      pump.toggle = true;
+    }
+  }
+
+  void _runPump(double tickMs, PumpObject pump) {
+    if (pump.levelMonitor == null) return;
+
+    TankObject tank = pump.levelMonitor!;
+    if (tank.level <= pump.levelStop) {
+      pump.toggle = false;
+    } else {
+      double old = ManifoldUtils.velocity;
+
+      double v = pump.pumpRate * tank.psi;
+      ManifoldUtils.velocity = v;
+      ManifoldUtils.calculateMaxFlow();
+
+      double cr = ManifoldUtils.limit(pump.pumpRate);
+      tank.delBarrels(cr * tickMs);
+
+      ManifoldUtils.velocity = old;
+      ManifoldUtils.calculateMaxFlow();
+    }
   }
 }

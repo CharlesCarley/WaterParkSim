@@ -32,7 +32,7 @@ class XmlNode {
     );
   }
 
-  bool contains(String key) {
+  bool hasAttribute(String key) {
     return _attributes.containsKey(key);
   }
 
@@ -86,5 +86,16 @@ class XmlNode {
       }
     }
     return def;
+  }
+
+  List<XmlNode> childrenOf(int index) {
+    List<XmlNode> res = [];
+
+    for (XmlNode child in _children) {
+      if (child.name == index) {
+        res.add(child);
+      }
+    }
+    return res;
   }
 }

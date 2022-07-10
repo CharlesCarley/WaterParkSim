@@ -7,11 +7,11 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:waterpark/state/state_tree_compiler.dart';
 import 'package:waterpark/xml/node.dart';
 import 'package:waterpark/xml/parser.dart';
 import 'package:waterpark/xml/scanner.dart';
 import 'package:waterpark/xml/token.dart';
-import 'package:waterpark/tokenizer/sim_builder.dart';
 
 class PrintLogger extends XmlParseLogger {
   @override
@@ -90,19 +90,19 @@ void main() {
 
     XmlNode nd = parser.root;
 
-    expect(nd.contains('name'), true);
+    expect(nd.hasAttribute('name'), true);
     expect(nd.asString('name'), "Foo");
 
     expect(parser.root.hasChildren, true);
 
     nd = parser.root.children.first;
-    expect(nd.contains('x'), true);
+    expect(nd.hasAttribute('x'), true);
     expect(nd.asDouble('x'), 0.0);
 
-    expect(nd.contains('y'), true);
+    expect(nd.hasAttribute('y'), true);
     expect(nd.asDouble('y'), 10.0);
 
-    expect(nd.contains('r'), true);
+    expect(nd.hasAttribute('r'), true);
     expect(nd.asDouble('r'), 5.0);
   });
   test("XML_SmokeTest_5", () {

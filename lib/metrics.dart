@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:highlight/highlight.dart';
 import 'palette.dart';
 
 class Metrics {
@@ -36,6 +37,14 @@ class Common {
     fontFamily: "RobotoMedium",
     color: Palette.highlight,
   );
+
+  static TextStyle labelTextStyleColor({Color color = Palette.highlight}) {
+    return TextStyle(
+      fontSize: labelTextSize,
+      fontFamily: "RobotoMedium",
+      color: color,
+    );
+  }
 
   static TextStyle sizedTextStyle(double size,
       {Color color = Palette.highlight}) {

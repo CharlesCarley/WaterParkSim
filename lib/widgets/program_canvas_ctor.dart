@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:waterpark/dashboard/input_widget.dart';
+import 'package:waterpark/dashboard/pump_widget.dart';
 import 'package:waterpark/dashboard/socket_widget.dart';
 import 'package:waterpark/dashboard/tank_widget.dart';
+import 'package:waterpark/state/pump_state.dart';
 import '../state/object_state.dart';
 import '../state/input_state.dart';
 import '../state/settings_state.dart';
@@ -66,6 +68,8 @@ class ProgramCanvasConstructor {
         constructSocket(widgetList, node);
       } else if (node is InputObject) {
         constructInput(widgetList, node);
+      } else if (node is PumpObject) {
+        constructPump(widgetList, node);
       }
     }
 
@@ -82,6 +86,17 @@ class ProgramCanvasConstructor {
 
   void constructInput(List<Widget> widgetList, InputObject node) {
     widgetList.add(InputWidget(
+      state: node,
+      rect: Rect.fromLTWH(
+        node.x,
+        node.y,
+        node.w,
+        node.h,
+      ),
+    ));
+  }
+  void constructPump(List<Widget> widgetList, PumpObject node) {
+    widgetList.add(PumpWidget(
       state: node,
       rect: Rect.fromLTWH(
         node.x,

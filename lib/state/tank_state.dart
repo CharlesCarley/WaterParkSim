@@ -1,3 +1,4 @@
+import 'package:waterpark/state/manifold_utils.dart';
 import 'package:waterpark/state/socket_state.dart';
 
 import '../util/double_utils.dart';
@@ -30,6 +31,8 @@ class TankObject extends SimNode {
       _hasEqualizationTarget = sock.target == SimTargetId.eq.index;
     }
   }
+
+  double get psi => level / ManifoldUtils.atmosphereFt;
 
   double toLevel(double bbl) {
     if (capacity <= 0 || height <= 0) {

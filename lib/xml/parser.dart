@@ -162,7 +162,7 @@ class XmlParser {
     XmlNode node = nodePtr;
     String identifier = _scanner.tokenValue(_getToken(0).index);
 
-    if (node.contains(identifier)) {
+    if (node.hasAttribute(identifier)) {
       _logger.log("node ${node.name} duplicate attribute $identifier");
       return false;
     }

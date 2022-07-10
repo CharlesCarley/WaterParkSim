@@ -74,9 +74,9 @@ class _RunProgramCanvasState extends State<RunProgramCanvas>
                 IconWidget(
                   icon: IconMappings.exit,
                   onClick: () {
-                    
                     widget.dispatcher.notifyRun();
                   },
+                  tooltip: "Exit the current simulation (Esc)",
                 ),
               ],
             ),
@@ -106,7 +106,7 @@ class _RunProgramCanvasState extends State<RunProgramCanvas>
       }),
     );
   }
-  
+
   String _getTitleString() {
     return "Running @ ${SettingsState.stepRateMs} ms : 1 min";
   }
