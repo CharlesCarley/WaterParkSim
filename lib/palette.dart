@@ -51,6 +51,8 @@ class Palette {
   static const titleBackground = Color(0xFF131313);
   static const titleForeground = titleText;
 
+  static const subTitleBackground = backgroundLight;
+
   static const wireNoChange = Color(0xFF585357);
   static const wireChange = Color(0xFF716B71);
 

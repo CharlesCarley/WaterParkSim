@@ -15,12 +15,7 @@ import 'widgets/event_router.dart';
 import 'widgets/icon_widget.dart';
 import 'widgets/split_widget.dart';
 
-
-
-/// Is the primary widget for this program. 
 class WaterParkSimulator extends StatefulWidget {
-
-  /// Global event dispatcher
   final WorkspaceEventDispatcher dispatcher;
 
   const WaterParkSimulator({required this.dispatcher, Key? key})
@@ -42,7 +37,6 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   void initState() {
     _keyFocus = FocusNode();
     widget.dispatcher.subscribe(this);
-
 
     _showSettings = false;
     _showHelp = false;
@@ -77,7 +71,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
         child: Scaffold(
           key: scaffolding,
           appBar: AppBar(
-            toolbarHeight: 36,
+            toolbarHeight: Metrics.toolBarSize,
             foregroundColor: Palette.titleForeground,
             backgroundColor: Palette.titleBackground,
             title: Text(

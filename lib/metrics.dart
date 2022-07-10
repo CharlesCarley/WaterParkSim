@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'palette.dart';
 
 class Metrics {
+  static const toolBarSize = 36.0;
+
   static const iconSize = 24.0;
 
   static const double tooltipSize = 12;

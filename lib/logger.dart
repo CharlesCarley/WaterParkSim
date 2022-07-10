@@ -95,15 +95,15 @@ class _LogWidgetState extends State<LogWidget> with WorkSpaceEventReceiver {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ColoredBox(
-          color: Palette.background,
+          color: Palette.subTitleBackground,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
                 child: Text(
                   "Output",
-                  style: Common.labelTextStyle,
+                  style: Common.sizedTextStyle(SettingsState.menuHeight-2),
                 ),
               ),
               const Spacer(),

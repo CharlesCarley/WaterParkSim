@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:waterpark/state/settings_state.dart';
 import 'package:waterpark/widgets/event_router.dart';
 import 'package:waterpark/widgets/icon_widget.dart';
+import 'package:waterpark/widgets/split_widget.dart';
 import '../metrics.dart';
 import '../palette.dart';
 import 'logger.dart';
@@ -45,6 +46,15 @@ class _ProgramEditorState extends State<ProgramEditor>
     _triggerCall();
   }
 
+  @override
+  void dispose() {
+    SettingsState.position = _controller.selection;
+    _triggerBuild.cancel();
+    _controller.dispose();
+    widget.dispatcher.unsubscribe(this);
+    super.dispose();
+  }
+
   void _createController() {
     _controller = CodeController(
       language: xml,
@@ -53,6 +63,7 @@ class _ProgramEditorState extends State<ProgramEditor>
       text: _lastState,
     );
     _changed = true;
+    _controller.selection = SettingsState.position;
   }
 
   void _setupTrigger() {
@@ -62,16 +73,7 @@ class _ProgramEditorState extends State<ProgramEditor>
     );
   }
 
-  @override
-  void dispose() {
-    _triggerBuild.cancel();
-    _controller.dispose();
-    widget.dispatcher.unsubscribe(this);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildEditor() {
     return ColoredBox(
       color: Palette.editTextWidgetBackground,
       child: Column(
@@ -93,28 +95,72 @@ class _ProgramEditorState extends State<ProgramEditor>
               cursorColor: Palette.action,
             ),
           ),
-          SizedBox.fromSize(
-            size: const Size.fromHeight(150),
-            child: LogWidget(
-              dispatcher: widget.dispatcher,
-              logger: widget.dispatcher.logger,
-            ),
-          )
         ],
       ),
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return SplitWidget(
+      direction: SplitWidgetDirection.horizontal,
+      initialSplit: 0.85,
+      childA: _buildEditor(),
+      childB: Column(
+        children: [
+          Expanded(
+            child: LogWidget(
+              dispatcher: widget.dispatcher,
+              logger: widget.dispatcher.logger,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // return ColoredBox(
+    //   color: Palette.editTextWidgetBackground,
+    //   child: Column(
+    //     mainAxisAlignment: MainAxisAlignment.start,
+    //     crossAxisAlignment: CrossAxisAlignment.stretch,
+    //     children: [
+    //       _buildCodeTitle(),
+    //       Expanded(
+    //         child: CodeField(
+    //           wrap: false,
+    //           expands: true,
+    //           minLines: null,
+    //           focusNode: _editFocus,
+    //           controller: _controller,
+    //           textStyle: const TextStyle(
+    //             fontFamily: "Mono",
+    //             fontSize: 12,
+    //           ),
+    //           cursorColor: Palette.action,
+    //         ),
+    //       ),
+    //       SizedBox.fromSize(
+    //         size: const Size.fromHeight(150),
+    //         child: LogWidget(
+    //           dispatcher: widget.dispatcher,
+    //           logger: widget.dispatcher.logger,
+    //         ),
+    //       )
+    //     ],
+    //   ),
+    // );
+  }
+
   Widget _buildCodeTitle() {
     return ColoredBox(
-      color: Palette.backgroundLight,
+      color: Palette.subTitleBackground,
       child: Row(
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(8, 4, 2, 4),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 4, 2, 4),
             child: Text(
               "Edit script",
-              style: Common.labelTextStyle,
+              style: Common.sizedTextStyle(SettingsState.menuHeight-2),
             ),
           ),
           const Spacer(),

@@ -19,7 +19,10 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:waterpark/metrics.dart';
 import 'package:waterpark/palette.dart';
 import 'package:waterpark/state/settings_state.dart';
 import 'package:waterpark/util/double_utils.dart';
@@ -124,6 +127,8 @@ class _SplitWidgetState extends State<SplitWidget> {
   bool captured = false;
   bool change = false;
 
+  Size _screenSize = Size.zero;
+
   void _handlePointerUp() {
     setState(() {
       captured = false;
@@ -157,21 +162,30 @@ class _SplitWidgetState extends State<SplitWidget> {
       SplitWidgetSash(
         direction: dir,
         size: size,
-        color: change ? Palette.wireChange : Palette.darkGrey,
+        color: change ? Palette.wireChange : Palette.background,
       ),
       Expanded(child: widget.childB),
     ];
   }
 
+  Size _getSize(BuildContext context) {
+    return MediaQuery.of(context).size;
+  }
+
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
+    var screenSize = _getSize(context);
+    _screenSize = Size(
+      screenSize.width,
+      screenSize.height - Metrics.toolBarSize,
+    );
+
     if (splitPosition < 0) {
       splitPosition = widget.initialSplit;
     }
 
     if (widget.direction == SplitWidgetDirection.horizontal) {
-      var height = screenSize.height - size;
+      var height = _screenSize.height - size;
       var bottomA = DoubleUtils.lim(
         (height * splitPosition).roundToDouble(),
         0,
@@ -195,7 +209,7 @@ class _SplitWidgetState extends State<SplitWidget> {
 
       // col
     } else {
-      var width = screenSize.width - size;
+      var width = _screenSize.width - size;
       var rightA = DoubleUtils.lim(
         (width * splitPosition).roundToDouble(),
         0,
@@ -247,15 +261,15 @@ class _SplitWidgetState extends State<SplitWidget> {
         _handlePointerUp();
       },
       onPointerDown: (event) {
-        _handlePointerDown(sash, event.position.dy);
+        _handlePointerDown(sash, event.position.dy - Metrics.toolBarSize);
       },
       onPointerHover: (event) {
-        _handleHover(sash, event.position.dy);
+        _handleHover(sash, event.position.dy - Metrics.toolBarSize);
       },
       onPointerMove: (event) {
         setState(() {
           if (captured) {
-            splitPosition = event.position.dy / height;
+            splitPosition = (event.position.dy - Metrics.toolBarSize) / height;
           }
         });
       },

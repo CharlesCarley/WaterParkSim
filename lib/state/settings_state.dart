@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class SettingsState {
   static double inputObjectWidth = 50;
   static double inputObjectHeight = 50;
@@ -8,12 +10,16 @@ class SettingsState {
 
   static double tankWidth = 75.0;
   static double tankHeight = 150.0;
-  static double menuHeight = 18.0;
+  static double menuHeight = 14.0;
   static int displayPrecision = 2;
 
   static double sashPos = 0.28;
 
   static int stepRateMs = 60;
+
+  static TextSelection position = TextSelection.fromPosition(
+    const TextPosition(offset: 0),
+  );
 
   // general border
   static double border = 3.0;
