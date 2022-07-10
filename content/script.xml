@@ -49,7 +49,8 @@
                id="4"   
                target="eq" />
     </tank>
-    <tank param="510,10,20,500,15" id="trig">
+    <tank param="510,10,20,500,15" 
+          id="trigger">
         <isock param="S,0,21.6"  
                link="4" 
                target="eq" />
@@ -57,10 +58,17 @@
                id="5"   
                target="suction" />
     </tank>
-    <pump param="600,110,12" state="off">
+    <!-- 
+    Pull from the tank battery when the 
+    tank with the id 'trigger' goes above 
+    16 ft. Shut it down when tank level 
+    reaches 5 ft. 
+    -->
+    <pump param="600,110,12" 
+          state="off">
        <trigger start="16" 
                 stop="5" 
-                link="trig"/>
+                link="trigger"/>
        <isock param="SW,-5,20"
               link="5"
               target="suction" />

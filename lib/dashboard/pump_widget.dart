@@ -116,10 +116,10 @@ class _PumpWidgetState extends State<PumpWidget> {
         children: [
           PumpCanvasWidget(
             rect: Rect.fromLTRB(
-              widget.rect.left - SettingsState.border,
-              widget.rect.top - SettingsState.border,
-              widget.rect.right + SettingsState.border,
-              widget.rect.bottom + SettingsState.border,
+              widget.rect.left + SettingsState.border,
+              widget.rect.top + SettingsState.border,
+              widget.rect.right - SettingsState.border,
+              widget.rect.bottom - SettingsState.border,
             ),
             on: _inputState.toggle,
           ),

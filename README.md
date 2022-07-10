@@ -3,12 +3,11 @@
 This is a demo project for learning to work with and use 
 flutter for web and desktop targets.  
 
-
-
+This demo simulates a SCADA system that controls a water injection facility. 
 
 ## Current State
 
-The current web version of this project may be found [here.](https://charlescarley.github.io/WaterParkSim/)
+The current web version of this project may be found [here.](https://charlescarley.github.io/WaterParkSim/) It does not work well with mobile browsers at the moment.
 
 
 
