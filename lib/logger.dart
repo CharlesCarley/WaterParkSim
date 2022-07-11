@@ -32,6 +32,7 @@ class XmlListLogger extends XmlParseLogger {
 
     for (int idx = 0; idx < messages.length; ++idx) {
       var str = messages[idx];
+      var strIdx = idx + 1;
       ret.add(Row(
         children: [
           Padding(
@@ -39,7 +40,7 @@ class XmlListLogger extends XmlParseLogger {
             child: SizedBox(
               width: dig,
               child: Text(
-                idx.toString(),
+                strIdx.toString(),
                 style: Common.editTextStyle,
                 textAlign: TextAlign.end,
               ),

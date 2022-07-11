@@ -61,7 +61,7 @@ class StateTreeCompiler {
     return _stateObjects;
   }
 
-  /// Maps objects with an id attribute for later retrieval
+  /// Maps objects with an id attribute for later retrieval.
   void _storeObject(XmlNode node, SimObject obj) {
     if (node.hasAttribute("id")) {
       var id = node.asString("id");
@@ -74,6 +74,7 @@ class StateTreeCompiler {
   void _buildInputObject(XmlNode node) {
     InputObject? obj;
     if (node.hasAttribute("param")) {
+      // packed as: x, y, rate
       var list = node.asListDouble("param");
       if (list.length >= 3) {
         obj = InputObject(
@@ -100,6 +101,7 @@ class StateTreeCompiler {
     TankObject? obj;
 
     if (node.hasAttribute("param")) {
+      // packed as: x, y, height, capacity, level
       var list = node.asListDouble("param");
       if (list.length >= 5) {
         obj = TankObject(
@@ -127,6 +129,7 @@ class StateTreeCompiler {
   void _buildPumpObject(XmlNode node) {
     PumpObject? obj;
     if (node.hasAttribute("param")) {
+      // packed as: x, y, rate
       var list = node.asListDouble("param");
       if (list.length >= 3) {
         obj = PumpObject(
@@ -144,32 +147,43 @@ class StateTreeCompiler {
       );
     }
 
-    // check for triggers
-    if (node.hasChildren) {
-      var triggers = node.childrenOf(ObjectTags.trigger.index);
-      if (triggers.isNotEmpty) {
-        var link = triggers[0].asString("link");
-        if (link.isNotEmpty) {
-          if (_findObject.containsKey(link)) {
-            SimObject? linkObj = _findObject[link];
-            if (linkObj != null && linkObj is TankObject) {
-              obj?.levelMonitor = linkObj;
-              obj?.levelStart = triggers[0].asDouble("start");
-              obj?.levelStop = triggers[0].asDouble("stop");
-            }
-          }
+    if (obj != null) {
+      // check for triggers
+      if (node.hasChildren) {
+        var triggers = node.childrenOf(ObjectTags.trigger.index);
+        if (triggers.isNotEmpty) {
+          _linkTrigger(obj, triggers[0]);
         }
       }
-    }
 
-    if (obj != null) {
       _onObjectBuilt(node, obj);
+    }
+  }
+
+  void _linkTrigger(PumpObject obj, XmlNode trigger) {
+    var link = trigger.asString("link");
+    if (link.isNotEmpty) {
+      if (_findObject.containsKey(link)) {
+        SimObject? linkObj = _findObject[link];
+
+        if (linkObj != null && linkObj is TankObject) {
+          obj.levelMonitor = linkObj;
+          obj.levelStart = trigger.asDouble("start");
+          obj.levelStop = trigger.asDouble("stop");
+        } else {
+          logger.log("the supplied object link $link "
+              "is invalid or bound to an object that is not a tank.");
+        }
+      } else {
+        logger.log("object with the id $link was not found.");
+      }
     }
   }
 
   /// Stores and builds extra information common to all nodes.
   void _onObjectBuilt(XmlNode node, SimNode obj) {
     _storeObject(node, obj);
+
     _stateObjects.add(obj);
     _buildSocketsForObjects(node, obj);
   }
