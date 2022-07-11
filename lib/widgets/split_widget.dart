@@ -4,27 +4,6 @@ import 'package:waterpark/palette.dart';
 import 'package:waterpark/state/settings_state.dart';
 import 'package:waterpark/util/double_utils.dart';
 
-class BoxWidget extends StatelessWidget {
-  const BoxWidget({
-    Key? key,
-    required this.color,
-    required this.child,
-  }) : super(key: key);
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: color,
-      child: Padding(
-        padding: const EdgeInsets.all(0.0),
-        child: child,
-      ),
-    );
-  }
-}
 
 class SplitWidgetContainer extends StatelessWidget {
   const SplitWidgetContainer({

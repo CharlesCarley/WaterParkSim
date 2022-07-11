@@ -1,7 +1,6 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'dart:math';
-
 import '../state/settings_state.dart';
 
 class LineSegmentWidget extends StatelessWidget {

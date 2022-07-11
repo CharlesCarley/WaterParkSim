@@ -38,18 +38,6 @@ class IconWidget extends StatelessWidget {
         tooltip = tooltip ?? "",
         super(key: key);
 
-  const IconWidget.tool({
-    required this.icon,
-    required this.onClick,
-    String? tooltip,
-    Key? key,
-    double? textSize,
-    Color? color,
-  })  : size = (textSize ?? Metrics.iconSize),
-        color = (color ?? Palette.titleIcon),
-        tooltip = tooltip ?? "",
-        super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return TextButton(

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark/main.dart';
-import 'package:waterpark/palette.dart';
-import 'package:waterpark/state/settings_state.dart';
-import 'package:waterpark/widgets/event_router.dart';
-import 'package:waterpark/widgets/icon_widget.dart';
-import 'package:waterpark/xml/parser.dart';
 
 import '../metrics.dart';
+import 'main.dart';
+import 'palette.dart';
+import 'state/settings_state.dart';
+import 'widgets/event_router.dart';
+import 'widgets/icon_widget.dart';
+import 'widgets/toolbar_widget.dart';
+import 'xml/parser.dart';
 
 class XmlListLogger extends XmlParseLogger {
   final List<String> messages = [];
@@ -33,23 +34,34 @@ class XmlListLogger extends XmlParseLogger {
     for (int idx = 0; idx < messages.length; ++idx) {
       var str = messages[idx];
       var strIdx = idx + 1;
+
+      Color col = idx % 2 == 0
+          ? Palette.controlBackground
+          : Palette.controlBackgroundLight;
+
       ret.add(Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 8, 0),
-            child: SizedBox(
-              width: dig,
-              child: Text(
-                strIdx.toString(),
-                style: Common.editTextStyle,
-                textAlign: TextAlign.end,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(4, 0, 8, 0),
+              child: SizedBox(
+                width: dig,
+                child: Text(
+                  strIdx.toString(),
+                  style: Common.editTextStyle,
+                  textAlign: TextAlign.end,
+                ),
               ),
             ),
           ),
           Expanded(
-            child: Text(
-              str,
-              style: Common.editTextStyle,
+            flex: 9,
+            child: ColoredBox(
+              color: col,
+              child: Text(
+                str,
+                style: Common.editTextStyle,
+              ),
             ),
           ),
         ],
@@ -95,30 +107,19 @@ class _LogWidgetState extends State<LogWidget> with WorkSpaceEventReceiver {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ColoredBox(
-          color: Palette.subTitleBackground,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                child: Text(
-                  "Output",
-                  style: Common.sizedTextStyle(SettingsState.menuHeight-2),
-                ),
-              ),
-              const Spacer(),
-              IconWidget(
-                icon: IconMappings.brush,
-                textSize: SettingsState.menuHeight,
-                onClick: () {
-                  setState(() {
-                    logger.clear();
-                  });
-                },
-              ),
-            ],
-          ),
+        ToolbarWidget(
+          title: "Output",
+          tools: [
+            IconWidget(
+              icon: IconMappings.brush,
+              textSize: SettingsState.menuHeight,
+              onClick: () {
+                setState(() {
+                  logger.clear();
+                });
+              },
+            )
+          ],
         ),
         Expanded(
           child: ListView(

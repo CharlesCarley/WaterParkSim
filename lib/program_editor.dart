@@ -12,6 +12,7 @@ import 'logger.dart';
 import 'state/object_state.dart';
 import 'state/state_tree_compiler.dart';
 import 'state/state_tree.dart';
+import 'widgets/toolbar_widget.dart';
 
 class ProgramEditor extends StatefulWidget {
   final WorkspaceEventDispatcher dispatcher;
@@ -63,11 +64,7 @@ class _ProgramEditorState extends State<ProgramEditor>
       text: _lastState,
     );
     _changed = true;
-
-    // if (SettingsState.position.base.offset <
-    //     _controller.selection.base.offset) {
-      _controller.selection = SettingsState.position;
-    // }
+    _controller.selection = SettingsState.position;
   }
 
   void _setupTrigger() {
@@ -84,7 +81,18 @@ class _ProgramEditorState extends State<ProgramEditor>
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildCodeTitle(),
+          ToolbarWidget(
+            title: "Edit",
+            tools: [
+              IconWidget(
+                icon: IconMappings.brush,
+                onClick: _clearClicked,
+                color: Palette.titleIcon,
+                tooltip: "Clears the current text",
+                textSize: SettingsState.menuHeight,
+              ),
+            ],
+          ),
           Expanded(
             child: CodeField(
               wrap: false,
@@ -117,63 +125,6 @@ class _ProgramEditorState extends State<ProgramEditor>
               dispatcher: widget.dispatcher,
               logger: widget.dispatcher.logger,
             ),
-          ),
-        ],
-      ),
-    );
-
-    // return ColoredBox(
-    //   color: Palette.editTextWidgetBackground,
-    //   child: Column(
-    //     mainAxisAlignment: MainAxisAlignment.start,
-    //     crossAxisAlignment: CrossAxisAlignment.stretch,
-    //     children: [
-    //       _buildCodeTitle(),
-    //       Expanded(
-    //         child: CodeField(
-    //           wrap: false,
-    //           expands: true,
-    //           minLines: null,
-    //           focusNode: _editFocus,
-    //           controller: _controller,
-    //           textStyle: const TextStyle(
-    //             fontFamily: "Mono",
-    //             fontSize: 12,
-    //           ),
-    //           cursorColor: Palette.action,
-    //         ),
-    //       ),
-    //       SizedBox.fromSize(
-    //         size: const Size.fromHeight(150),
-    //         child: LogWidget(
-    //           dispatcher: widget.dispatcher,
-    //           logger: widget.dispatcher.logger,
-    //         ),
-    //       )
-    //     ],
-    //   ),
-    // );
-  }
-
-  Widget _buildCodeTitle() {
-    return ColoredBox(
-      color: Palette.subTitleBackground,
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 4, 2, 4),
-            child: Text(
-              "Edit script",
-              style: Common.sizedTextStyle(SettingsState.menuHeight - 2),
-            ),
-          ),
-          const Spacer(),
-          IconWidget(
-            icon: IconMappings.brush,
-            onClick: _clearClicked,
-            color: Palette.titleIcon,
-            tooltip: "Clears the current text",
-            textSize: SettingsState.menuHeight,
           ),
         ],
       ),

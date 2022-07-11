@@ -26,6 +26,7 @@ class Palette {
   static const backgroundLight = Color(0xFF333333);
 
   static const controlBackground = Color.fromARGB(255, 37, 37, 37);
+  static const controlBackgroundLight = Color.fromARGB(255, 41, 41, 41);
 
   static const tankBorder = Color(0xFF2E2E2E);
   static const tankBackground = Color(0xFF282828);

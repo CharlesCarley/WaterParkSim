@@ -121,7 +121,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
 
   List<Widget> _buildActionList() {
     return [
-      IconWidget.tool(
+      IconWidget(
         icon: IconMappings.play,
         onClick: () {
           widget.dispatcher.notifyRun();

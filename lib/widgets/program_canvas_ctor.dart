@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark/dashboard/input_widget.dart';
-import 'package:waterpark/dashboard/pump_widget.dart';
-import 'package:waterpark/dashboard/socket_widget.dart';
-import 'package:waterpark/dashboard/tank_widget.dart';
-import 'package:waterpark/state/pump_state.dart';
+import '../dashboard/input_widget.dart';
+import '../dashboard/pump_widget.dart';
+import '../dashboard/socket_widget.dart';
+import '../dashboard/tank_widget.dart';
 import '../state/object_state.dart';
 import '../state/input_state.dart';
+import '../state/pump_state.dart';
 import '../state/settings_state.dart';
 import '../state/socket_state.dart';
 import '../state/state_tree.dart';
@@ -15,7 +15,6 @@ import '../dashboard/link_widget.dart';
 class ProgramCanvasConstructor {
   final StateTree tree;
   late List<Widget> widgets;
-  int _cur = 0;
 
   ProgramCanvasConstructor({required this.tree}) {
     widgets = _construct();
@@ -35,8 +34,8 @@ class ProgramCanvasConstructor {
     if ((sock.dir & SocketBits.E) != 0) {
       x = x + (w - SettingsState.border);
     }
-    sock.ax = x + sock.dx + SettingsState.border / 2;
-    sock.ay = y + sock.dy + SettingsState.border / 2;
+    sock.ax = x + sock.dx + SettingsState.border * 0.5;
+    sock.ay = y + sock.dy + SettingsState.border * 0.5;
 
     widgetList.add(SocketWidget(
       state: sock,
@@ -60,31 +59,32 @@ class ProgramCanvasConstructor {
   List<Widget> _construct() {
     List<Widget> widgetList = [];
 
-    for (_cur = 0; _cur < tree.code.length; ++_cur) {
-      SimObject node = tree.code[_cur];
+    for (var cur = 0; cur < tree.code.length; ++cur) {
+      SimObject node = tree.code[cur];
       if (node is TankObject) {
         widgetList.add(TankWidget(state: node));
       } else if (node is SockObject) {
-        constructSocket(widgetList, node);
+        _constructSocket(widgetList, node);
       } else if (node is InputObject) {
-        constructInput(widgetList, node);
+        _constructInput(widgetList, node);
       } else if (node is PumpObject) {
-        constructPump(widgetList, node);
+        _constructPump(widgetList, node);
       }
     }
 
     if (widgetList.isEmpty) {
       widgetList.add(const Center());
     }
+
     return widgetList;
   }
 
-  void constructSocket(List<Widget> widgetList, SockObject node) {
+  void _constructSocket(List<Widget> widgetList, SockObject node) {
     SimNode loc = node.parent;
     _addSocket(widgetList, node, loc.x, loc.y, loc.w, loc.h);
   }
 
-  void constructInput(List<Widget> widgetList, InputObject node) {
+  void _constructInput(List<Widget> widgetList, InputObject node) {
     widgetList.add(InputWidget(
       state: node,
       rect: Rect.fromLTWH(
@@ -95,7 +95,8 @@ class ProgramCanvasConstructor {
       ),
     ));
   }
-  void constructPump(List<Widget> widgetList, PumpObject node) {
+
+  void _constructPump(List<Widget> widgetList, PumpObject node) {
     widgetList.add(PumpWidget(
       state: node,
       rect: Rect.fromLTWH(
