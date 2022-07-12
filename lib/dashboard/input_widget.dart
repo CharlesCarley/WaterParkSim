@@ -20,7 +20,6 @@ class InputWidget extends StatefulWidget {
 }
 
 class _InputWidgetState extends State<InputWidget> {
-
   late InputObject _inputState;
 
   @override
@@ -45,10 +44,10 @@ class _InputWidgetState extends State<InputWidget> {
           ),
           PositionedColoredBox(
             rect: Rect.fromLTRB(
-              widget.rect.left + SettingsState.border,
-              widget.rect.top + SettingsState.border,
-              widget.rect.right - SettingsState.border,
-              widget.rect.bottom - SettingsState.border,
+              widget.rect.left + Settings.border,
+              widget.rect.top + Settings.border,
+              widget.rect.right - Settings.border,
+              widget.rect.bottom - Settings.border,
             ),
             color: _inputState.toggle ? Palette.water : Palette.action,
           ),
@@ -57,9 +56,11 @@ class _InputWidgetState extends State<InputWidget> {
             child: Center(
               child: Text(
                 widget.state.flowRate.toStringAsPrecision(
-                  SettingsState.displayPrecision,
+                  Settings.displayPrecision,
                 ),
-                style: Common.labelTextStyle,
+                style: Common.labelTextStyleColor(
+                  color: _inputState.toggle ? Palette.highlight : Palette.actionText,
+                ),
               ),
             ),
           )

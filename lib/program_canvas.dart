@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'palette.dart';
 import 'state/state_tree.dart';
 import 'widgets/event_router.dart';

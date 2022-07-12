@@ -1,7 +1,8 @@
-import 'package:waterpark/util/stack.dart';
-import 'package:waterpark/xml/node.dart';
-import 'package:waterpark/xml/scanner.dart';
-import 'package:waterpark/xml/token.dart';
+import '../util/stack.dart';
+
+import 'node.dart';
+import 'scanner.dart';
+import 'token.dart';
 
 abstract class XmlParseLogger {
   void log(String message);

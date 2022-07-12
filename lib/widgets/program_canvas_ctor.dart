@@ -29,30 +29,29 @@ class ProgramCanvasConstructor {
     double h,
   ) {
     if ((sock.dir & SocketBits.S) != 0) {
-      y = y + (h - SettingsState.border);
+      y = y + (h - Settings.border);
     }
     if ((sock.dir & SocketBits.E) != 0) {
-      x = x + (w - SettingsState.border);
+      x = x + (w - Settings.border);
     }
-    sock.ax = x + sock.dx + SettingsState.border * 0.5;
-    sock.ay = y + sock.dy + SettingsState.border * 0.5;
+    sock.ax = x + sock.dx + Settings.border * 0.5;
+    sock.ay = y + sock.dy + Settings.border * 0.5;
 
-    widgetList.add(SocketWidget(
-      state: sock,
-      rect: Rect.fromLTWH(
-        x + sock.dx,
-        y + sock.dy,
-        SettingsState.border,
-        SettingsState.border,
+    widgetList.add(
+      SocketWidget(
+        state: sock,
+        rect: Rect.fromLTWH(
+          x + sock.dx,
+          y + sock.dy,
+          Settings.border,
+          Settings.border,
+        ),
       ),
-    ));
+    );
 
     if (sock.link != null) {
       SockObject linked = sock.link!;
-      widgetList.add(LinkWidget(
-        state: sock,
-        link: linked,
-      ));
+      widgetList.add(LinkWidget(state: sock, link: linked));
     }
   }
 

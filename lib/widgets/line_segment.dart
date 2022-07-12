@@ -7,20 +7,22 @@ class LineSegmentWidget extends StatelessWidget {
   final Offset from;
   final Offset to;
   final Color color;
+  final double endPointSize;
 
   const LineSegmentWidget({
     Key? key,
     required this.from,
     required this.to,
     required this.color,
+    required this.endPointSize,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Positioned.fromRect(
       rect: Rect.fromLTWH(
-        max(from.dx, to.dx),
-        max(from.dy, to.dy),
+        from.dx,
+        from.dy,
         max(from.dx, to.dx) - min(from.dx, to.dx),
         max(from.dy, to.dy) - min(from.dy, to.dy),
       ),
@@ -29,6 +31,7 @@ class LineSegmentWidget extends StatelessWidget {
           from,
           to,
           color,
+          endPointSize,
         ),
       ),
     );
@@ -38,12 +41,27 @@ class LineSegmentWidget extends StatelessWidget {
 class LineSegmentPainter extends CustomPainter {
   final Offset from;
   final Offset to;
+  final double endPointSize;
+  final Color color;
+  late Color socketColor;
   final Paint _paint = Paint();
 
-  LineSegmentPainter(this.from, this.to, Color color) {
+  LineSegmentPainter(
+    this.from,
+    this.to,
+    this.color,
+    this.endPointSize,
+  ) {
     _paint.isAntiAlias = true;
-    _paint.strokeWidth = SettingsState.lineSegmentLineSize;
-    _paint.color = color;
+    _paint.strokeWidth = Settings.lineSegmentLineSize;
+
+    // color wraps on overflow..
+    socketColor = Color.fromARGB(
+      color.alpha,
+      min(color.red + 20, 255),
+      min(color.green + 20, 255),
+      min(color.blue + 20, 255),
+    );
   }
 
   @override
@@ -53,15 +71,18 @@ class LineSegmentPainter extends CustomPainter {
       to.dx - from.dx,
       to.dy - from.dy,
     );
+    _paint.color = color;
+    canvas.drawLine(origin, newTo, _paint);
+
+    _paint.color = socketColor;
     canvas.drawCircle(
       origin,
-      SettingsState.lineSegmentEndPointSize,
+      endPointSize,
       _paint,
     );
-    canvas.drawLine(origin, newTo, _paint);
     canvas.drawCircle(
       newTo,
-      SettingsState.lineSegmentEndPointSize,
+      endPointSize,
       _paint,
     );
   }

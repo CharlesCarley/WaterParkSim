@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../metrics.dart';
+import 'metrics.dart';
 import 'main.dart';
 import 'palette.dart';
-import 'state/settings_state.dart';
 import 'widgets/event_router.dart';
 import 'widgets/icon_widget.dart';
 import 'widgets/toolbar_widget.dart';
@@ -112,7 +111,6 @@ class _LogWidgetState extends State<LogWidget> with WorkSpaceEventReceiver {
           tools: [
             IconWidget(
               icon: IconMappings.brush,
-              textSize: SettingsState.menuHeight,
               onClick: () {
                 setState(() {
                   logger.clear();

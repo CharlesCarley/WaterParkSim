@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark/metrics.dart';
-import 'package:waterpark/palette.dart';
-import 'package:waterpark/state/settings_state.dart';
-import 'package:waterpark/widgets/event_router.dart';
-import 'package:waterpark/widgets/icon_widget.dart';
-import '../settings/settings_double_widget.dart';
+import 'metrics.dart';
+import 'palette.dart';
+import 'state/settings_state.dart';
+import 'widgets/event_router.dart';
+import 'widgets/icon_widget.dart';
+import 'settings/settings_double_widget.dart';
 import 'util/double_utils.dart';
 
 class WorkspaceSettings extends StatefulWidget {
@@ -24,9 +24,11 @@ class WorkspaceSettings extends StatefulWidget {
 class _WorkspaceSettingsState extends State<WorkspaceSettings> {
   @override
   void initState() {
-    DoubleUtils.lim(SettingsState.inputObjectWidth, 40, 100);
-    DoubleUtils.lim(SettingsState.inputObjectHeight, 30, 100);
-    DoubleUtils.lim(SettingsState.lineSegmentLineSize, 0.01, 5);
+    DoubleUtils.limDv(Settings.inputObjectWidth, 40, 100);
+    DoubleUtils.limDv(Settings.inputObjectHeight, 30, 100);
+    DoubleUtils.limDv(Settings.lineSegmentLineSize, 0.01, 5);
+    DoubleUtils.limDv(Settings.menuHeight, 8, 36);
+    DoubleUtils.limDv(Settings.border, 1, 10);
     super.initState();
   }
 
@@ -44,7 +46,7 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                   padding: const EdgeInsets.fromLTRB(8.0, 16, 8, 16),
                   child: Text(
                     "Workspace Parameters",
-                    style: Common.sizedTextStyle(24,
+                    style: Common.sizedTextStyle(1.5 * Settings.menuHeight,
                         color: Palette.titleForeground),
                   ),
                 ),
@@ -66,43 +68,43 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                   shrinkWrap: true,
                   children: [
                     SettingsDoubleWidget(
-                      value: SettingsState.menuHeight,
+                      value: Settings.menuHeight,
                       heading: "menuHeight",
                       description: "Controls the height of menubars.",
-                      min: 10,
-                      max: 72,
+                      min: 8,
+                      max: 36,
                       onChanged: (val) {
                         setState(() {
-                          SettingsState.menuHeight = val;
+                          Settings.menuHeight = val;
                         });
                       },
                     ),
                     SettingsDoubleWidget(
-                      value: SettingsState.inputObjectWidth,
+                      value: Settings.inputObjectWidth,
                       heading: "inputObjectWidth",
                       description: "Controls the width of the input object.",
                       min: 40,
                       max: 100,
                       onChanged: (val) {
                         setState(() {
-                          SettingsState.inputObjectWidth = val;
+                          Settings.inputObjectWidth = val;
                         });
                       },
                     ),
                     SettingsDoubleWidget(
-                      value: SettingsState.inputObjectHeight,
+                      value: Settings.inputObjectHeight,
                       heading: "inputObjectHeight",
                       description: "Controls the height of the input object.",
                       min: 30,
                       max: 100,
                       onChanged: (val) {
                         setState(() {
-                          SettingsState.inputObjectHeight = val;
+                          Settings.inputObjectHeight = val;
                         });
                       },
                     ),
                     SettingsDoubleWidget(
-                      value: SettingsState.lineSegmentLineSize,
+                      value: Settings.lineSegmentLineSize,
                       heading: "lineSize",
                       description: "Controls stroke width of a line segment.",
                       min: 0.01,
@@ -110,12 +112,12 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                       decimals: 2,
                       onChanged: (val) {
                         setState(() {
-                          SettingsState.lineSegmentLineSize = val;
+                          Settings.lineSegmentLineSize = val;
                         });
                       },
                     ),
                     SettingsDoubleWidget(
-                      value: SettingsState.lineSegmentEndPointSize,
+                      value: Settings.lineSegmentEndPointSize,
                       heading: "endPointSize",
                       description:
                           "Controls the radius of line segment end points.",
@@ -124,43 +126,43 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                       decimals: 2,
                       onChanged: (val) {
                         setState(() {
-                          SettingsState.lineSegmentEndPointSize = val;
+                          Settings.lineSegmentEndPointSize = val;
                         });
                       },
                     ),
                     SettingsDoubleWidget(
-                      value: SettingsState.tankWidth,
+                      value: Settings.tankWidth,
                       heading: "tankWidth",
                       description: "Controls tank object's width.",
                       min: 40,
                       max: 300,
                       onChanged: (val) {
                         setState(() {
-                          SettingsState.tankWidth = val;
+                          Settings.tankWidth = val;
                         });
                       },
                     ),
                     SettingsDoubleWidget(
-                      value: SettingsState.tankHeight,
+                      value: Settings.tankHeight,
                       heading: "tankHeight",
                       description: "Controls tank object's height.",
                       min: 40,
                       max: 300,
                       onChanged: (val) {
                         setState(() {
-                          SettingsState.tankHeight = val;
+                          Settings.tankHeight = val;
                         });
                       },
                     ),
                     SettingsDoubleWidget(
-                      value: SettingsState.border,
+                      value: Settings.border,
                       heading: "border",
                       description: "Controls a general border metric.",
                       min: 1,
                       max: 10,
                       onChanged: (val) {
                         setState(() {
-                          SettingsState.border = val;
+                          Settings.border = val;
                         });
                       },
                     ),

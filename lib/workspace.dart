@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:waterpark/simulation/run_canvas.dart';
+import 'simulation/run_canvas.dart';
 import 'metrics.dart';
 import 'theme.dart';
 import 'state/state_tree_compiler.dart';
@@ -56,7 +56,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: SettingsState.title,
+      title: Settings.title,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Palette.background,
@@ -75,7 +75,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
             foregroundColor: Palette.titleForeground,
             backgroundColor: Palette.titleBackground,
             title: Text(
-              SettingsState.title,
+              Settings.title,
               style: Common.sizedTextStyle(18),
             ),
             actions: _buildActionList(),
@@ -105,7 +105,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
     } else {
       List<Widget> body = [];
       body.add(SplitWidget(
-        initialSplit: SettingsState.sashPos,
+        initialSplit: Settings.sashPos,
         direction: SplitWidgetDirection.vertical,
         childA: ProgramEditor(
           dispatcher: widget.dispatcher,

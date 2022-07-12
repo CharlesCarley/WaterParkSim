@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waterpark/state/settings_state.dart';
 import '../state/socket_state.dart';
 import '../palette.dart';
 import '../widgets/line_segment.dart';
@@ -18,7 +19,8 @@ class LinkWidget extends StatelessWidget {
     return LineSegmentWidget(
       from: Offset(state.ax, state.ay),
       to: Offset(link.ax, link.ay),
-      color: Palette.wire,
+      color: Palette.socketColor,
+      endPointSize: Settings.lineSegmentEndPointSize,
     );
   }
 }

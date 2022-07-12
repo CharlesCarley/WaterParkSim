@@ -1,5 +1,3 @@
-import 'package:waterpark/state/object_state.dart';
-
 import 'object_state.dart';
 
 class ToggleObject extends SimNode {

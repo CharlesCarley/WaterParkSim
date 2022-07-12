@@ -1,9 +1,9 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:waterpark/metrics.dart';
-import 'package:waterpark/state/settings_state.dart';
-import 'package:waterpark/widgets/icon_widget.dart';
+import 'dart:async';
+
+import '../state/settings_state.dart';
+import '../widgets/icon_widget.dart';
+import '../widgets/toolbar_widget.dart';
 import '../palette.dart';
 import '../state/state_tree.dart';
 import '../util/double_utils.dart';
@@ -34,10 +34,10 @@ class _RunProgramCanvasState extends State<RunProgramCanvas>
     widget.dispatcher.subscribe(this);
     _tree = widget.tree;
 
-    DoubleUtils.limIv(SettingsState.stepRateMs, 10, 1000);
+    DoubleUtils.limIv(Settings.stepRateMs, 10, 1000);
 
     _timer = Timer.periodic(
-      Duration(milliseconds: SettingsState.stepRateMs),
+      Duration(milliseconds: Settings.stepRateMs),
       _onTick,
     );
 
@@ -59,27 +59,17 @@ class _RunProgramCanvasState extends State<RunProgramCanvas>
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ColoredBox(
-            color: Palette.backgroundLight,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Text(
-                    _getTitleString(),
-                    style: Common.sizedTextStyle(14),
-                  ),
-                ),
-                const Spacer(),
-                IconWidget(
-                  icon: IconMappings.exit,
-                  onClick: () {
-                    widget.dispatcher.notifyRun();
-                  },
-                  tooltip: "Exit the current simulation (Esc)",
-                ),
-              ],
-            ),
+          ToolbarWidget(
+            title: _getTitleString(),
+            tools: [
+              IconWidget(
+                icon: IconMappings.exit,
+                onClick: () {
+                  widget.dispatcher.notifyRun();
+                },
+                tooltip: "Exit the current simulation (Esc)",
+              )
+            ],
           ),
           Expanded(
             child: Stack(
@@ -98,7 +88,7 @@ class _RunProgramCanvasState extends State<RunProgramCanvas>
   void _onTick(Timer dur) {
     Future.microtask(
       () => _tree.step(
-        SettingsState.stepRateMs.toDouble(),
+        Settings.stepRateMs.toDouble(),
       ),
     ).whenComplete(
       (() {
@@ -108,6 +98,6 @@ class _RunProgramCanvasState extends State<RunProgramCanvas>
   }
 
   String _getTitleString() {
-    return "Running @ ${SettingsState.stepRateMs} ms : 1 min";
+    return "Running @ ${Settings.stepRateMs} ms : 1 min";
   }
 }

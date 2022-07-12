@@ -1,4 +1,4 @@
-import 'package:waterpark/xml/attribute.dart';
+import 'attribute.dart';
 
 class XmlNode {
   final Map<String, Attribute> _attributes = {};

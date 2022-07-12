@@ -1,6 +1,6 @@
-import 'package:waterpark/state/pump_state.dart';
-import 'package:waterpark/state/socket_state.dart';
-import 'package:waterpark/state/target_ids.dart';
+import '../state/pump_state.dart';
+import '../state/socket_state.dart';
+import '../state/target_ids.dart';
 import '../state/manifold_utils.dart';
 import '../state/object_state.dart';
 import '../state/input_state.dart';

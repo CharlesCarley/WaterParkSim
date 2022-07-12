@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark/metrics.dart';
-import 'package:waterpark/palette.dart';
+
+import '../metrics.dart';
+import '../palette.dart';
 
 class HelpCommandText extends StatelessWidget {
   final String text;
@@ -61,11 +62,11 @@ class HelpCommand extends StatelessWidget {
             text: label,
           ),
           HelpCommandText(
-            fontSize: fontSize-3,
+            fontSize: fontSize - 3,
             text: subHeading,
           ),
           HelpCommandText(
-            fontSize: fontSize-5,
+            fontSize: fontSize - 5,
             text: description,
           ),
         ],

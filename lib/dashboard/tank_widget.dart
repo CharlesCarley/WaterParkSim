@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark/state/settings_state.dart';
-import 'package:waterpark/util/double_utils.dart';
+import '../state/settings_state.dart';
 import '../state/tank_state.dart';
 import '../metrics.dart';
 import '../palette.dart';
+import '../util/double_utils.dart';
 import '../widgets/positioned_widgets.dart';
 
 class TankWidget extends StatelessWidget {
@@ -19,22 +19,22 @@ class TankWidget extends StatelessWidget {
     var base = Rect.fromLTWH(
       state.x,
       state.y,
-      SettingsState.tankWidth,
-      SettingsState.tankHeight,
+      Settings.tankWidth,
+      Settings.tankHeight,
     );
     var inner = Rect.fromLTRB(
-      base.left + SettingsState.border,
-      base.top + SettingsState.border,
-      base.right - SettingsState.border,
-      base.bottom - SettingsState.border,
+      base.left + Settings.border,
+      base.top + Settings.border,
+      base.right - Settings.border,
+      base.bottom - Settings.border,
     );
 
+    var fluid = DoubleUtils.lim(state.level, 0, state.height) / state.height;
     var innerRectHeight = inner.bottom - inner.top;
+
     var levelTop = Rect.fromLTRB(
       inner.left,
-      inner.bottom -
-          ((DoubleUtils.lim(state.level, 0, state.height) / state.height) *
-              innerRectHeight),
+      inner.bottom - (fluid * innerRectHeight),
       inner.right,
       inner.bottom,
     );
@@ -51,14 +51,14 @@ class TankWidget extends StatelessWidget {
         ),
         PositionedColoredBox(
           rect: levelTop,
-          color: state.level <= state.height ? Palette.water : Palette.action,
+          color: state.level < state.height ? Palette.water : Palette.action,
         ),
         Positioned.fromRect(
           rect: inner,
           child: Center(
             child: Text(
               state.level.toStringAsPrecision(
-                SettingsState.displayPrecision,
+                Settings.displayPrecision,
               ),
               style: Common.labelTextStyle,
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waterpark/state/settings_state.dart';
 
 import '../metrics.dart';
 import '../palette.dart';
@@ -26,14 +27,14 @@ class IconWidget extends StatelessWidget {
   final double size;
   final VoidCallback onClick;
 
-  const IconWidget({
+  IconWidget({
     Key? key,
     required this.icon,
     required this.onClick,
     String? tooltip,
     Color? color,
     double? textSize,
-  })  : size = textSize ?? 16,
+  })  : size = textSize ?? Settings.menuHeight,
         color = color ?? Palette.titleIcon,
         tooltip = tooltip ?? "",
         super(key: key);
@@ -41,9 +42,11 @@ class IconWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      clipBehavior: Clip.hardEdge,
       onPressed: onClick,
-      style: TextButton.styleFrom(padding: EdgeInsets.zero),
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.zero,
+        fixedSize: Size.square(size),
+      ),
       child: Tooltip(
         message: tooltip,
         textStyle: const TextStyle(

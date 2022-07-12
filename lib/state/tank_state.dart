@@ -1,7 +1,7 @@
-import 'package:waterpark/state/manifold_utils.dart';
-import 'package:waterpark/state/socket_state.dart';
-
 import '../util/double_utils.dart';
+
+import 'manifold_utils.dart';
+import 'socket_state.dart';
 import 'object_state.dart';
 import 'settings_state.dart';
 import 'target_ids.dart';
@@ -19,11 +19,9 @@ class TankObject extends SimNode {
     required this.capacity,
     required this.level,
   })  : _hasEqualizationTarget = false,
-        super(
-            x: x,
-            y: y,
-            w: SettingsState.tankWidth,
-            h: SettingsState.tankHeight);
+        super(x: x, y: y, w: Settings.tankWidth, h: Settings.tankHeight) {
+    if (height <= 0) height = 1;
+  }
 
   @override
   void onSocketAdded(SockObject sock, bool isInput) {
@@ -51,8 +49,8 @@ class TankObject extends SimNode {
   }
 
   double hpp() {
-    if (SettingsState.tankHeight <= 0) return 0;
-    return (height / SettingsState.tankHeight);
+    if (Settings.tankHeight <= 0) return 0;
+    return (height / Settings.tankHeight);
   }
 
   double sockHeight(SockObject obj) {

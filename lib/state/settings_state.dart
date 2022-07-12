@@ -1,32 +1,56 @@
 import 'package:flutter/material.dart';
 
-class SettingsState {
+/// Defines application wide settings. For a regular application these settings
+/// should be persisted to an application database.
+class Settings {
+  /// Defines the width for the dashboard/InputObject type.
   static double inputObjectWidth = 50;
+
+  /// Defines the height for the dashboard/InputObject type.
   static double inputObjectHeight = 30;
 
+  /// Defines the width for the dashboard/PumpObject type.
   static double pumpObjectWidth = 50;
+
+  /// Defines the height for the dashboard/PumpObject type.
   static double pumpObjectHeight = 50;
 
-  // displayed as circle
+  /// Defines the socket connection radius
   static double lineSegmentEndPointSize = 3.0;
+
+  /// Defines the line width for the line segment between sockets.
   static double lineSegmentLineSize = 2.5;
 
+  /// Defines the width for the dashboard/TankObject type.
   static double tankWidth = 75.0;
+
+  /// Defines the height for the dashboard/TankObject type.
   static double tankHeight = 150.0;
+
+  /// Defines the height for the toolbar widget.
   static double menuHeight = 14.0;
+
+  /// Defines the number of digits displayed for canvas text.
   static int displayPrecision = 3;
 
+  /// Defines the initial workspace split position. [0,1]
   static double sashPos = 0.28;
 
+  /// Defines the timer update interval in milliseconds.
   static int stepRateMs = 60;
 
+  /// Used to cache the cursor position.
   static TextSelection position = TextSelection.fromPosition(
     const TextPosition(offset: 1),
   );
 
-  // general border
-  static double border = 3.0;
+  /// Defines the border around dashboard objects.
+  static double border = 2.0;
+
+  /// Defines the title-bar text.
   static String title = "Water Facility Demo";
+
+  /// Defines the default script for the editor on application startup.
   static String debugProg = """
 <page>
   <manifold dia="6" vel="4"/> 

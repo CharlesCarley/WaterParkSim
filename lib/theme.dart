@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark/palette.dart';
+import 'palette.dart';
 
 class WorkspaceTheme {
   static const TextStyle labelTextStyle = TextStyle(

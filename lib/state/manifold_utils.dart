@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:waterpark/util/double_utils.dart';
+import '../util/double_utils.dart';
 
 class ManifoldUtils {
   static const double atmosphereFt = 29.9212 / 12.0;

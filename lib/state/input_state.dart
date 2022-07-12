@@ -12,8 +12,8 @@ class InputObject extends ToggleObject {
   }) : super(
           x: x,
           y: y,
-          w: SettingsState.inputObjectWidth,
-          h: SettingsState.inputObjectHeight,
+          w: Settings.inputObjectWidth,
+          h: Settings.inputObjectHeight,
           toggle: state,
         );
 }

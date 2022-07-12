@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:highlight/highlight.dart';
+
 import 'palette.dart';
 
 class Metrics {

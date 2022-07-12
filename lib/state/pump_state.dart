@@ -17,8 +17,8 @@ class PumpObject extends ToggleObject {
   }) : super(
           x: x,
           y: y,
-          w: SettingsState.pumpObjectWidth,
-          h: SettingsState.pumpObjectHeight,
+          w: Settings.pumpObjectWidth,
+          h: Settings.pumpObjectHeight,
           toggle: state,
         );
 }

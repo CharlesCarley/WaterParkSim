@@ -203,7 +203,7 @@ class _SplitWidgetState extends State<SplitWidget> {
         setState(() {
           if (captured) {
             splitPosition = event.position.dx / width;
-            SettingsState.sashPos = splitPosition;
+            Settings.sashPos = splitPosition;
           }
         });
       },

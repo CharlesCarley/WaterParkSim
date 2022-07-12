@@ -1,13 +1,15 @@
-import 'package:waterpark/main.dart';
-import 'package:waterpark/state/input_state.dart';
-import 'package:waterpark/state/manifold_utils.dart';
-import 'package:waterpark/state/object_state.dart';
-import 'package:waterpark/state/pump_state.dart';
-import 'package:waterpark/state/socket_state.dart';
-import 'package:waterpark/state/tank_state.dart';
-import 'package:waterpark/state/target_ids.dart';
-import 'package:waterpark/util/double_utils.dart';
-import 'package:waterpark/xml/parser.dart';
+import 'input_state.dart';
+import 'manifold_utils.dart';
+import 'object_state.dart';
+import 'pump_state.dart';
+import 'socket_state.dart';
+import 'tank_state.dart';
+import 'target_ids.dart';
+
+import '../main.dart';
+
+import '../util/double_utils.dart';
+import '../xml/parser.dart';
 import '../xml/node.dart';
 
 /// Definition for used XML tags.
@@ -188,24 +190,23 @@ class StateTreeCompiler {
     _buildSocketsForObjects(node, obj);
   }
 
-  SockObject _buildBaseSock(XmlNode node, SimNode parent) {
+  SockObject _buildBaseSock(XmlNode sock, SimNode parent) {
     double x = 0, y = 0;
     int dir = 0;
 
-    if (node.hasAttribute("param")) {
-      var sl = node.asString("param").split(",");
+    if (sock.hasAttribute("param")) {
+      // packed as: dir, x, y
+      var sl = sock.asString("param").split(",");
       if (sl.length >= 3) {
-        // dir,x,y
-
         dir = _parseDirection(sl[0]);
         x = DoubleUtils.fromString(sl[1]);
         y = DoubleUtils.fromString(sl[2]);
       }
     } else {
-      x = node.asDouble("dx");
-      y = node.asDouble("dy");
+      x = sock.asDouble("dx");
+      y = sock.asDouble("dy");
       dir = _parseDirection(
-        node.asString("dir"),
+        sock.asString("dir"),
       );
     }
 
@@ -217,15 +218,15 @@ class StateTreeCompiler {
         dx: signX * x,
         dy: signY * y,
         parent: parent,
-        target: _lookUpTargetState(node.asString("target")));
+        target: _lookUpTargetState(sock.asString("target")));
 
-    if (node.name == ObjectTags.osock.index) {
-      var id = node.asString("id");
+    if (sock.name == ObjectTags.osock.index) {
+      var id = sock.asString("id");
       if (id.isNotEmpty) {
         _findSocket.putIfAbsent(id, () => obj);
       }
-    } else if (node.name == ObjectTags.isock.index) {
-      var id = node.asString("link");
+    } else if (sock.name == ObjectTags.isock.index) {
+      var id = sock.asString("link");
       if (id.isNotEmpty && _findSocket.containsKey(id)) {
         SockObject? link = _findSocket[id];
         if (link != null) {

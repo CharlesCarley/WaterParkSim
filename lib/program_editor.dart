@@ -1,13 +1,14 @@
+import 'package:flutter/material.dart';
 import 'dart:async';
+
 import 'package:code_text_field/code_text_field.dart';
 import 'package:highlight/languages/xml.dart';
-import 'package:flutter/material.dart';
-import 'package:waterpark/state/settings_state.dart';
-import 'package:waterpark/widgets/event_router.dart';
-import 'package:waterpark/widgets/icon_widget.dart';
-import 'package:waterpark/widgets/split_widget.dart';
-import '../metrics.dart';
-import '../palette.dart';
+
+import 'state/settings_state.dart';
+import 'widgets/event_router.dart';
+import 'widgets/icon_widget.dart';
+import 'widgets/split_widget.dart';
+import 'palette.dart';
 import 'logger.dart';
 import 'state/object_state.dart';
 import 'state/state_tree_compiler.dart';
@@ -49,7 +50,7 @@ class _ProgramEditorState extends State<ProgramEditor>
 
   @override
   void dispose() {
-    SettingsState.position = _controller.selection;
+    Settings.position = _controller.selection;
     _triggerBuild.cancel();
     _controller.dispose();
     widget.dispatcher.unsubscribe(this);
@@ -64,7 +65,7 @@ class _ProgramEditorState extends State<ProgramEditor>
       text: _lastState,
     );
     _changed = true;
-    _controller.selection = SettingsState.position;
+    _controller.selection = Settings.position;
   }
 
   void _setupTrigger() {
@@ -89,7 +90,6 @@ class _ProgramEditorState extends State<ProgramEditor>
                 onClick: _clearClicked,
                 color: Palette.titleIcon,
                 tooltip: "Clears the current text",
-                textSize: SettingsState.menuHeight,
               ),
             ],
           ),

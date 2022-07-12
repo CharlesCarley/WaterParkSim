@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark/workspace.dart';
+
+import 'workspace.dart';
 import 'logger.dart';
 import 'widgets/event_router.dart';
 

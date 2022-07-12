@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark/settings/settings_label_widget.dart';
-import 'package:waterpark/util/double_utils.dart';
 
+import '../settings/settings_label_widget.dart';
+import '../util/double_utils.dart';
 import '../palette.dart';
 
 class SettingsDoubleWidget extends StatelessWidget {

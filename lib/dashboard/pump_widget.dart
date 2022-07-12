@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark/util/double_utils.dart';
+
+import '../util/double_utils.dart';
 import '../metrics.dart';
 import '../state/pump_state.dart';
 import '../state/settings_state.dart';
 import '../palette.dart';
-import '../widgets/positioned_widgets.dart';
 
 class PumpCanvasWidget extends StatelessWidget {
   final Rect rect;
@@ -38,7 +38,7 @@ class PumpCanvasPainter extends CustomPainter {
 
   PumpCanvasPainter(this.rect, this.on) {
     _paint.isAntiAlias = true;
-    _paint.strokeWidth = SettingsState.lineSegmentLineSize;
+    _paint.strokeWidth = Settings.lineSegmentLineSize;
   }
 
   @override
@@ -63,7 +63,7 @@ class PumpCanvasPainter extends CustomPainter {
     _paint.color = on ? Palette.actionSecondary : Palette.action;
     canvas.drawCircle(
       origin,
-      DoubleUtils.max(rect.width, rect.height) * 0.35,
+      DoubleUtils.max(rect.width, rect.height) * 0.4,
       _paint,
     );
 
@@ -116,10 +116,10 @@ class _PumpWidgetState extends State<PumpWidget> {
         children: [
           PumpCanvasWidget(
             rect: Rect.fromLTRB(
-              widget.rect.left + SettingsState.border,
-              widget.rect.top + SettingsState.border,
-              widget.rect.right - SettingsState.border,
-              widget.rect.bottom - SettingsState.border,
+              widget.rect.left + Settings.border,
+              widget.rect.top + Settings.border,
+              widget.rect.right - Settings.border,
+              widget.rect.bottom - Settings.border,
             ),
             on: _inputState.toggle,
           ),
@@ -128,12 +128,12 @@ class _PumpWidgetState extends State<PumpWidget> {
             child: Center(
               child: Text(
                 widget.state.pumpRate.toStringAsPrecision(
-                  SettingsState.displayPrecision,
+                  Settings.displayPrecision,
                 ),
                 style: Common.labelTextStyleColor(
                   color: _inputState.toggle
-                      ? Palette.highlight
-                      : Palette.wire,
+                      ? Palette.actionSecondaryText
+                      : Palette.actionText,
                 ),
               ),
             ),

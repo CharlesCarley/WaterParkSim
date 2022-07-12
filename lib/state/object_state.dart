@@ -1,4 +1,4 @@
-import 'package:waterpark/state/socket_state.dart';
+import 'socket_state.dart';
 
 class SimObject {}
 

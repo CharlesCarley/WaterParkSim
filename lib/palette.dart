@@ -25,14 +25,11 @@ class Palette {
   static const background = Color(0xFF131313);
   static const backgroundLight = Color(0xFF333333);
 
-  static const controlBackground = Color.fromARGB(255, 37, 37, 37);
-  static const controlBackgroundLight = Color.fromARGB(255, 41, 41, 41);
+  static const controlBackground = Color(0xFF252525);
+  static const controlBackgroundLight = Color(0xFF292929);
 
   static const tankBorder = Color(0xFF2E2E2E);
   static const tankBackground = Color(0xFF282828);
-  static const water = Color(0xFF3D3483);
-  static const socketColor = Color.fromARGB(255, 165, 146, 146);
-
   static const darkGrey = Color(0xFF181818);
   static const darkGrey1 = Color(0xFF2A2A2F);
   static const darkGrey2 = Color(0xFF222222);
@@ -43,10 +40,19 @@ class Palette {
   static const wireTitle = Color(0xFF5A5A7F);
   static const wire = Color(0xFF4F4F69);
   static const wireShadow = Color(0xFF30303F);
-  static const action = Color(0xFFE94545);
-  static const actionLight = Color.fromARGB(255, 249, 114, 114);
-  static const actionSecondary = Color(0xFF45E945);
-  static const actionSecondaryLight = Color.fromARGB(255, 114, 246, 114);
+
+
+  static const water = Color(0xFF344382);
+  static const socketColor = Color.fromARGB(255, 69, 66, 75);
+
+  static const action = Color(0xFFFA2340);
+  static const actionLight = Color.fromARGB(255, 255, 64, 89);
+  static const actionText = Color.fromARGB(255, 255, 242, 201);
+
+  static const actionSecondary = Color(0xFF28FA54);
+  static const actionSecondaryLight = Color.fromARGB(255, 117, 255, 147);
+  static const actionSecondaryText = Color.fromARGB(255, 64, 116, 71);
+
   static const transparent = Color(0x00E94545);
 
   static const titleText = Color(0xFF9F9B9B);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark/metrics.dart';
-import 'package:waterpark/palette.dart';
+
+import '../metrics.dart';
+import '../palette.dart';
 
 class SettingsLabelWidget extends StatelessWidget {
   final String label;

@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:waterpark/xml/token.dart';
-
+import 'token.dart';
 import 'parser.dart';
 
 class XmlScanner {
@@ -148,8 +147,7 @@ class XmlScanner {
         _stringCache.add(str);
       }
       return idx;
-    }
-    else{
+    } else {
       _logger.log("cannot store an empty string");
     }
     return -1;
@@ -162,6 +160,7 @@ class XmlScanner {
       StringBuffer buf = StringBuffer();
       while (_notEndOfStream() && _isAlphaNumeric(ch)) {
         buf.writeCharCode(ch);
+
         _advance(1);
         ch = _current();
 

@@ -16,7 +16,7 @@ class WorkSpaceEventReceiver {
 }
 
 class WorkspaceEventDispatcher extends EventDispatcher<WorkSpaceEventReceiver> {
-  String text = SettingsState.debugProg;
+  String text = Settings.debugProg;
   late final XmlListLogger logger;
 
   Future notifyRun() {
