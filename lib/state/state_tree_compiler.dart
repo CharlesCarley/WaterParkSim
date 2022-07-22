@@ -37,16 +37,20 @@ class StateTreeCompiler {
   final Map<String, SockObject> _findSocket = {};
   final Map<String, SimObject> _findObject = {};
 
-  /// Interprets the supplied buffer as XML,
-  /// then compiles a node state tree from the XML parse tree.
-  /// Returns a linear sequence of all nodes in the tree.
-  List<SimObject> compile(String buffer) {
+  double tick = 1000;
+  List<SimObject> get code => _stateObjects;
+
+
+
+  void compile(String buffer) {
     _stateObjects.clear();
     _findSocket.clear();
     _parser.parse(buffer);
 
     if (_parser.hasRoot) {
-      if (_parser.root.name == 0) {
+      if (_parser.root.name == ObjectTags.page.index) {
+        tick = _parser.root.asDouble("tick", def: 1000);
+
         for (XmlNode node in _parser.root.children) {
           if (node.name == ObjectTags.input.index) {
             _buildInputObject(node);
@@ -60,7 +64,6 @@ class StateTreeCompiler {
         }
       }
     }
-    return _stateObjects;
   }
 
   /// Maps objects with an id attribute for later retrieval.
@@ -284,14 +287,14 @@ class StateTreeCompiler {
 
   void _setManifold(XmlNode node) {
     ManifoldUtils.diameter = DoubleUtils.lim(
-      node.asDouble("dia", def: 4),
+      node.asDouble("dia", def: 6),
       1,
-      200,
+      24,
     );
     ManifoldUtils.velocity = DoubleUtils.lim(
       node.asDouble("vel", def: 1),
       0,
-      50,
+      2 * ManifoldUtils.diameter / 3,
     );
 
     ManifoldUtils.calculateMaxFlow();

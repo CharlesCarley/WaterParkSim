@@ -8,7 +8,7 @@ import '../palette.dart';
 import '../state/state_tree.dart';
 import '../util/double_utils.dart';
 import '../widgets/event_router.dart';
-import '../widgets/program_canvas_ctor.dart';
+import '../program_canvas_view.dart';
 
 class RunProgramCanvas extends StatefulWidget {
   final WorkspaceEventDispatcher dispatcher;
@@ -98,6 +98,6 @@ class _RunProgramCanvasState extends State<RunProgramCanvas>
   }
 
   String _getTitleString() {
-    return "Running @ ${Settings.stepRateMs} ms : 1 min";
+    return "Running @ ${Settings.stepRateMs}/${widget.tree.tick.toInt()} ms";
   }
 }

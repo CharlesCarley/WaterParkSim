@@ -30,7 +30,9 @@ class ToolbarWidget extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
         child: Text(
           title,
-          style: Common.sizedTextStyle(Settings.menuHeight - 2),
+          style: Styles.labelStyle(
+            size: Settings.menuHeight - 2,
+          ),
         ),
       ),
       const Spacer(),

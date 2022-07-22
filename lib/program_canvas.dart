@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'palette.dart';
 import 'state/state_tree.dart';
 import 'widgets/event_router.dart';
-import 'widgets/program_canvas_ctor.dart';
+import 'program_canvas_view.dart';
 
 class ProgramCanvas extends StatefulWidget {
   final WorkspaceEventDispatcher dispatcher;
@@ -37,7 +37,6 @@ class _ProgramCanvasState extends State<ProgramCanvas>
     return ColoredBox(
       color: Palette.background,
       child: Stack(
-        clipBehavior: Clip.hardEdge,
         fit: StackFit.expand,
         children: ProgramCanvasConstructor(
           tree: _tree,

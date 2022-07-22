@@ -6,4 +6,7 @@ class PrintLogger extends XmlParseLogger {
     // ignore: avoid_print
     print(message);
   }
+
+  @override
+  void clear() {}
 }

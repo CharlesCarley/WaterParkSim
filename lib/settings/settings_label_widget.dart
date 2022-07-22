@@ -23,8 +23,8 @@ class SettingsLabelWidget extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(8, 1, 1, 1),
       child: Text(
         label,
-        style: Common.sizedTextStyle(
-          fontSize,
+        style: Styles.labelStyle(
+          size: fontSize,
           color: color,
         ),
       ),

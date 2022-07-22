@@ -76,7 +76,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
             backgroundColor: Palette.titleBackground,
             title: Text(
               Settings.title,
-              style: Common.sizedTextStyle(18),
+              style: Styles.labelStyle(size: 18),
             ),
             actions: _buildActionList(),
           ),
@@ -213,7 +213,9 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
 
   StateTree _compileCurrent() {
     StateTreeCompiler obj = StateTreeCompiler();
-    return StateTree(code: obj.compile(widget.dispatcher.text));
+
+    obj.compile(widget.dispatcher.text);
+    return StateTree(code: obj.code, tick: obj.tick);
   }
 
   void _focus() {

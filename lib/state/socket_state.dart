@@ -1,3 +1,8 @@
+import 'dart:collection';
+
+import 'package:flutter/widgets.dart';
+
+import '../util/stack.dart';
 import 'object_state.dart';
 
 class SocketBits {
@@ -17,7 +22,9 @@ class SockObject extends SimObject {
   double ay = 0;
   SockObject? link;
   final List<SockObject> fromLinks = [];
-  final List<double> _cache = [];
+  final Queue<double> _cache = Queue();
+
+  VoidCallback? onChange;
 
   SockObject({
     required this.dir,
@@ -25,19 +32,26 @@ class SockObject extends SimObject {
     required this.dy,
     required this.parent,
     required this.target,
-  });
+    VoidCallback? change,
+  }) : onChange = change;
 
-  double getCache() {
-    double v = 0;
+  double popCache() {
     if (_cache.isNotEmpty) {
-      v = _cache.last;
-      _cache.removeLast();
+      onChange?.call();
+      var v = _cache.removeLast();
+      return v;
     }
-    return v;
+    return 0;
+  }
+
+  double peekCache() {
+    if (_cache.isNotEmpty) return _cache.last;
+    return 0;
   }
 
   void cacheValue(double v) {
     _cache.add(v);
+    onChange?.call();
   }
 
   void connect(SockObject obj) {

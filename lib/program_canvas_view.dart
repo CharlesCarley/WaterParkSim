@@ -51,7 +51,7 @@ class ProgramCanvasConstructor {
 
     if (sock.link != null) {
       SockObject linked = sock.link!;
-      widgetList.add(LinkWidget(state: sock, link: linked));
+      widgetList.add(LinkWidget(from: sock, to: linked));
     }
   }
 

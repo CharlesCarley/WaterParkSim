@@ -46,7 +46,8 @@ class _WorkspaceSettingsState extends State<WorkspaceSettings> {
                   padding: const EdgeInsets.fromLTRB(8.0, 16, 8, 16),
                   child: Text(
                     "Workspace Parameters",
-                    style: Common.sizedTextStyle(1.5 * Settings.menuHeight,
+                    style: Styles.labelStyle(
+                        size: 1.5 * Settings.menuHeight,
                         color: Palette.titleForeground),
                   ),
                 ),

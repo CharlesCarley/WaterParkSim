@@ -23,7 +23,7 @@ class Metrics {
   }
 }
 
-class Common {
+class Styles {
   static const double editTextSize = 12;
   static const TextStyle editTextStyle = TextStyle(
     fontSize: editTextSize,
@@ -32,10 +32,13 @@ class Common {
   );
 
   static const double labelTextSize = 14;
+  static const labelTextColor = Color(0xFF9F9FAF);
+  static const labelTextColorBright = Color.fromARGB(255, 82, 82, 96);
+
   static const TextStyle labelTextStyle = TextStyle(
     fontSize: labelTextSize,
     fontFamily: "RobotoMedium",
-    color: Palette.highlight,
+    color: labelTextColor,
   );
 
   static TextStyle labelTextStyleColor({Color color = Palette.highlight}) {
@@ -46,8 +49,10 @@ class Common {
     );
   }
 
-  static TextStyle sizedTextStyle(double size,
-      {Color color = Palette.highlight}) {
+  static TextStyle labelStyle({
+    double size = labelTextSize,
+    Color color = labelTextColor,
+  }) {
     return TextStyle(
       fontSize: size,
       color: color,

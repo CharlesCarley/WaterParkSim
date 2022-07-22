@@ -22,8 +22,8 @@ class HelpCommandText extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
       child: Text(
         text,
-        style: Common.sizedTextStyle(
-          fontSize,
+        style: Styles.labelStyle(
+          size: fontSize,
           color: color,
         ),
       ),

@@ -10,15 +10,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:waterpark/state/state_tree_compiler.dart';
 import 'package:waterpark/xml/node.dart';
 import 'package:waterpark/xml/parser.dart';
+import 'package:waterpark/xml/print_logger.dart';
 import 'package:waterpark/xml/scanner.dart';
 import 'package:waterpark/xml/token.dart';
-
-class PrintLogger extends XmlParseLogger {
-  @override
-  void log(String message) {
-    print(message);
-  }
-}
 
 void main() {
   test("XML_SmokeTest_1", () {
@@ -35,9 +29,12 @@ void main() {
   });
 
   test("XML_SmokeTest_2", () {
-    XmlScanner scan = XmlScanner.fromString("""
+    XmlScanner scan = XmlScanner.fromString(
+      """
       <?xml version="1.0"?>
-    """, PrintLogger());
+    """,
+      PrintLogger(),
+    );
 
     expect(scan.scan().type, XmlTok.tokStTag);
     expect(scan.scan().type, XmlTok.tokQuestion);

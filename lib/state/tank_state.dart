@@ -1,5 +1,4 @@
 import '../util/double_utils.dart';
-
 import 'manifold_utils.dart';
 import 'socket_state.dart';
 import 'object_state.dart';
@@ -31,42 +30,36 @@ class TankObject extends SimNode {
   }
 
   double get psi => level / ManifoldUtils.atmosphereFt;
+  double get left => x;
+  double get right => x + w;
+  double get barrelsPerFoot =>
+      (capacity <= 0 || height <= 0) ? 0 : capacity / height;
+  double get barrelsPerInch =>
+      (capacity <= 0 || height <= 0) ? 0 : capacity / (12 * height);
+  double get feetPerPixel =>
+      (Settings.tankHeight <= 0) ? 0 : height / Settings.tankHeight;
+
+  double get barrels => (level * barrelsPerFoot);
+
+  /// Get the total number of fluid barrels in the tank rounded up
+  double get barrelsRu => (level * barrelsPerFoot).ceilToDouble();
 
   double toLevel(double bbl) {
-    if (capacity <= 0 || height <= 0) {
-      return 0;
-    }
-
-    return bbl / (capacity / height);
-  }
-
-  double toBarrels() {
-    if (capacity <= 0 || height <= 0) {
-      return 0;
-    }
-
-    return level * (capacity / height);
-  }
-
-  double hpp() {
-    if (Settings.tankHeight <= 0) return 0;
-    return (height / Settings.tankHeight);
+    double bpf = barrelsPerFoot;
+    if (bpf > 0) return bbl / bpf;
+    return 0;
   }
 
   double sockHeight(SockObject obj) {
-    return DoubleUtils.abs(y + h - obj.ay) * hpp();
+    return DoubleUtils.abs(y + h - obj.ay) * feetPerPixel;
   }
 
   void addBarrels(double bbl) {
-    var cur = toBarrels();
-    cur += bbl;
-    level = toLevel(cur);
+    level = toLevel(barrels + bbl);
   }
 
   void delBarrels(double bbl) {
-    var cur = toBarrels();
-    cur -= bbl;
-    level = toLevel(cur);
+    level = toLevel(barrels - bbl);
   }
 
   bool canEqualize() {

@@ -37,6 +37,8 @@ class Settings {
   static double sashPos = 0.28;
 
   /// Defines the timer update interval in milliseconds.
+  /// Realtime 60 * 1000 equals 1 minute.
+  /// Speed up 60 ms equals 1 minute.
   static int stepRateMs = 60;
 
   /// Used to cache the cursor position.
@@ -52,12 +54,12 @@ class Settings {
 
   /// Defines the default script for the editor on application startup.
   static String debugProg = """
-<page>
-  <manifold dia="6" vel="4"/> 
+<page tick="1000">
+  <manifold dia="6" vel="6"/> 
   <!-- 
   Incoming @ 6 bbl/min 
   -->
-  <input param="10,10,6" 
+  <input param="5,10,12" 
          state="on">
     <osock param="NE,0,6" 
            id="0" />
@@ -66,7 +68,7 @@ class Settings {
   Dumping into a 20 ft/500 bbl 
   tank that spills over @ 18 ft
   -->
-  <tank param="110,10,20,500,0">
+  <tank param="100,10,20,500,0">
     <isock param="N,0,6"  
            link="0" 
            target="dump" />
@@ -118,7 +120,7 @@ class Settings {
   above 16 ft. Shut it down when tank level 
   reaches 5 ft. 
   -->
-  <pump param="600,110,12" 
+  <pump param="600,110,36" 
         state="off">
     <trigger start="16" 
              stop="5" 

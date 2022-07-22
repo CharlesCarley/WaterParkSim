@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'workspace.dart';
 import 'logger.dart';
 import 'widgets/event_router.dart';
+import 'xml/parser.dart';
 
-late XmlListLogger logger;
+late XmlParseLogger logger;
 
 void logMessage(String message) {
   logger.log(message);

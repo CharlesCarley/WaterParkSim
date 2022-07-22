@@ -135,11 +135,12 @@ class _ProgramEditorState extends State<ProgramEditor>
     exitTextChanged(newValue);
   }
 
-  Future<List<SimObject>> _compile(String newValue) {
+  Future<StateTreeCompiler> _compile(String newValue) {
     return Future.microtask(() {
       widget.dispatcher.text = newValue;
       StateTreeCompiler obj = StateTreeCompiler();
-      return obj.compile(newValue);
+      obj.compile(newValue);
+      return obj;
     });
   }
 
@@ -151,9 +152,9 @@ class _ProgramEditorState extends State<ProgramEditor>
     }
   }
 
-  FutureOr<void> _dispatchTree(value) {
+  FutureOr<void> _dispatchTree(StateTreeCompiler obj) {
     var result = widget.dispatcher.notifyStateTreeCompiled(
-      StateTree(code: value),
+      StateTree(code: obj.code, tick: obj.tick),
     );
     result.then((value) {
       setState(() {
@@ -166,6 +167,8 @@ class _ProgramEditorState extends State<ProgramEditor>
 
   void _triggerCall() {
     if (_changed) {
+
+
       _compile(_lastState).then(_dispatchTree);
       _changed = false;
     }

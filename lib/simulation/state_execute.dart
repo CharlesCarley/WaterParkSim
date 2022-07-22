@@ -1,3 +1,5 @@
+import 'dart:math';
+import 'package:waterpark/state/settings_state.dart';
 import '../state/pump_state.dart';
 import '../state/socket_state.dart';
 import '../state/target_ids.dart';
@@ -9,27 +11,34 @@ import '../util/double_utils.dart';
 
 class StateTreeExecutor {
   final List<SimObject> code;
+  final double tickRate;
   final List<InputObject> _flow = [];
   final List<TankObject> _tanks = [];
   final List<PumpObject> _pumps = [];
 
-  StateTreeExecutor.zero() : code = [];
-  StateTreeExecutor({required this.code}) {
+  StateTreeExecutor.zero()
+      : code = [],
+        tickRate = 1000;
+  StateTreeExecutor({required this.code, double rate = 1000})
+      : tickRate = min(
+          max(rate, Settings.stepRateMs.toDouble()),
+          60000,
+        ) {
     _sort();
   }
 
-  void step(double tickMs) {
-    tickMs /= 16;
-    if (tickMs > 0) tickMs = 1.0 / tickMs;
+  void step(double tick) {
+    // in: Ms/min
+    tick /= tickRate;
 
-    _pushIncoming(tickMs);
-    _relayTanks(tickMs);
-    _runPumps(tickMs);
-    _equalize(tickMs);
+    _pushIncomingFlow(tick);
+    _processTanks(tick);
+    _runPumps(tick);
+    _equalize(tick);
   }
 
   void _sort() {
-    ManifoldUtils.setMaxFlow();
+    ManifoldUtils.calculateMaxFlow();
 
     for (SimObject node in code) {
       bool sockType = node is SockObject;
@@ -45,43 +54,51 @@ class StateTreeExecutor {
     }
   }
 
-  void _pushIncoming(double tick) {
+  void _pushIncomingFlow(double tick) {
     for (var flow in _flow) {
       if (flow.toggle) {
+        // limit the rate to the maximum amount through
+        // the manifold.
+        var rate = ManifoldUtils.limit(flow.flowRate * tick);
+
         for (var sock in flow.outputs) {
-          sock.cacheValue(
-            ManifoldUtils.limit(
-              flow.flowRate * tick,
-            ),
-          );
+          sock.cacheValue(rate);
         }
       }
     }
   }
 
-  void _relayTanks(double tick) {
+  void _processTanks(double tick) {
     for (var tank in _tanks) {
+      // accumulate any incoming flow.
       for (var sock in tank.inputs) {
         if (sock.link != null) {
-          tank.addBarrels(sock.link!.getCache());
+          double v = sock.link!.popCache();
+          if (v > 0) {
+            // accumulate the input flow as barrels.
+            tank.addBarrels(v);
+          }
         }
       }
 
+      // find the total number of active spill targets.
       int maxOut = 0;
-
       for (var sock in tank.outputs) {
         double outputHeight = tank.sockHeight(sock);
         if (sock.target == SimTargetId.spill.index &&
-            tank.level >= outputHeight) {
-          ++maxOut;
-        }
+            tank.level >= outputHeight) ++maxOut;
       }
+
       if (maxOut > 0) {
         for (var sock in tank.outputs) {
           double outputHeight = tank.sockHeight(sock);
+
           if (sock.target == SimTargetId.spill.index &&
               tank.level >= outputHeight) {
-            double bbl = tick * (ManifoldUtils.maxFlow / maxOut);
+            double v = DoubleUtils.abs(tank.level - outputHeight) *
+                tank.barrelsPerFoot;
+            double bbl = ManifoldUtils.limit(v * tick);
+
             sock.cacheValue(bbl);
             tank.delBarrels(bbl);
           }
@@ -116,7 +133,7 @@ class StateTreeExecutor {
       // disabled: calculate the relative distance between
       //   sockets and factor in the distance traveled through
       //   the manifold. needs (a.right - b.left) | vice versa.
-      double t = 1; //DoubleUtils.abs(p.x - c.x) / 10;
+      double t = DoubleUtils.abs(p.right - c.left) / 10;
 
       d = (d / t) * tick;
       double ad = DoubleUtils.abs(p.level - c.level);

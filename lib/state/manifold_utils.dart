@@ -1,29 +1,25 @@
 import 'dart:math';
-
 import '../util/double_utils.dart';
 
 class ManifoldUtils {
   static const double atmosphereFt = 29.9212 / 12.0;
   static double velocity = 2;
+
+  /// The diameter of the manifold in inches
   static double diameter = 5;
   static double maxFlow = calculateMaxFlow();
 
-  static void setMaxFlow() {
-    maxFlow = DoubleUtils.min(calculateMaxFlow(), _maxFlow2());
-    //maxFlow = calculateMaxFlow();
-  }
+  static get diameterFeet => diameter * 0.8333333333;
+  static get upperBound => (diameter * diameter);
+
+  // https://www.desmos.com/calculator/djqcupmrjz
 
   static double calculateMaxFlow() {
-    double r = diameter * 0.5;
-    double a = (pi * r * r) * 0.25;
-    return (velocity * a);
-  }
-
-  static double _maxFlow2() {
-    return (diameter * diameter) - ((diameter / 2) +2.5);
+    maxFlow = DoubleUtils.min(velocity * pi * diameter, upperBound);
+    return maxFlow;
   }
 
   static double limit(double rate) {
-    return DoubleUtils.min(rate, maxFlow);
+    return DoubleUtils.min(rate, calculateMaxFlow());
   }
 }

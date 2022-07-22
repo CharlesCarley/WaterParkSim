@@ -28,7 +28,7 @@ class XmlListLogger extends XmlParseLogger {
     List<Widget> ret = [];
 
     int len = messages.length.toString().length;
-    double dig = Common.editTextSize * len.toDouble();
+    double dig = Styles.editTextSize * len.toDouble();
 
     for (int idx = 0; idx < messages.length; ++idx) {
       var str = messages[idx];
@@ -47,7 +47,7 @@ class XmlListLogger extends XmlParseLogger {
                 width: dig,
                 child: Text(
                   strIdx.toString(),
-                  style: Common.editTextStyle,
+                  style: Styles.editTextStyle,
                   textAlign: TextAlign.end,
                 ),
               ),
@@ -59,7 +59,7 @@ class XmlListLogger extends XmlParseLogger {
               color: col,
               child: Text(
                 str,
-                style: Common.editTextStyle,
+                style: Styles.editTextStyle,
               ),
             ),
           ),

@@ -40,8 +40,10 @@ class _WorkspaceHelpState extends State<WorkspaceHelp> {
                   padding: const EdgeInsets.fromLTRB(8.0, 16, 8, 16),
                   child: Text(
                     "Script Command",
-                    style: Common.sizedTextStyle(24,
-                        color: Palette.titleForeground),
+                    style: Styles.labelStyle(
+                      size: 24,
+                      color: Palette.titleForeground,
+                    ),
                   ),
                 ),
                 const Spacer(),

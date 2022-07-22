@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waterpark/state/manifold_utils.dart';
 import '../state/settings_state.dart';
 import '../state/tank_state.dart';
 import '../metrics.dart';
@@ -22,11 +23,19 @@ class TankWidget extends StatelessWidget {
       Settings.tankWidth,
       Settings.tankHeight,
     );
+
     var inner = Rect.fromLTRB(
       base.left + Settings.border,
       base.top + Settings.border,
       base.right - Settings.border,
       base.bottom - Settings.border,
+    );
+
+    var bblDisplay = Rect.fromLTRB(
+      base.left,
+      base.bottom,
+      inner.right,
+      inner.bottom + (Styles.labelTextSize + Settings.border),
     );
 
     var fluid = DoubleUtils.lim(state.level, 0, state.height) / state.height;
@@ -38,8 +47,10 @@ class TankWidget extends StatelessWidget {
       inner.right,
       inner.bottom,
     );
+    
 
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         PositionedColoredBox(
           rect: base,
@@ -60,7 +71,18 @@ class TankWidget extends StatelessWidget {
               state.level.toStringAsPrecision(
                 Settings.displayPrecision,
               ),
-              style: Common.labelTextStyle,
+              style: Styles.labelTextStyle,
+            ),
+          ),
+        ),
+        Positioned.fromRect(
+          rect: bblDisplay,
+          child: Center(
+            child: Text(
+              ("${state.barrelsRu.toInt()} bbls"),
+              style: Styles.labelTextStyleColor(
+                color: Styles.labelTextColorBright,
+              ),
             ),
           ),
         ),

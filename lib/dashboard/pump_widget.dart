@@ -130,7 +130,7 @@ class _PumpWidgetState extends State<PumpWidget> {
                 widget.state.pumpRate.toStringAsPrecision(
                   Settings.displayPrecision,
                 ),
-                style: Common.labelTextStyleColor(
+                style: Styles.labelTextStyleColor(
                   color: _inputState.toggle
                       ? Palette.actionSecondaryText
                       : Palette.actionText,

@@ -6,11 +6,16 @@ import 'token.dart';
 
 abstract class XmlParseLogger {
   void log(String message);
+
+  void clear();
 }
 
 class XmlStubParseLogger with XmlParseLogger {
   @override
   void log(String message) {}
+
+  @override
+  void clear() {}
 }
 
 class XmlParser {
@@ -18,7 +23,7 @@ class XmlParser {
   late int _cursor;
   late List<XmlToken> _tokens;
   final List<String> _tags;
-  final Stack<XmlNode> _stack = Stack.zero();
+  final ListStack<XmlNode> _stack = ListStack.zero();
   final XmlParseLogger _logger;
   late XmlNode _root;
 
@@ -59,8 +64,8 @@ class XmlParser {
     _cursor += n;
   }
 
-  /// Interprets the supplied buffer as XML and attempts to construct an XML
-  /// parse tree using [XmlNode].
+  /// Interprets the supplied buffer as XML. 
+  /// Attempts to construct an XML parse tree using the [XmlNode] class.
   void parse(String buffer) {
     _tokens = [];
     _cursor = 0;

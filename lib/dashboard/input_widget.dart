@@ -58,7 +58,7 @@ class _InputWidgetState extends State<InputWidget> {
                 widget.state.flowRate.toStringAsPrecision(
                   Settings.displayPrecision,
                 ),
-                style: Common.labelTextStyleColor(
+                style: Styles.labelTextStyleColor(
                   color: _inputState.toggle ? Palette.highlight : Palette.actionText,
                 ),
               ),

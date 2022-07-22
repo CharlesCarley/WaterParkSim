@@ -1,7 +1,7 @@
-class Stack<T> {
+class ListStack<T> {
   final List<T> _stack;
-  Stack.zero() : _stack = [];
-  Stack.from(List<T> oth) : _stack = oth;
+  ListStack.zero() : _stack = [];
+  ListStack.from(List<T> oth) : _stack = oth;
 
   get isEmpty => _stack.isEmpty;
   get isNotEmpty => _stack.isNotEmpty;

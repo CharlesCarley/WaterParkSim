@@ -41,8 +41,8 @@ class Palette {
   static const wire = Color(0xFF4F4F69);
   static const wireShadow = Color(0xFF30303F);
 
-
   static const water = Color(0xFF344382);
+  static const waterLight = Color.fromARGB(255, 83, 104, 192);
   static const socketColor = Color.fromARGB(255, 69, 66, 75);
 
   static const action = Color(0xFFFA2340);
@@ -185,4 +185,5 @@ class Palette {
     'strong': TextStyle(fontWeight: FontWeight.bold),
     'emphasis': TextStyle(fontStyle: FontStyle.italic),
   };
+
 }
