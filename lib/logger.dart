@@ -20,6 +20,7 @@ class XmlListLogger extends XmlParseLogger {
     dispatcher.notifyMessageLogged();
   }
 
+  @override
   void clear() {
     messages.clear();
   }

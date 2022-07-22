@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'palette.dart';
-import 'state/state_tree.dart';
+import 'simulation/state_execute.dart';
 import 'widgets/event_router.dart';
 import 'program_canvas_view.dart';
 
@@ -18,7 +18,7 @@ class ProgramCanvas extends StatefulWidget {
 
 class _ProgramCanvasState extends State<ProgramCanvas>
     with WorkSpaceEventReceiver {
-  StateTree _tree = StateTree.zero();
+  StateTreeExecutor _tree = StateTreeExecutor.zero();
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _ProgramCanvasState extends State<ProgramCanvas>
   }
 
   @override
-  void onStateTreeCompiled(StateTree stateTree) {
+  void onStateTreeCompiled(StateTreeExecutor stateTree) {
     setState(() {
       _tree = stateTree;
     });

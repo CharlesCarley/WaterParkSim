@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:waterpark/state/settings_state.dart';
+import '../state/settings_state.dart';
 import '../logger.dart';
-import '../state/state_tree.dart';
+import '../simulation/state_execute.dart';
 import 'event_dispatcher.dart';
 
 class WorkSpaceEventReceiver {
   void onRun() {}
   void onDisplaySettings() {}
   void onDisplaySettingsClosed() {}
-  void onStateTreeCompiled(StateTree stateTree) {}
+  void onStateTreeCompiled(StateTreeExecutor stateTree) {}
   void onKey(RawKeyEvent key) {}
   void onHelp() {}
   void onHelpClosed() {}
@@ -51,7 +51,7 @@ class WorkspaceEventDispatcher extends EventDispatcher<WorkSpaceEventReceiver> {
     });
   }
 
-  Future notifyStateTreeCompiled(StateTree stateTree) {
+  Future notifyStateTreeCompiled(StateTreeExecutor stateTree) {
     return Future.microtask(() {
       for (var receiver in receivers) {
         receiver.onStateTreeCompiled(stateTree);

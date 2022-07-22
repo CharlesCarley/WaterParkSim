@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'simulation/run_canvas.dart';
 import 'metrics.dart';
+import 'simulation/state_execute.dart';
 import 'theme.dart';
 import 'state/state_tree_compiler.dart';
 import 'workspace_help.dart';
 import 'workspace_settings.dart';
 import 'palette.dart';
 import 'state/settings_state.dart';
-import 'state/state_tree.dart';
 import 'program_canvas.dart';
 import 'program_editor.dart';
 import 'widgets/event_router.dart';
@@ -174,7 +174,7 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
   }
 
   @override
-  void onStateTreeCompiled(StateTree stateTree) {
+  void onStateTreeCompiled(StateTreeExecutor stateTree) {
     setState(() {});
   }
 
@@ -211,11 +211,11 @@ class _WaterParkSimulatorState extends State<WaterParkSimulator>
     });
   }
 
-  StateTree _compileCurrent() {
+  StateTreeExecutor _compileCurrent() {
     StateTreeCompiler obj = StateTreeCompiler();
 
     obj.compile(widget.dispatcher.text);
-    return StateTree(code: obj.code, tick: obj.tick);
+    return StateTreeExecutor(code: obj.code, rate: obj.tick);
   }
 
   void _focus() {

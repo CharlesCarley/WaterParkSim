@@ -8,12 +8,12 @@ import '../state/input_state.dart';
 import '../state/pump_state.dart';
 import '../state/settings_state.dart';
 import '../state/socket_state.dart';
-import '../state/state_tree.dart';
 import '../state/tank_state.dart';
 import '../dashboard/link_widget.dart';
+import 'simulation/state_execute.dart';
 
 class ProgramCanvasConstructor {
-  final StateTree tree;
+  final StateTreeExecutor tree;
   late List<Widget> widgets;
 
   ProgramCanvasConstructor({required this.tree}) {

@@ -12,8 +12,6 @@ class ManifoldUtils {
   static get diameterFeet => diameter * 0.8333333333;
   static get upperBound => (diameter * diameter);
 
-  // https://www.desmos.com/calculator/djqcupmrjz
-
   static double calculateMaxFlow() {
     maxFlow = DoubleUtils.min(velocity * pi * diameter, upperBound);
     return maxFlow;

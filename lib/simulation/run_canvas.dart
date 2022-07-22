@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:waterpark/simulation/state_execute.dart';
 import 'dart:async';
 
 import '../state/settings_state.dart';
 import '../widgets/icon_widget.dart';
 import '../widgets/toolbar_widget.dart';
 import '../palette.dart';
-import '../state/state_tree.dart';
 import '../util/double_utils.dart';
 import '../widgets/event_router.dart';
 import '../program_canvas_view.dart';
 
 class RunProgramCanvas extends StatefulWidget {
   final WorkspaceEventDispatcher dispatcher;
-  final StateTree tree;
+  final StateTreeExecutor tree;
 
   const RunProgramCanvas({
     Key? key,
@@ -26,7 +26,7 @@ class RunProgramCanvas extends StatefulWidget {
 
 class _RunProgramCanvasState extends State<RunProgramCanvas>
     with WorkSpaceEventReceiver {
-  StateTree _tree = StateTree.zero();
+  StateTreeExecutor _tree = StateTreeExecutor.zero();
   late Timer _timer;
 
   @override
@@ -98,6 +98,6 @@ class _RunProgramCanvasState extends State<RunProgramCanvas>
   }
 
   String _getTitleString() {
-    return "Running @ ${Settings.stepRateMs}/${widget.tree.tick.toInt()} ms";
+    return "Running @ ${Settings.stepRateMs}/${widget.tree.tickRate.toInt()} ms";
   }
 }

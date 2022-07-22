@@ -1,8 +1,6 @@
 import 'dart:collection';
 
 import 'package:flutter/widgets.dart';
-
-import '../util/stack.dart';
 import 'object_state.dart';
 
 class SocketBits {

@@ -4,15 +4,14 @@ import 'dart:async';
 import 'package:code_text_field/code_text_field.dart';
 import 'package:highlight/languages/xml.dart';
 
+import 'simulation/state_execute.dart';
 import 'state/settings_state.dart';
 import 'widgets/event_router.dart';
 import 'widgets/icon_widget.dart';
 import 'widgets/split_widget.dart';
 import 'palette.dart';
 import 'logger.dart';
-import 'state/object_state.dart';
 import 'state/state_tree_compiler.dart';
-import 'state/state_tree.dart';
 import 'widgets/toolbar_widget.dart';
 
 class ProgramEditor extends StatefulWidget {
@@ -154,7 +153,7 @@ class _ProgramEditorState extends State<ProgramEditor>
 
   FutureOr<void> _dispatchTree(StateTreeCompiler obj) {
     var result = widget.dispatcher.notifyStateTreeCompiled(
-      StateTree(code: obj.code, tick: obj.tick),
+      StateTreeExecutor(code: obj.code, rate: obj.tick),
     );
     result.then((value) {
       setState(() {
